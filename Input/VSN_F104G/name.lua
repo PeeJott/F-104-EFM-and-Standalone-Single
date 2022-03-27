@@ -1,0 +1,1 @@
+return _('VSN_F104G')
