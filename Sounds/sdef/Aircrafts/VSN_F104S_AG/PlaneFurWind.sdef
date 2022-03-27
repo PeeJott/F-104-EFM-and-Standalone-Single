@@ -1,0 +1,16 @@
+wave = {"Effects/Aircrafts/VSN_F104/F-104_Flyby_Sound1","Effects/Aircrafts/VSN_F104/F-104_Flyby_Sound2","Effects/Aircrafts/VSN_F104/F-104_Flyby_Sound1"}
+listmode = ASR
+distance_filter_offset = 530
+silent_radius = 10
+peak_radius = 20
+inner_radius = 530
+outer_radius = 2300
+cone_inner_angle = 40
+cone_outer_angle = 80
+cone_outer_gain = 0.0
+direction = {1, 0, 0}
+gain = 2.3
+pitch = 0.68
+position = {1.0, 0.0, 0.0}
+nodoppler = true
+attack = 7
