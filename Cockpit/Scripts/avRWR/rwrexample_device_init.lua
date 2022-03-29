@@ -15,7 +15,7 @@ Sensors = {
 		
 
 
-		
+	--Erstmal so versuchen, aber die beiden neuen avSimpleElectricSystems sind beide [130]...das kann Probleme geben...	
 	creators[130]	= 	{"avSimpleElectricSystem",
 						 LockOn_Options.script_path.."avRWR/miscSystems/simple_electric_system.lua"}
 

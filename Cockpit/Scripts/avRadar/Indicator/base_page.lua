@@ -56,6 +56,7 @@ local indi		 	= {	0, 1, 2,
 
 --Wir wolen aber kein abgerundetes Quadrat, sondern eigentlich einen Kreis. Weil ich keinen Kreis kann,
 --gibt es eben ein 12-Eck :-)
+--and everybody who does not speak German may have a guess what a "Zwoelfeck" is ;-)
 
 local ZwoelfeckMaske_Vertices	=	{	{-x_coord * 0.25, y_coord * 1.0}, 
 										{-x_coord * 0.75, y_coord * 0.75},

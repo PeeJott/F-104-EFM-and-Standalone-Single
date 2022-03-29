@@ -87,25 +87,25 @@ function post_initialize()
 
 	print_message_to_user("Radar - INIT")
 		
-		dev:listen_command(100)
+		dev:listen_command(100)		--iCommandPlaneChangeLock
 		
-		dev:listen_command(139)		--scanzone left
-		dev:listen_command(140)		--scanzone right
+		dev:listen_command(139)		--scanzone left // iCommandSelecterLeft
+		dev:listen_command(140)		--scanzone right // iCommandSelecterRight
 		
-		dev:listen_command(141)		--scanzone up
-		dev:listen_command(142)		--scanzone down
+		dev:listen_command(141)		--scanzone up//iCommandSelecterUp
+		dev:listen_command(142)		--scanzone down//iCommandSelecterDown
 		
-		dev:listen_command(394)		--change PRF (radar puls freqency)
+		dev:listen_command(394)		--change PRF (radar puls freqency)//iCommandPlaneChangeRadarPRF
 	
-		dev:listen_command(509)		--lock start
-		dev:listen_command(510)		--lock finish
+		dev:listen_command(509)		--lock start//iCommandPlane_LockOn_start
+		dev:listen_command(510)		--lock finish//iCommandPlane_LockOn_finish
 		
-		dev:listen_command(285)		--Change radar mode RWS/TWS 
+		dev:listen_command(285)		--Change radar mode RWS/TWS //iCommandPlaneRadarChangeMode
 		
-		dev:listen_command(2025)
-		dev:listen_command(2026)
-		dev:listen_command(2031)
-		dev:listen_command(2032)
+		dev:listen_command(2025)	--iCommandPlaneRadarHorizontal
+		dev:listen_command(2026)	--iCommandPlaneRadarVertical
+		dev:listen_command(2031)	--iCommandPlaneSelecterHorizontal
+		dev:listen_command(2032)	--iCommandPlaneSelecterVertical
 		
 
 		Radar.opt_pb_stab_h:set(1)

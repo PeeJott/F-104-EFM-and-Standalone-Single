@@ -22,43 +22,43 @@ local	wmul = 0.88
 	
 	mfd_base_rwr            	= CreateElement "ceSimple"
 	mfd_base_rwr.name			= "mfd_base_rwr"
-	mfd_base_rwr.init_pos		= {0,0,0}
+	mfd_base_rwr.init_pos		= {0.17,-0.18,0}
 	--mfd_base_rwr.element_params= {"MM_MFD_PAGE_RWR"}
 	--mfd_base_rwr.controllers 	= {{"parameter_in_range",0,0.9,1.1}}
 Add(mfd_base_rwr)	
 	
 
-    radius = 0.05 * RS	
+    radius = 0.20 * RS	
 	local   RWR_grid_i 					= CreateElement "ceMeshPoly"
 			RWR_grid_i.name 			= "RWR_grid_i"
 			RWR_grid_i.primitivetype 	= "triangles"
 			set_circle	(RWR_grid_i, radius + 0.0020, radius - 0.0020, 360, 32)
-			RWR_grid_i.material 		= MFCD_GREEN_SOFT
-			RWR_grid_i.h_clip_relation= h_clip_relations.COMPARE
+			RWR_grid_i.material 		= MFCD_ORANGE_SOFT
+			RWR_grid_i.h_clip_relation	= h_clip_relations.COMPARE
 			RWR_grid_i.level			= RWR_DEFAULT_LEVEL
 			RWR_grid_i.isdraw		 	= true
 			RWR_grid_i.parent_element 	= "mfd_base_rwr"
 		Add(RWR_grid_i)
 	
-	radius = 0.7 * RS	
+	radius = 0.82 * RS	
 	local   RWR_grid_o 					= CreateElement "ceMeshPoly"
 			RWR_grid_o.name 			= "RWR_grid_o"
 			RWR_grid_o.primitivetype 	= "triangles"
 			set_circle	(RWR_grid_o, radius + 0.0020, radius - 0.0020, 360, 48)
-			RWR_grid_o.material 		= MFCD_GREEN_SOFT
+			RWR_grid_o.material 		= MFCD_ORANGE_SOFT
 			RWR_grid_o.h_clip_relation= h_clip_relations.COMPARE
 			RWR_grid_o.level			= RWR_DEFAULT_LEVEL
 			RWR_grid_o.isdraw		 	= true
 			RWR_grid_o.parent_element 	= "mfd_base_rwr"
 		Add(RWR_grid_o)	
 
-	radius = 0.25 * RS	
+	radius = 0.62 * RS	
 	local   RWR_grid_m 					= CreateElement "ceMeshPoly"
 			RWR_grid_m.name 			= "RWR_grid_m"
 			RWR_grid_m.primitivetype 	= "triangles"
 			set_circle	(RWR_grid_m, radius + 0.0020, radius - 0.0020, 360, 32)
-			RWR_grid_m.material 		= MFCD_GREEN_SOFT
-			RWR_grid_m.h_clip_relation= h_clip_relations.COMPARE
+			RWR_grid_m.material 		= MFCD_ORANGE_SOFT
+			RWR_grid_m.h_clip_relation	= h_clip_relations.COMPARE
 			RWR_grid_m.level			= RWR_DEFAULT_LEVEL
 			RWR_grid_m.isdraw		 	= true
 			RWR_grid_m.parent_element 	= "mfd_base_rwr"
@@ -107,7 +107,7 @@ local y_size = 0.01
 					RWR_type.stringdefs      	= txt_s_stringdefs
 					RWR_type.alignment       	= "CenterCenter"--"LeftTop"
 			--	RWR_type.formats		  	= {"%s"}
-				RWR_type.formats		  	= {"%.0f"}
+					RWR_type.formats		  	= {"%.0f"}
 					RWR_type.UseBackground		= false
 					RWR_type.use_mipfilter 		= true
 					RWR_type.h_clip_relation 	= h_clip_relations.COMPARE
@@ -121,11 +121,11 @@ local y_size = 0.01
 													{"rotate_using_parameter",1,-1},
 												  }		
 					RWR_type.parent_element 	= "RWR_contact_" .. i .. "_name"
-				Add(RWR_type)	
+					Add(RWR_type)	
 
 
 
-				x_size 	= 0.065	* RS	--0.035
+				x_size 	= 0.25	* RS	--war 0.065 --0.035
 				y_size  = x_size
 				wmul = 0.88 
 				
@@ -133,7 +133,7 @@ local y_size = 0.01
 					RWR_lock.name			  	= "RWR_"..i.."_lock"
 					RWR_lock.init_pos		  	= {0.0,0.0,0}--{0.0,-0.89,0} --{0.0,0.12,0} 
 					RWR_lock.init_rot		  	= {0.0,0.0,0.0}
-					RWR_lock.material    		= MFCD_GREEN	
+					RWR_lock.material    		= MFCD_ORANGE	
 					RWR_lock.vertices	   		= {	{-x_size 		,0				},
 													{0 				, y_size 		},
 													{0				, y_size * wmul	},
@@ -170,7 +170,7 @@ local y_size = 0.01
 	
 		----
 	
-				x_size 	= 0.051	* RS	--0.035
+				x_size 	= 0.20	* RS	--0.051--0.035
 				y_size  = x_size
 				wmul = 0.76 
 				
@@ -178,7 +178,7 @@ local y_size = 0.01
 					RWR_plane.name			  	= "RWR_"..i.."_plane"
 					RWR_plane.init_pos		  	= {0.0,0.0,0}--{0.0,-0.89,0} --{0.0,0.12,0} 
 					RWR_plane.init_rot		  	= {0.0,0.0,0.0}
-					RWR_plane.material    		= MFCD_GREEN	
+					RWR_plane.material    		= MFCD_ORANGE	
 					RWR_plane.vertices	   		= {	{-x_size/2 		, y_size/2		},
 													{0 				, y_size 		},
 													{0				, y_size * wmul	},
@@ -204,7 +204,8 @@ local y_size = 0.01
 	end
 
 --------------------------------------------------------------------------
-
+--Nur zum debuggen, kann dann auskommentiert werden wenn es läuft wie es soll :-)
+--[[
 local 				RWR_dbg	 					= CreateElement "ceStringPoly"
 					RWR_dbg.name			  	= "RWR_dbg"
 					RWR_dbg.material        	= HUD_FONT
@@ -255,7 +256,8 @@ local 				RWR_dbg	 					= CreateElement "ceStringPoly"
 														{"text_using_parameter",10,0},
 					
 													}
-				Add(RWR_dbg)		
+				Add(RWR_dbg)	
+]]				
 
 
 
