@@ -28,7 +28,7 @@ local corner		= 0.9
 local x_coord		= x_size --1 * SCALE_SIZE -- Ausdehnung des Zwölfecks in der Horizontalen (von - bis +)
 local y_coord		= y_size --1 * SCALE_SIZE -- Ausdehnung des Zwölfecks in der Vertikalen (von - bis +)
 
-local SCALE_SIZE	= 0.2 --für SetScale(METERS) zum gleichmäßigen Vergrößern, Verkleinern des Zwölfecks
+--local SCALE_SIZE	= 0.2 --für SetScale(METERS) zum gleichmäßigen Vergrößern, Verkleinern des Zwölfecks
 
 
 local vert		= {	{-x_size, y_size * corner},
@@ -57,31 +57,31 @@ local indi		 	= {	0, 1, 2,
 --Wir wolen aber kein abgerundetes Quadrat, sondern eigentlich einen Kreis. Weil ich keinen Kreis kann,
 --gibt es eben ein 12-Eck :-)
 
-local ZwoelfeckMaske_Vertices	=	{	{-x_coord * 0.33, y_coord * 1.0}, 
-										{-x_coord * 0.66, y_coord * 0.66},
-										{-x_coord * 1.0, y_coord * 0.33},
-										{-x_coord * 1.0, -y_coord * 0.33},
-										{-x_coord * 0.66, -y_coord * 0.66},
-										{-x_coord * 0.33, -y_coord * 1.0},
-										{x_coord * 0.33, -y_coord * 1.0},
-										{x_coord * 0.66, -y_coord * 0.66},
-										{x_coord * 1.0, -y_coord * 0.33},
-										{x_coord * 1.0, y_coord * 0.33},
-										{x_coord * 0.66, y_coord * 0.66},
-										{x_coord * 1.0, y_coord * 0.33},
+local ZwoelfeckMaske_Vertices	=	{	{-x_coord * 0.25, y_coord * 1.0}, 
+										{-x_coord * 0.75, y_coord * 0.75},
+										{-x_coord * 1.0, y_coord * 0.25},
+										{-x_coord * 1.0, -y_coord * 0.25},
+										{-x_coord * 0.75, -y_coord * 0.75},
+										{-x_coord * 0.25, -y_coord * 1.0},
+										{x_coord * 0.25, -y_coord * 1.0},
+										{x_coord * 0.75, -y_coord * 0.75},
+										{x_coord * 1.0, -y_coord * 0.25},
+										{x_coord * 1.0, y_coord * 0.25},
+										{x_coord * 0.75, y_coord * 0.75},
+										{x_coord * 0.25, y_coord * 1.0},
 									}
 
 
-local ZwoelfeckMaske_Indices		= { 0,11,10,  
-									1,0,10,  
-									2,1,10,  
-									3,2,10,  
-									4,3,10,  
+local ZwoelfeckMaske_Indices		= { 0,10,11,  
+									0,1,10,  
+									1,2,10,  
+									2,3,10,  
+									3,4,10,  
 									4,9,10,  
-									9,5,4,  
+									4,5,9,  
 									5,8,9,  
-									7,5,8,  
-									5,7,6,
+									5,7,8,  
+									5,6,7,
 								}
 
 
@@ -95,7 +95,7 @@ Add(Radar_base)
 --Clipping-Mask-1:
 local 	RADAR_CLIPPING_MASK_SMALL 					= CreateElement "ceMeshPoly"
 		RADAR_CLIPPING_MASK_SMALL.name 				= "RADAR_CLIPPING_MASK_SMALL"
-		RADAR_CLIPPING_MASK_SMALL.init_pos			= {0,0,0}
+		RADAR_CLIPPING_MASK_SMALL.init_pos			= {0,0.12,0}
 		RADAR_CLIPPING_MASK_SMALL.primitivetype 	= "triangles"
 		
 		RADAR_CLIPPING_MASK_SMALL.vertices			= ZwoelfeckMaske_Vertices -- war "vert"
@@ -129,7 +129,7 @@ local 	RADAR_CLIPPING_MASK_SMALL 					= CreateElement "ceMeshPoly"
 		RADAR_CLIPPING_MASK_SMALL.level				= RADAR_DEFAULT_NOCLIP_LEVEL--MDF_FOV_LEVEL
 		RADAR_CLIPPING_MASK_SMALL.isdraw			= true
 		RADAR_CLIPPING_MASK_SMALL.collimated 		= false
-		RADAR_CLIPPING_MASK_SMALL.isvisible			= true --false 
+		RADAR_CLIPPING_MASK_SMALL.isvisible			= false --false 
 		RADAR_CLIPPING_MASK_SMALL.parent_element	= "Radar_base"
 	Add(RADAR_CLIPPING_MASK_SMALL)
 ---------------------------------
@@ -137,7 +137,7 @@ local 	RADAR_CLIPPING_MASK_SMALL 					= CreateElement "ceMeshPoly"
 local 	black_background     				= CreateElement "ceTexPoly"
 		black_background.primitivetype 		= "triangles"
 		black_background.name				="black_background"
-		black_background.init_pos			= {0,0,0}
+		black_background.init_pos			= {0,0.12,0}
 		black_background.material      		= MakeMaterial(nil,{30, 30, 30, 255})
 		
 		black_background.vertices			= ZwoelfeckMaske_Vertices -- war "vert"
@@ -152,7 +152,7 @@ local 	black_background     				= CreateElement "ceTexPoly"
 		black_background.parent_element 	= "Radar_base"
 		black_background.h_clip_relation	= h_clip_relations.INCREASE_IF_LEVEL
 		black_background.level	  			= RADAR_DEFAULT_NOCLIP_LEVEL--MDF_FOV_LEVEL
-		black_background.isdraw				= false
-		black_background.collimated 		= false
+		--black_background.isdraw				= true --war false
+		--black_background.collimated 		= false
 		black_background.isvisible			= false --false 
 	Add(black_background)

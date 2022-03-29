@@ -36,7 +36,7 @@ function keys_gunpipper_vertical_up(value)
 
 	if (gunpipper_mode ==  0)
 	then
-		gunpipper_vertical_movement_param:set(gunpipper_vertical_movement_param:get() +0.1) --war 0.05
+		gunpipper_vertical_movement_param:set(gunpipper_vertical_movement_param:get() +0.01) --war 0.05
 	end
 
 end
@@ -45,7 +45,7 @@ function keys_gunpipper_vertical_down(value)
 
 if (gunpipper_mode ==  0)
 	then
-		gunpipper_vertical_movement_param:set(gunpipper_vertical_movement_param:get() -0.1)
+		gunpipper_vertical_movement_param:set(gunpipper_vertical_movement_param:get() -0.01)
 	end
 
 end
@@ -54,7 +54,7 @@ function keys_gunpipper_horizontal_right(value)
 
 	if (gunpipper_mode ==  0)
 	then
-		gunpipper_horizontal_movement_param:set(gunpipper_horizontal_movement_param:get() +0.1)
+		gunpipper_horizontal_movement_param:set(gunpipper_horizontal_movement_param:get() +0.01)
 	end
 	
 end
@@ -63,7 +63,7 @@ function keys_gunpipper_horizontal_left(value)
 -- 										das ist der vorherige Wert - den neuen Wert, also ein Schritt.
 	if (gunpipper_mode ==  0)
 	then
-		gunpipper_horizontal_movement_param:set(gunpipper_horizontal_movement_param:get() -0.1)
+		gunpipper_horizontal_movement_param:set(gunpipper_horizontal_movement_param:get() -0.01)
 	end
 
 end

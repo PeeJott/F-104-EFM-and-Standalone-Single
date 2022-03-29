@@ -52,7 +52,7 @@ GUN_PIPPER 						= create_HUD_texture(HUD_GUNPIPPER_TEXT, 0,0,1024,1024, 40.0) -
 GUN_PIPPER.name					= create_guid_string()
 GUN_PIPPER.init_pos				= {0.0, 0.00, 0.0} -- "{0.0, -0.005, 0.0}" passt gut :-) war zuvor {0.0, 0.0, 0.0} sollte aber {-links/+rechts, -runter/+hoch, +vor/-zurück}
 GUN_PIPPER.parent_element		= HUD_BASE.name --mal auskommentiert
---						Param #0,        Param #1
+--									Param #0,        Param #1
 GUN_PIPPER.element_params 		= {"GUNPIPPER_SIDE","GUNPIPPER_UPDOWN"}
 --									  								Param #, Gain							Param #, Gain // Gain von 0,1 zu 1 wegen auto Gunpipper Test
 GUN_PIPPER.controllers    		= {{"move_left_right_using_parameter", 0, 1.0}, {"move_up_down_using_parameter", 1, 1.0}}
