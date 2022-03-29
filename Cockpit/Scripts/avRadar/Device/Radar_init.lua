@@ -10,7 +10,7 @@ perfomance =
 
 	
 	tracking_azimuth   			= { -math.rad(30),math.rad(30)},
-	tracking_elevation 			= { -math.rad(30),math.rad(30)},
+	tracking_elevation 			= { -math.rad(30),math.rad(30)},--60° 
 	
 	scan_volume_azimuth 	= math.rad(60),		--is left+right so 60 is -30,30+
 	scan_volume_elevation	= math.rad(30),		
@@ -18,7 +18,7 @@ perfomance =
 	scan_speed				= math.rad(3*60),
 	
 	
-	max_available_distance  = 20000.0,--200*60000.0,
+	max_available_distance  = 64820.0,--200*60000.0, das ist denke ich in Metern. Das erhöhe ich mal von 20km auf 35nm, also auf 64820
 	dead_zone 				= 300.0,
 	
 	ground_clutter =

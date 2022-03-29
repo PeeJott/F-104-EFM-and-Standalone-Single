@@ -1,7 +1,7 @@
 dofile(LockOn_Options.script_path.."devices.lua")
 dofile(LockOn_Options.common_script_path.."tools.lua")
 dofile(LockOn_Options.common_script_path.."KNEEBOARD/declare_kneeboard_device.lua")
-dofile(LockOn_Options.script_path.."Radar/radar_device_init.lua")
+dofile(LockOn_Options.script_path.."avRadar/radarexample_device_init.lua")
 
 -- set panel
 layoutGeometry = {}

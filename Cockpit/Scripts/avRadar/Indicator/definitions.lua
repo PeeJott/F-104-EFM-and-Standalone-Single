@@ -20,21 +20,25 @@ end
 ----Colors--------------------------------
 	BG_BLACK_COLOR		= {30, 30, 30, 255}
 	TEXT_GREEN_COLOR 	= {0, 255, 50, 255}
+	TEXT_ORANGE_COLOR	= {255, 130, 5, 255}
+	TEXT_ORANGE_SOFT	= {255, 130, 5, 128}
 	TEXT_BLACK_COLOR 	= BG_BLACK_COLOR--{2, 2, 2, 255}
 ------------------------------------------
 
 
 MATERIAL_BLACK   	= MakeMaterial(nil,{25,25,25,255})
 RADAR_BG_BLACK		= MakeMaterial(nil,BG_BLACK_COLOR)--{20,20,20,255})			
-RADAR_SOLID_BLACK   	= MakeMaterial(nil,{0,0,0,255,255})
+RADAR_SOLID_BLACK   = MakeMaterial(nil,{0,0,0,255,255})
 
 MFCD_GREEN			= MakeMaterial(nil,{0, 255, 5, 255})
 MFCD_GREEN_SOFT		= MakeMaterial(nil,{25, 255, 25, 128})
+MFCD_ORANGE			= MakeMaterial(nil,TEXT_GREEN_COLOR)
+MFCD_ORANGE_SOFT	= MakeMaterial(nil, TEXT_ORANGE_SOFT)
 
 
 -------FONTS------------------------------------------------------------------------------
 
-HUD_FONT 	= MakeFont({used_DXUnicodeFontData = "font_arial_17"},TEXT_GREEN_COLOR)		--5 "font_arial_17"  is good 
+HUD_FONT 	= MakeFont({used_DXUnicodeFontData = "font_arial_17"},TEXT_ORANGE_COLOR)		--5 "font_arial_17"  is good 
 HUD_FONT_INV= MakeFont({used_DXUnicodeFontData = "font_arial_17"},TEXT_BLACK_COLOR)
 
 FONT_SCALE = 1 

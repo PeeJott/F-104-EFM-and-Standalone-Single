@@ -11,9 +11,12 @@ life_time_low = 0
 
 -------------------------------------------------------------
 
+--!!!!Ein Radar-Grid hat das NASARR-F15A gar nicht, daher auskommentiert!!!---
 
+--[[
 local x_size = 0.004
 local y_size = 0.9 *RS
+
 
 
 for i = -2,2 do
@@ -55,6 +58,7 @@ for i = -2,2 do
 		Add(radar_grid_v)
 
 end
+]]
 
 
 local x_size = 0.01 *2
@@ -80,7 +84,7 @@ local y_size = 0.01 *2
 											      }
 				radar_contact.indices	   		= { 0,1,2,	0,2,3}--{0, 1, 2, 0, 2, 3} 
 				radar_contact.init_pos	   		= {0, -0.90*RS, 0}
-				radar_contact.material    	 	=MFCD_GREEN
+				radar_contact.material    	 	= MFCD_ORANGE
 				radar_contact.isdraw			= true
 				radar_contact.isvisible			= true
 				radar_contact.h_clip_relation 	= h_clip_relations.COMPARE
@@ -130,7 +134,7 @@ local	radar_cursor			   		= CreateElement "ceMeshPoly"
 											}
 		radar_cursor.indices	   		= { 0,1,2,	0,2,3	,4,5,6,4,6,7}--{0, 1, 2, 0, 2, 3} 
 		radar_cursor.init_pos	   		= {0, -0.90*RS, 0}
-		radar_cursor.material    	 	= MFCD_GREEN
+		radar_cursor.material    	 	= MFCD_ORANGE
 		radar_cursor.isdraw				= true
 		radar_cursor.isvisible			= true
 		radar_cursor.h_clip_relation 	= h_clip_relations.COMPARE
@@ -164,7 +168,7 @@ local	radar_STT			   		= CreateElement "ceMeshPoly"
 									  }
 		radar_STT.indices	   		= { 0,1,2,	0,2,3}--{0, 1, 2, 0, 2, 3} 
 		radar_STT.init_pos	   		= {0, -0.90*RS, 0}
-		radar_STT.material    	 	= MFCD_GREEN--MakeMaterial(nil,{10,10,255,150})
+		radar_STT.material    	 	= MFCD_ORANGE--MakeMaterial(nil,{10,10,255,150})
 		radar_STT.isdraw			= true
 		radar_STT.isvisible			= true
 		radar_STT.h_clip_relation 	= h_clip_relations.COMPARE
@@ -203,7 +207,7 @@ local	radar_STT_backview			   		= CreateElement "ceMeshPoly"
 											}
 		radar_STT_backview.indices	   		= { 0,1,2,	0,2,3,4,5,6,4,6,7}--{0, 1, 2, 0, 2, 3} 
 		radar_STT_backview.init_pos	   		= {0, 0.0, 0}
-		radar_STT_backview.material    	 	= MFCD_GREEN--MakeMaterial(nil,{10,10,255,150})
+		radar_STT_backview.material    	 	= MFCD_ORANGE--MakeMaterial(nil,{10,10,255,150})
 		radar_STT_backview.isdraw			= true
 		radar_STT_backview.isvisible		= true
 	
@@ -236,7 +240,7 @@ local	radar_STT_iff			   		= CreateElement "ceMeshPoly"
 									  }
 		radar_STT_iff.indices	   		= { 0,1,2,	0,2,3}--{0, 1, 2, 0, 2, 3} 
 		radar_STT_iff.init_pos	   		= {0, 0, 0}
-		radar_STT_iff.material    	 	= MFCD_GREEN--MakeMaterial(nil,{10,10,255,150})
+		radar_STT_iff.material    	 	= MFCD_ORANGE--MakeMaterial(nil,{10,10,255,150})
 		radar_STT_iff.isdraw			= true
 		radar_STT_iff.isvisible			= true
 		radar_STT_iff.h_clip_relation 	= h_clip_relations.COMPARE
@@ -253,7 +257,7 @@ local	radar_STT_iff			   		= CreateElement "ceMeshPoly"
 
 
 	
-	local 	radar_cursor_range	 					= CreateElement "ceStringPoly"
+	local 	radar_cursor_range	 				= CreateElement "ceStringPoly"
 			radar_cursor_range.name			  	= "radar_cursor_range"
 			radar_cursor_range.material        	= HUD_FONT
 			radar_cursor_range.init_pos		  	= {-0.1,0.0,0} 
@@ -335,7 +339,7 @@ local	radar_SZ_AZIMUTH			   		= CreateElement "ceMeshPoly"
 									  }
 		radar_SZ_AZIMUTH.indices	   		= { 0,1,2,	0,2,3}--{0, 1, 2, 0, 2, 3} 
 		radar_SZ_AZIMUTH.init_pos	   		= {0, -0.9*RS, 0}
-		radar_SZ_AZIMUTH.material    	 	= MFCD_GREEN--MakeMaterial(nil,{10,10,255,150})
+		radar_SZ_AZIMUTH.material    	 	= MFCD_ORANGE--MakeMaterial(nil,{10,10,255,150})
 		radar_SZ_AZIMUTH.isdraw				= true
 		radar_SZ_AZIMUTH.isvisible			= true
 		radar_SZ_AZIMUTH.h_clip_relation 	= h_clip_relations.COMPARE
