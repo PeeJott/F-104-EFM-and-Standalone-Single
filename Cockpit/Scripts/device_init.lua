@@ -25,6 +25,10 @@ creators[devices.WEAPON_SYSTEM]         ={"avSimpleWeaponSystem",LockOn_Options.
 
 
 indicators = {} --DAS HIER MUSS SEIN SONST CRASHT ES DCS
+
+dofile(LockOn_Options.script_path.."avRadar/radarexample_device_init.lua")
+dofile(LockOn_Options.script_path.."avRWR/rwrexample_device_init.lua")
+
 indicators[#indicators + 1] = {"ccIndicator", LockOn_Options.script_path.."HUD/init.lua",	--init script
  nil, 
     {
