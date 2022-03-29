@@ -257,6 +257,7 @@ flare 				= {default = 15, increment = 15, chargeSz = 2}
         },
 
 Sensors = {
+--RADAR 		= "N-019",
 RADAR 			= "AN/APQ-159",-- angepasst F104G und verändert auf F-5E adv.
 RWR 			= "Abstract RWR"--F15
 },

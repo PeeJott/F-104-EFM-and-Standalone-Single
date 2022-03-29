@@ -1,6 +1,7 @@
 dofile(LockOn_Options.script_path.."devices.lua")
 dofile(LockOn_Options.common_script_path.."tools.lua")
 dofile(LockOn_Options.common_script_path.."KNEEBOARD/declare_kneeboard_device.lua")
+dofile(LockOn_Options.script_path.."Radar/radar_device_init.lua")
 
 -- set panel
 layoutGeometry = {}
@@ -28,6 +29,21 @@ indicators[#indicators + 1] = {"ccIndicator", LockOn_Options.script_path.."HUD/i
  nil, 
     {
 		{"ILS-PLASHKA-CENTER", "ILS-PLASHKA-DOWN", "ILS-PLASHKA-RIGHT"},	-- initial geometry anchor , triple of connector names. Mal zunächst nur 3 statt 4 ILS-PLASHKE-UP mal ausgelassen
+		{sx_l =  0,  -- center position correction in meters (+forward , -backward)
+		 sy_l =  0,  -- center position correction in meters (+up , -down)
+		 sz_l =  0,  -- center position correction in meters (-left , +right)
+		 sh   =  0,  -- half height correction 
+		 sw   =  0,  -- half width correction 
+		 rz_l =  0,  -- rotation corrections  
+		 rx_l =  0,
+		 ry_l =  0}
+	}	
+}
+
+indicators[#indicators + 1] = {"ccIndicator", LockOn_Options.script_path.."Radar/Indicator/init.lua",	--init script
+ nil, 
+    {
+		{"RADAR-PLASHKA-CENTER", "RADAR-PLASHKA-DOWN", "RADAR-PLASHKA-RIGHT"},	-- initial geometry anchor , triple of connector names. Mal zunächst nur 3 statt 4 ILS-PLASHKE-UP mal ausgelassen
 		{sx_l =  0,  -- center position correction in meters (+forward , -backward)
 		 sy_l =  0,  -- center position correction in meters (+up , -down)
 		 sz_l =  0,  -- center position correction in meters (-left , +right)

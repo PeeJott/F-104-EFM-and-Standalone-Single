@@ -37,7 +37,7 @@ join(res.keyCommands,{
 {down = iCommandPlaneModeGround, name = _('(7) Air-To-Ground Mode'), category = _('Modes')},
 
 -- Sensors
-{combos = {{key = 'JOY_BTN3'}}, down = iCommandPlaneChangeLock, up = iCommandPlaneChangeLockUp, name = _('Target Lock'), category = _('Sensors')},
+--{combos = {{key = 'JOY_BTN3'}}, down = iCommandPlaneChangeLock, up = iCommandPlaneChangeLockUp, name = _('Target Lock'), category = _('Sensors')},
 {down = iCommandSensorReset, name = _('Radar - Return To Search/NDTWS'), category = _('Sensors')},
 {down = iCommandRefusalTWS, name = _('Unlock TWS Target'), category = _('Sensors')},
 {down = iCommandPlaneRadarOnOff, name = _('Radar On/Off'), category = _('Sensors')},
@@ -59,6 +59,7 @@ join(res.keyCommands,{
 {down = iCommandChangeRWRMode, name = _('RWR/SPO Mode Select'), category = _('Sensors')},
 {down = iCommandPlaneThreatWarnSoundVolumeDown, name = _('RWR/SPO Sound Signals Volume Down'), category = _('Sensors')},
 {down = iCommandPlaneThreatWarnSoundVolumeUp, name = _('RWR/SPO Sound Signals Volume Up'), category = _('Sensors')},
+{down = iCommandPlane_LockOn_start, up = iCommandPlane_LockOn_finish, name = 'Target Lock', category = 'Sensors'},
 
 -- Weapons
 {down = iCommandPlaneSalvoOnOff, name = _('Salvo Mode'), category = _('Weapons')},
