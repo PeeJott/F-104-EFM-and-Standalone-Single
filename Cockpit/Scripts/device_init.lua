@@ -26,6 +26,9 @@ creators[devices.WEAPON_SYSTEM]         ={"avSimpleWeaponSystem",LockOn_Options.
 
 indicators = {} --DAS HIER MUSS SEIN SONST CRASHT ES DCS
 
+-- remove this line to disable a2g radar
+dofile(LockOn_Options.script_path.."avTerrain/terrainexample_device_init.lua")
+
 dofile(LockOn_Options.script_path.."avRadar/radarexample_device_init.lua")
 dofile(LockOn_Options.script_path.."avRWR/rwrexample_device_init.lua")
 

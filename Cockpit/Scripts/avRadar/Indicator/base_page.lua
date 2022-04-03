@@ -90,6 +90,13 @@ local ZwoelfeckMaske_Indices		= { 0,10,11,
 Radar_base               	= CreateElement "ceSimple"
 Radar_base.name				= "Radar_base"
 Radar_base.init_pos			= {0,0,0}
+
+
+-- temporary code to display a2a radar only when a2g radar is off
+--Radar_base.element_params     = {"TERRAIN_OFF"}
+--Radar_base.controllers        = {{"parameter_in_range" ,0,0.9,1.1} }
+
+
 Add(Radar_base)
 
 ---------------------------------------------------

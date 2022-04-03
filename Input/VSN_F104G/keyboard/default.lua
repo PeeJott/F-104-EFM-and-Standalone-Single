@@ -150,6 +150,36 @@ join(res.keyCommands,{
 
 
 
+
+-- Misc Switches Panel
+{down = Keys.RadarTCPlanProfile, value_down = 1,                                              name = _('Radar Terrain Clearance - PLAN'),         category = {_('Instrument Panel'), _('Misc Switches Panel')}},
+{down = Keys.RadarTCPlanProfile, value_down = 0,                                              name = _('Radar Terrain Clearance - PROFILE'),      category = {_('Instrument Panel'), _('Misc Switches Panel')}},
+{down = Keys.RadarTCPlanProfile, value_down = -1,                                             name = _('Radar Terrain Clearance - PLAN/PROFILE'), category = {_('Instrument Panel'), _('Misc Switches Panel')}},
+{down = Keys.RadarRangeLongShort, value_down = 1,                                             name = _('Radar Range - LONG'),                     category = {_('Instrument Panel'), _('Misc Switches Panel')}},
+{down = Keys.RadarRangeLongShort, value_down = 0,                                             name = _('Radar Range - SHORT'),                    category = {_('Instrument Panel'), _('Misc Switches Panel')}},
+{down = Keys.RadarRangeLongShort, value_down = -1,                                            name = _('Radar Range - LONG/SHORT'),               category = {_('Instrument Panel'), _('Misc Switches Panel')}},
+
+
+
+-- Radar Control Panel
+{down = Keys.RadarModeOFF,                  name = _('Radar Mode Selector Switch Knob - OFF'),               category = {_('Left Console'), _('Radar Control Panel')}},
+{down = Keys.RadarModeSTBY,                 name = _('Radar Mode Selector Switch Knob - STANDBY'),           category = {_('Left Console'), _('Radar Control Panel')}},
+{down = Keys.RadarModeSearch,               name = _('Radar Mode Selector Switch Knob - SEARCH'),            category = {_('Left Console'), _('Radar Control Panel')}},
+{down = Keys.RadarModeTC,                   name = _('Radar Mode Selector Switch Knob - TERRAIN CLEARANCE'), category = {_('Left Console'), _('Radar Control Panel')}},
+{down = Keys.RadarModeA2G,                  name = _('Radar Mode Selector Switch Knob - A2G'),               category = {_('Left Console'), _('Radar Control Panel')}},
+{down = Keys.RadarMode,                     name = _('Radar Mode Selector Switch Knob Cycle'),               category = {_('Left Console'), _('Radar Control Panel')}},
+{down = Keys.RadarModeCW,                   name = _('Radar Mode Selector Switch Knob - CW'),                category = {_('Left Console'), _('Radar Control Panel')}},
+{down = Keys.RadarModeCCW,                  name = _('Radar Mode Selector Switch Knob - CCW'),               category = {_('Left Console'), _('Radar Control Panel')}},
+{down = Keys.RadarAoAComp, value_down = 1,  name = _('Radar AoA Compensation Switch - ON'),                  category = {_('Left Console'), _('Radar Control Panel')}},
+{down = Keys.RadarAoAComp, value_down = 0,  name = _('Radar AoA Compensation Switch - OFF'),                 category = {_('Left Console'), _('Radar Control Panel')}},
+{down = Keys.RadarAoAComp, value_down = -1, name = _('Radar AoA Compensation Switch - ON/OFF'),              category = {_('Left Console'), _('Radar Control Panel')}},
+{down = Keys.RadarVolume, value_down = 1,   name = _('Radar Obstacle Tone Volume Knob - Increase'),          category = {_('Left Console'), _('Radar Control Panel')}},
+{down = Keys.RadarVolume, value_down = 0,   name = _('Radar Obstacle Tone Volume Knob - Decrease'),          category = {_('Left Console'), _('Radar Control Panel')}},
+
+
+
+
+
 --{combos = {{key = 'Enter'}}, down = iCommandPlaneChangeLock, up = iCommandPlaneChangeLockUp, name = _('Target Lock'), category = _('Sensors')},
 {combos = {{key = 'Back'}}, down = iCommandSensorReset, name = _('Radar - Return To Search/NDTWS'), category = _('Sensors')},
 {down = iCommandRefusalTWS, name = _('Unlock TWS Target'), category = _('Sensors')},
