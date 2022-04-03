@@ -239,6 +239,13 @@ void Airframe::zeroInit()
 	m_chuteYAxis = 0.0;
 	m_chuteZAxis = 0.0;
 
+	//-------------Hydraulic Stuff--------------
+	m_hydroPumpOne = 0.0;
+	m_hydroPumpTwo = 0.0;
+	m_ramAirHydroPump = 0.0;
+	m_hydroSystemStatus = 0.0;
+	m_hydroPower = 0.0;
+
 	//-----------CrossHair Test Stuff------------
 	m_crossHairHori = 0.0;
 	m_crossHairVerti = 0.46;
@@ -324,6 +331,7 @@ void Airframe::coldInit()
 	m_chuteState = 0.0;
 	m_mass = 1.0;
 	m_timePassed = 0;
+
 }
 
 void Airframe::hotInit()
@@ -368,11 +376,21 @@ void Airframe::hotInit()
 	m_chuteState = 0.0;
 	m_mass = 1.0;
 	m_timePassed = 0;
+
+	m_hydroPumpOne = 1.0;
+	m_hydroPumpTwo = 1.0;
+	m_ramAirHydroPump = 0.0;
+	m_hydroSystemStatus = 1.0;
 }
 
 void Airframe::airborneInit()
 {
 	zeroInit();
+
+	m_hydroPumpOne = 1.0;
+	m_hydroPumpTwo = 1.0;
+	m_ramAirHydroPump = 0.0;
+	m_hydroSystemStatus = 1.0;
 }
 
 void Airframe::crossHairHori()
@@ -748,6 +766,8 @@ void Airframe::airframeUpdate(double dt)
 
 	horizonPitchValue();
 	horizonRollValue();
+
+	hydraulicPump();
 
 	
 	//printf("Horizon_Pitch_Angle %f\n", m_horizonPitchAngle);
@@ -1782,6 +1802,52 @@ double Airframe::osFlapDamage()
 	}
 	return m_flapOversped;
 }
+
+//------------------Hydraulic-System functions-----------------------------
+void Airframe::hydraulicPump()
+{
+
+	if((m_input.getElectricSystem() == 1.0) && (getTurbineDamage() > 0.35))
+	{
+		m_hydroPumpOne = 1.0;
+		m_hydroPumpTwo = 1.0;
+		m_ramAirHydroPump = 0.0;
+		m_hydroSystemStatus = 1.0;
+	}
+	else if((m_input.getElectricSystem() == 1.0) && ((getTurbineDamage() < 0.35) && (getTurbineDamage() > 0.15)))
+	{
+		m_hydroPumpOne = 0.0;
+		m_hydroPumpTwo = 1.0;
+		m_ramAirHydroPump = 0.0;
+		m_hydroSystemStatus = 0.75;
+	}
+	else if (((m_input.getElectricSystem() == 1.0) && (getTurbineDamage() < 0.15)) || (m_input.getElectricSystem() == 0.0))
+	{
+		m_hydroPumpOne = 0.0;
+		m_hydroPumpTwo = 0.0;
+		m_hydroSystemStatus = 0.5;
+
+		if (m_state.m_mach >= 1.0)
+		{
+			m_ramAirHydroPump = 1.0;
+		}
+		else
+		{
+			m_ramAirHydroPump = m_state.m_mach;
+		}
+	}
+	else
+	{
+		m_hydroPumpOne = 0.0;
+		m_hydroPumpTwo = 0.0;
+		m_ramAirHydroPump = 0.5;
+		m_hydroSystemStatus = 0.0;
+	}
+
+	m_hydroPower = m_hydroPumpOne + m_hydroPumpTwo + m_ramAirHydroPump;
+}
+
+
 
 //-------------------Repair-Needs and Repair-Function-----------------------
 

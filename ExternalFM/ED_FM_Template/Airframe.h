@@ -52,6 +52,12 @@ public:
 	//inline void setAirbrakePosition(double position);//OLD
 	inline double setAirbrakePosition(double dt);
 	
+	//Hydraulik System
+	void hydraulicPump();
+	inline double getHydraulicPumpState();
+	inline double getHyraulicPumpPower();
+
+
 	//Fuel
 	//void addFuel(double fuel); //fuel Funktion fehlt aktuell noch
 
@@ -636,6 +642,13 @@ private:
 	double m_ailDamInd = 0.0;
 	double m_stabDamInd = 0.0;
 
+	//----------HydraulicPump Variables------------------------------
+	double m_hydroPumpOne = 0.0;
+	double m_hydroPumpTwo = 0.0;
+	double m_ramAirHydroPump = 0.0;
+	double m_hydroSystemStatus = 0.0;
+	double m_hydroPower = 0.0;
+
 
 
 
@@ -1176,6 +1189,16 @@ double Airframe::getPylonIndLightG()
 double Airframe::getPylonIndLightA()
 {
 	return m_pylonIndLightA;
+}
+
+double Airframe::getHydraulicPumpState()
+{
+	return m_hydroSystemStatus;
+}
+
+double Airframe::getHyraulicPumpPower()
+{
+	return m_hydroPower;
 }
 
 

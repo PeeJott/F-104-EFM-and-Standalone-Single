@@ -73,12 +73,15 @@ FlightModel::FlightModel
 	Clda(DAT_Clda, CON_Cldamin, CON_Cldamax),
 	Clr(DAT_Clr, CON_Clr_min, CON_Clr_max),
 	Cldr(DAT_Cldr_full, CON_Cldr_min, CON_Cldr_max),
+	ClpStab(DAT_ClpStab, CON_ClpStab_Min, CON_ClpStab_Max),
+	ClrStab(DAT_ClrStab, CON_ClrStab_Min, CON_ClrStab_Max),
 	//---------------YAW---------------------------------------
 	CnbNEW(DAT_Cnb_FULL, CON_Cnb_Full_Min, CON_Cnb_FULL_Max),
 	Cndr(DAT_Cndr, CON_Cndrmin, CON_Cndrmax),
 	Cnr(DAT_Cnr, CON_Cnrmin, CON_Cnrmax),
 	Cnp(DAT_Cnp, CON_Cnpmin, CON_Cnpmax),
 	Cnda(DAT_Cnda, CON_Cndamin, CON_Cndamax),
+	CnrStab(DAT_CnrStab, CON_CnrStab_Min, CON_CnrStab_Max),
 	Cyb(DAT_Cyb, CON_Cybmin, CON_Cybmax),
 	Cydr(DAT_Cydr, CON_Cydrmin, CON_Cydrmax),
 	
@@ -167,19 +170,35 @@ void FlightModel::zeroInit()
 	m_wingStalling = false;
 	m_CLaCorrMulti = 0.0;
 
+	//------PitStabSystem----
 	m_CmqStAg = 0.0;
 	m_CmaDOTStAg = 0.0;
 	m_StabAugSys = 0.0;
 
+	//------RollStabSystem---
+	m_ClpStab = 0.0;
+	m_ClrStab = 0.0;
+	m_RollStabSys = 0.0;
+	Clp_S = 0.0;
+	Clr_S = 0.0;
+	m_ClrMulti = 0.0;
+	m_ClpMulti = 0.0;
+	m_rollHydroForce = 0.0;
+
+	//------YawStabSystem-----
+	m_CnpStab = 0.0;
+	m_CnrStab = 0.0;
+	m_YawStabSys = 0.0;
+	Cnr_S = 0.0;
+
 	M_mcrit = 0.0;
 	M_mcrit_b = 0.0;
 
+	//-----Drag Variable----
 	CDwave = 0.0;
-
 	CDi = 0.0;
-
+	
 	CD_OverMach = 0.0;
-
 	m_cdminADD = 0.0;
 
 	CD_brFlap = 0.0;
@@ -187,9 +206,12 @@ void FlightModel::zeroInit()
 
 	CDGear = 0.0;
 	CDFlaps = 0.0;
-	CLFlaps = 0.0;
+	
 	CDBrk = 0.0;
 	CDBrkCht = 0.0;
+
+	//---Lift Variable---
+	CLFlaps = 0.0;
 	CLblc = 0.0;
 
 	m_rWingDamageCL = 0.0;
@@ -269,12 +291,16 @@ void FlightModel::calculateAeroRotateMoments()
 	//----------TESTWEISE um Spin Probleme zu testen bei Rotation der Forces-------
 	//----------HIER Rotation der Momente von der Stability- ind die Body-Axis----
 	//----------Verwednung in der Formel von Allerton in der rottierten Form zum Testen--
-	//-------------Alte Funktion direkt an State angebunden---------
-	/*CosAoA = cos(m_state.m_aoa);
-	SinusAoA = sin(m_state.m_aoa);
+	//----------Yaw und Roll inklusive Stabilitäts-System-------------------------
+	Clp_S = Clp(m_state.m_mach);//  
+	// Clp ist der Wiederstand beim Rollen NICHT die Dämpfung!! daher mal so zum testen 
+	// ggf. ändern in so :-) -> m_ClpStab;// so wird das unten berechnet (Clp(m_state.m_mach) + ClpStab(m_state.m_mach));
+	Clr_S = m_ClrStab;// so wird das unten berechnet (Clr(m_state.m_mach) + ClrStab(m_state.m_mach));
 
-	CosAoA2 = CosAoA * CosAoA;
-	SinusAoA2 = SinusAoA * SinusAoA;*/
+	Cnr_S = m_CnrStab;
+
+
+
 
 	//-----------Neue Funktion an den corrected AOA angebunden---------------------------
 	CosAoA = cos(m_corrAoA);
@@ -286,6 +312,7 @@ void FlightModel::calculateAeroRotateMoments()
 
 	//----------Konvertiertung der Momente von der Stabilitäts zu der KörperAchse----------
 	//----------Siehe auch CR-2144 Appendix B am Anfang--------------------------
+	/* //----------ohne Yaw und Roll Stabilitätssystem--------------------------
 	Cnb_b = CnbNEW(m_state.m_mach) * CosAoA + Clb(m_state.m_mach) * SinusAoA;
 	Cnp_b = Cnp(m_state.m_mach) * CosAoA2 - (Cnr(m_state.m_mach) - (Clp(m_state.m_mach))) * SinusAoA * CosAoA - (-Clr(m_state.m_mach)) * SinusAoA2;
 	Cnr_b = Cnr(m_state.m_mach) * CosAoA2 + ((-Clr(m_state.m_mach)) + Cnp(m_state.m_mach)) * SinusAoA * CosAoA + (Clp(m_state.m_mach)) * SinusAoA2;
@@ -294,9 +321,27 @@ void FlightModel::calculateAeroRotateMoments()
 
 	Clb_b = Clb(m_state.m_mach) * CosAoA - CnbNEW(m_state.m_mach) * SinusAoA;
 	Clp_b = (Clp(m_state.m_mach)) * CosAoA2 - ((-Clr(m_state.m_mach)) - Cnp(m_state.m_mach)) * SinusAoA * CosAoA + Cnr(m_state.m_mach) * SinusAoA2;
+	
 	Clr_b = (-Clr(m_state.m_mach)) * CosAoA2 - (Cnr(m_state.m_mach) - (Clp(m_state.m_mach))) * SinusAoA * CosAoA - Cnp(m_state.m_mach) * SinusAoA2;
 	Clda_b = Clda(m_state.m_mach) * CosAoA - Cnda(m_state.m_mach) * SinusAoA;
 	Cldr_b = Cldr(m_state.m_mach) * CosAoA - Cndr(m_state.m_mach) * SinusAoA;
+	*/
+
+	//------------------Mit Roll- und Yaw-Stabilitätssystem----------------------
+
+	Cnb_b = CnbNEW(m_state.m_mach) * CosAoA + Clb(m_state.m_mach) * SinusAoA;
+	Cnp_b = Cnp(m_state.m_mach) * CosAoA2 - (Cnr_S - Clp_S) * SinusAoA * CosAoA - (-Clr_S) * SinusAoA2;
+	Cnr_b = Cnr_S * CosAoA2 + ((-Clr_S) + Cnp(m_state.m_mach)) * SinusAoA * CosAoA + (Clp_S) * SinusAoA2;
+	Cnda_b = Cnda(m_state.m_mach) * CosAoA * Clda(m_state.m_mach) * SinusAoA;
+	Cndr_b = Cndr(m_state.m_mach) * CosAoA - Cldr(m_state.m_mach) * SinusAoA;
+
+	Clb_b = Clb(m_state.m_mach) * CosAoA - CnbNEW(m_state.m_mach) * SinusAoA;
+	Clp_b = (Clp_S) * CosAoA2 - ((-Clr_S) - Cnp(m_state.m_mach)) * SinusAoA * CosAoA + Cnr_S * SinusAoA2;
+
+	Clr_b = (-Clr_S) * CosAoA2 - (Cnr_S - Clp_S) * SinusAoA * CosAoA - Cnp(m_state.m_mach) * SinusAoA2;
+	Clda_b = Clda(m_state.m_mach) * CosAoA - Cnda(m_state.m_mach) * SinusAoA;
+	Cldr_b = Cldr(m_state.m_mach) * CosAoA - Cndr(m_state.m_mach) * SinusAoA;
+
 
 }
 
@@ -319,12 +364,13 @@ void FlightModel::L_stab()
 	
 	//-----------Input Clr aud -Clr in der Rotationsformel geändert und "-" vor Clr hier entfernt (sehr gut)------
 	//-----------Multiplikator Clp in der Rotationsformel eingefügt und entfernt wegen Blödheit-----------------------------------
-	//-----------Multiplikator in der Moment Formel für Clp_b von 2.0 auf 1.2 und auf 1.25 auf 1.35 auf 1.45 auf 2.05 auf 2.15 auf 2.35 und Clr_b von 1.5 auf 1.1 und auf 1.15 auf 1.25 auf 1.40 auf 1.35 auf 1.40 auf 1.50------------------------------------------------------
+	//-----------Multiplikator in der Moment Formel für Clp_b von 2.0 auf 1.2 und auf 1.25 auf 1.35 auf 1.45 auf 2.05 auf 2.15 auf 2.35 auf 1.25 geändert, weil Clp eigentlich Rollresistenz ist, die soll gar nicht soo hoch...
+	//-----------Multiplikator vor Clr_b von 1.5 auf 1.1 und auf 1.15 auf 1.25 auf 1.40 auf 1.35 auf 1.40 auf 1.50 auf 1.65 auf 2.55 zurück auf 1.5 und Multi in RollStabFunktion verschoben------------------------------------------------------
 	//----------m_stallIndRoll verringert auf (s.u.)-----------------------------------------------------------------------------------
 	//-----------anstatt m_state.m_beta m_corrBeta zum Ausgleich für WeightOnWheels----------------------------------------------------
 	//----------1.15 Multi vor Clda eingefügt; zu 1.35 zu 1.55
-	m_moment.x += m_q * (Clb_b * m_corrBeta + (1.55 * Clda_b * (((m_input.getRoll() * m_ailDeflection) + m_input.getTrimmAilR() - m_input.getTrimmAilL()) * m_ailDamage)) + (m_lWingDamageCD + m_rWingDamageCD) + (0.55 * Cldr_b) * (m_input.getYaw() * m_rudDeflection) + m_stallIndRoll)
-		+ 0.25 * m_state.m_airDensity * m_scalarVelocity * CON_A * CON_b * CON_b * (((2.35 - m_stallMult) * Clp_b) * m_state.m_omega.x + ((1.50 - m_stallMult) * Clr_b) * m_state.m_omega.y);
+	m_moment.x += m_q * (Clb_b * m_corrBeta + ((1.55 * m_rollHydroForce) * Clda_b * (((m_input.getRoll() * m_ailDeflection) + m_input.getTrimmAilR() - m_input.getTrimmAilL()) * m_ailDamage)) + (m_lWingDamageCD + m_rWingDamageCD) + (0.55 * Cldr_b) * (m_input.getYaw() * m_rudDeflection) + m_stallIndRoll)
+		+ 0.25 * m_state.m_airDensity * m_scalarVelocity * CON_A * CON_b * CON_b * ((((1.25 - m_stallMult) + m_ClpMulti) * Clp_b) * m_state.m_omega.x + (((1.5 - m_stallMult) + m_ClrMulti) * Clr_b) * m_state.m_omega.y);
 }
 
 void FlightModel::M_stab()
@@ -500,6 +546,63 @@ void FlightModel::pitchStabAugSystem()
 		m_StabAugSys = 0.0;
 	}
 }
+
+void FlightModel::yawStabAugSystem()
+{
+	if ((m_airframe.getCompressorDamage() >= 0.35) && (m_input.getElectricSystem() == 1.0))
+	{
+		m_CnrStab = (Cnr(m_state.m_mach) + CnrStab(m_state.m_mach));
+		m_YawStabSys = 0.5;
+	}
+	else if ((m_airframe.getCompressorDamage() < 0.35) && (m_input.getElectricSystem() == 1.0))
+	{
+		m_CnrStab = Cnr(m_state.m_mach);
+		m_YawStabSys = 1.0;
+		
+	}
+	else if (m_input.getElectricSystem() == 0.0)
+	{
+		
+		m_CnrStab = Cnr(m_state.m_mach);
+		m_YawStabSys = 0.0;
+	}
+}
+
+
+void FlightModel::rollStabAugSystem()
+{
+	if ((m_airframe.getCompressorDamage() >= 0.35) && (m_input.getElectricSystem() == 1.0))
+	{
+		m_ClrStab = (Clr(m_state.m_mach) + ClrStab(m_state.m_mach));//1.55 zu 2.25 zu 4.0
+		m_ClrMulti = 3.0;
+		m_ClpMulti = 2.0;
+		m_RollStabSys = 0.5;
+	}
+	else if ((m_airframe.getCompressorDamage() < 0.35) && (m_input.getElectricSystem() == 1.0))
+	{
+		m_ClrStab = (Clr(m_state.m_mach));
+		m_ClrMulti = 1.55;
+		m_ClpMulti = 1.25;
+		m_RollStabSys = 1.0;
+
+	}
+	else if (m_input.getElectricSystem() == 0.0)
+	{
+
+		m_CnrStab = (Clr(m_state.m_mach));
+		m_ClrMulti = 1.55;
+		m_ClpMulti = 1.25;
+		m_RollStabSys = 0.0;
+	}
+
+	//Hydraulic-Pump-Multiplyer for AileronEffectiveness
+	m_rollHydroForce = (m_airframe.getHyraulicPumpPower() / 2.0) * 1.25; //wir starten mal mit 1.25
+
+	//printf("Clr-Pur %f \n", Clr(m_state.m_mach));
+	//printf("Clr-Stab %f \n", ClrStab(m_state.m_mach));
+	//printf("m_ClrStab %f \n", m_ClrStab);
+}
+
 
 void FlightModel::calcZeroLift()
 {
@@ -717,7 +820,11 @@ void FlightModel::update(double dt)
 	calculateShake(dt);
 	calcAeroDeflection();
 	calcLiftFlaps();
+
 	pitchStabAugSystem();
+	yawStabAugSystem();
+	rollStabAugSystem();
+
 	addedDrag();
 	brokenFlapDrag();
 	calcZeroLift();

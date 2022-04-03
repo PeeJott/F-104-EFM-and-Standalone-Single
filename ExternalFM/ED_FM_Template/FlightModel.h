@@ -61,6 +61,13 @@ public:
 	void pitchStabAugSystem();
 	inline double getStabAugSystem();
 
+	void yawStabAugSystem();
+	inline double getYawStabAugSystem();
+
+	void rollStabAugSystem();
+	inline double getRollStabAugSystem();
+
+
 	//----------Cockpit-Shaker--------------------------
 	void calculateShake(double& dt);
 	inline double getCockpitShake();
@@ -108,6 +115,19 @@ private:
 	double m_CmaDOTStAg = 0.0;
 	double m_StabAugSys = 0.0;
 
+	//---------YAW Stability-Augmentation----------------------------
+	double m_CnpStab = 0.0;
+	double m_CnrStab = 0.0;
+	double m_YawStabSys = 0.0;
+
+	//---------Roll-Stab System--------------------------------------
+	double m_ClpStab = 0.0;
+	double m_ClrStab = 0.0;
+	double m_RollStabSys = 0.0;
+	double m_ClrMulti = 0.0;
+	double m_ClpMulti = 0.0;
+	double m_rollHydroForce = 0.0;
+
 	//--------------Formula-Parts STAB--------------------------------
 	//s : area
 	//b : wingspan
@@ -130,12 +150,15 @@ private:
 	double Clr_b = 0.0;
 	double Clda_b = 0.0;
 	double Cldr_b = 0.0;
+	double Clp_S = 0.0;
+	double Clr_S = 0.0;
 
 	double Cnb_b = 0.0;
 	double Cnp_b = 0.0;
 	double Cnr_b = 0.0;
 	double Cnda_b = 0.0;
 	double Cndr_b = 0.0;
+	double Cnr_S = 0.0;
 	
 	//------------------rotational formulas to rotate moments around Alpha
 	double CosAoA = 0.0;
@@ -226,12 +249,15 @@ private:
 	Table Clda;
 	Table Clr;
 	Table Cldr;
+	Table ClpStab;
+	Table ClrStab;
 	//--------------YAW---------------------------
 	Table CnbNEW;
 	Table Cndr;
 	Table Cnr;
 	Table Cnp;
 	Table Cnda;
+	Table CnrStab;
 	Table Cyb;
 	Table Cydr;
 	//-------------Thrust------------------------
@@ -270,6 +296,16 @@ double FlightModel::getCockpitShake()
 double FlightModel::getStabAugSystem()
 {
 	return m_StabAugSys;
+}
+
+double FlightModel::getYawStabAugSystem()
+{
+	return m_YawStabSys;
+}
+
+double FlightModel::getRollStabAugSystem()
+{
+	return m_RollStabSys;
 }
 
 /*void FlightModel::setCockpitShakeModifier(double mod)
