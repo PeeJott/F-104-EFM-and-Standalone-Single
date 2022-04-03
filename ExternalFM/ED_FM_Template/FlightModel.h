@@ -114,12 +114,15 @@ private:
 	double m_CmqStAg = 0.0;
 	double m_CmaDOTStAg = 0.0;
 	double m_StabAugSys = 0.0;
+	double m_pitchHydroForce = 0.0;
+
 
 	//---------YAW Stability-Augmentation----------------------------
 	double m_CnpStab = 0.0;
 	double m_CnrStab = 0.0;
 	double m_YawStabSys = 0.0;
-
+	double m_CnrMulti = 0.0;
+	double m_yawHydroForce = 0.0;
 	//---------Roll-Stab System--------------------------------------
 	double m_ClpStab = 0.0;
 	double m_ClrStab = 0.0;

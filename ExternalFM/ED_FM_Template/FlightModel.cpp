@@ -174,6 +174,7 @@ void FlightModel::zeroInit()
 	m_CmqStAg = 0.0;
 	m_CmaDOTStAg = 0.0;
 	m_StabAugSys = 0.0;
+	m_pitchHydroForce = 0.0;
 
 	//------RollStabSystem---
 	m_ClpStab = 0.0;
@@ -190,6 +191,8 @@ void FlightModel::zeroInit()
 	m_CnrStab = 0.0;
 	m_YawStabSys = 0.0;
 	Cnr_S = 0.0;
+	m_CnrMulti = 0.0;
+	m_yawHydroForce = 0.0;
 
 	M_mcrit = 0.0;
 	M_mcrit_b = 0.0;
@@ -399,7 +402,7 @@ void FlightModel::M_stab()
 	//------------CmFlaps eingefügt auf 0.75 und 0.75 zu 0.82 zu 0.95 als Multiplikator vor Cmde eingefügt
 	//----------- Multiplikator vor CmAlpha entfernt, da CmAlpha grds. ein negatives Pitchmoment gibt------------
 	//------------------------Neue Formel über corrAoA an m_state.m_aoa angebunden und m_corrBeta statt m_state.m_beta-----------------------------------------------------------
-	m_moment.z += m_k * CON_mac * ((CmalphaNEW(m_state.m_mach) * m_corrAoA) + ((0.95 * -CmdeNEW(m_state.m_mach)) * (((m_input.getPitch() * m_elevDeflection) + m_input.getTrimmUp() - m_input.getTrimmDown() + m_airframe.getAutoPilotAltH()) * m_hStabDamage)) + m_pitchup + (0.95 * CmFlap(m_state.m_mach) * m_airframe.getFlapsPosition()))
+	m_moment.z += m_k * CON_mac * ((CmalphaNEW(m_state.m_mach) * m_corrAoA) + (((0.95 * -CmdeNEW(m_state.m_mach) * m_pitchHydroForce)) * (((m_input.getPitch() * m_elevDeflection) + m_input.getTrimmUp() - m_input.getTrimmDown() + m_airframe.getAutoPilotAltH()) * m_hStabDamage)) + m_pitchup + (0.95 * CmFlap(m_state.m_mach) * m_airframe.getFlapsPosition()))
 		+ 0.25 * m_state.m_airDensity * m_scalarVelocity * CON_A * CON_mac * CON_mac * ((((1.75 - m_stallMult) * Cmq(m_state.m_mach) + m_CmqStAg) * m_state.m_omega.z) + (((1.95 - m_stallMult) * CmadotNEW(m_state.m_mach)) + m_CmaDOTStAg) * m_aoaDot);
 
 }
@@ -426,9 +429,11 @@ void FlightModel::N_stab()
 	/*m_moment.y += m_q * (((1.2 - (0.95 * m_stallMult)) * -CnbNEW(m_state.m_mach) * m_state.m_beta) + (Cnda(m_state.m_mach) * (m_input.getRoll() * m_ailDeflection)) + -Cndr(m_state.m_mach) * (-m_input.getYaw() * m_rudDeflection))
 		+ 0.25 * m_state.m_airDensity * m_scalarVelocity * CON_A * CON_b * CON_b * ((Cnp(m_state.m_mach) * m_state.m_omega.x) + ((2.1 - m_stallMult) * Cnr(m_state.m_mach) * m_state.m_omega.y));
 	*/
+
+	//---2.1 Multi vor Cnr_b halbiert und verschoben nach YawStabSystem 
 	//-------------------m_corrBeta statt m_state.m_beta---------------------------------------------------------------------------------------------------------------------------
-	m_moment.y += m_q * (((1.2 - (0.95 * m_stallMult)) * -Cnb_b * m_corrBeta) + (Cnda_b * (m_input.getRoll() * m_ailDeflection)) + -Cndr_b * (-m_input.getYaw() * m_rudDeflection))
-		+ 0.25 * m_state.m_airDensity * m_scalarVelocity * CON_A * CON_b * CON_b * ((Cnp_b * m_state.m_omega.x) + ((2.1 - m_stallMult) * Cnr_b * m_state.m_omega.y));
+	m_moment.y += m_q * (((1.2 - (0.95 * m_stallMult)) * -Cnb_b * m_corrBeta) + (Cnda_b * (m_input.getRoll() * m_ailDeflection)) + (-Cndr_b * m_yawHydroForce) * (-m_input.getYaw() * m_rudDeflection))
+		+ 0.25 * m_state.m_airDensity * m_scalarVelocity * CON_A * CON_b * CON_b * ((Cnp_b * m_state.m_omega.x) + (((1.05 * m_CnrMulti) - m_stallMult) * Cnr_b * m_state.m_omega.y));
 }
 
 
@@ -545,6 +550,8 @@ void FlightModel::pitchStabAugSystem()
 		m_CmaDOTStAg = 0.0;
 		m_StabAugSys = 0.0;
 	}
+
+	m_pitchHydroForce = (m_airframe.getHyraulicPumpPower() / 2.0) * 1.25;
 }
 
 void FlightModel::yawStabAugSystem()
@@ -552,11 +559,13 @@ void FlightModel::yawStabAugSystem()
 	if ((m_airframe.getCompressorDamage() >= 0.35) && (m_input.getElectricSystem() == 1.0))
 	{
 		m_CnrStab = (Cnr(m_state.m_mach) + CnrStab(m_state.m_mach));
+		m_CnrMulti = 2.0;
 		m_YawStabSys = 0.5;
 	}
 	else if ((m_airframe.getCompressorDamage() < 0.35) && (m_input.getElectricSystem() == 1.0))
 	{
 		m_CnrStab = Cnr(m_state.m_mach);
+		m_CnrMulti = 1.65;
 		m_YawStabSys = 1.0;
 		
 	}
@@ -564,8 +573,11 @@ void FlightModel::yawStabAugSystem()
 	{
 		
 		m_CnrStab = Cnr(m_state.m_mach);
+		m_CnrMulti = 1.65;
 		m_YawStabSys = 0.0;
 	}
+
+	m_yawHydroForce = (m_airframe.getHyraulicPumpPower() / 2.0) * 1.25;
 }
 
 
@@ -581,8 +593,8 @@ void FlightModel::rollStabAugSystem()
 	else if ((m_airframe.getCompressorDamage() < 0.35) && (m_input.getElectricSystem() == 1.0))
 	{
 		m_ClrStab = (Clr(m_state.m_mach));
-		m_ClrMulti = 1.55;
-		m_ClpMulti = 1.25;
+		m_ClrMulti = 1.65;
+		m_ClpMulti = 1.45;
 		m_RollStabSys = 1.0;
 
 	}
@@ -590,8 +602,8 @@ void FlightModel::rollStabAugSystem()
 	{
 
 		m_CnrStab = (Clr(m_state.m_mach));
-		m_ClrMulti = 1.55;
-		m_ClpMulti = 1.25;
+		m_ClrMulti = 1.65;
+		m_ClpMulti = 1.45;
 		m_RollStabSys = 0.0;
 	}
 
