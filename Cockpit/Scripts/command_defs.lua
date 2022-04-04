@@ -50,6 +50,14 @@ Keys =
     RadarVolume                     = __custom_counter(),  -- 1 Inc, 0 Dec
     RadarAntennaAngle               = __custom_counter(),  -- 1 Inc, 0 Dec
     RadarAoAComp                    = __custom_counter(),  -- 1 Enable, 0 Disable
+
+
+
+	COM1                     = __custom_counter(),
+    COM2                     = __custom_counter(),
+    COM3                     = __custom_counter(),
+
+
 }
 
 start_command   = 3000

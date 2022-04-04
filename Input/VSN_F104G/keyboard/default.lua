@@ -177,6 +177,11 @@ join(res.keyCommands,{
 {down = Keys.RadarVolume, value_down = 0,   name = _('Radar Obstacle Tone Volume Knob - Decrease'),          category = {_('Left Console'), _('Radar Control Panel')}},
 
 
+{down = Keys.COM1, up = Keys.COM1, name = _('COM Fwd - COM1 (V/UHF1)'), category = {_('Throttle'), _('HOTAS'), _('Communications')}, value_down =  1.0,		value_up = 0.0},
+{down = Keys.COM2, up = Keys.COM2, name = _('COM Aft - COM2 (V/UHF2)'), category = {_('Throttle'), _('HOTAS'), _('Communications')}, value_down =  1.0,		value_up = 0.0},
+{down = Keys.COM3, up = Keys.COM3, name = _('COM Up - COM3 (HF)'), category = {_('Throttle'), _('HOTAS'), _('Communications')}, value_down =  1.0,		value_up = 0.0},
+
+
 
 
 
