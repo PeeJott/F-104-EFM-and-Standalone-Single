@@ -139,7 +139,7 @@ join(res.keyCommands,{
 -- Sensors
 
 
-
+-- Important inputs for SimpleRadar
 {combos = {{key = 'Enter'}}, down = iCommandPlane_LockOn_start, up = iCommandPlane_LockOn_finish, name = 'Target Lock', category = 'Sensors'},
 
 {combos = {{key = ';'}}, pressed = iCommandPlaneRadarUp, up = iCommandPlaneRadarStop, name = _('Target Designator Up'), category = _('Sensors')},
@@ -148,7 +148,7 @@ join(res.keyCommands,{
 {combos = {{key = '/'}}, pressed = iCommandPlaneRadarRight, up = iCommandPlaneRadarStop, name = _('Target Designator Right'), category = _('Sensors')},
 
 
-
+-- end
 
 
 -- Misc Switches Panel
