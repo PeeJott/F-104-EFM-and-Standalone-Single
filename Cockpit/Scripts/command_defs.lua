@@ -32,6 +32,32 @@ Keys =
 	GunPipper_Left								= __custom_counter(),
 	GunPipper_Center							= __custom_counter(),
 	GunPipper_Automatic							= __custom_counter(),
+
+
+
+
+	-- APG-53A Radar
+    RadarModeOFF                    = __custom_counter(),
+    RadarModeSTBY                   = __custom_counter(),
+    RadarModeSearch                 = __custom_counter(),
+    RadarModeTC                     = __custom_counter(),
+    RadarModeA2G                    = __custom_counter(),
+    RadarMode                       = __custom_counter(),  -- cycles between "on" radar modes
+    RadarModeCW                     = __custom_counter(),  -- cycles mode button clockwise
+    RadarModeCCW                    = __custom_counter(),  -- cycles mode button counter clockwise
+    RadarTCPlanProfile              = __custom_counter(),  -- 1 Plan, 0 Profile, -1 Toggle
+    RadarRangeLongShort             = __custom_counter(),  -- 1 Long, 0 Short, -1 Toggle
+    RadarVolume                     = __custom_counter(),  -- 1 Inc, 0 Dec
+    RadarAntennaAngle               = __custom_counter(),  -- 1 Inc, 0 Dec
+    RadarAoAComp                    = __custom_counter(),  -- 1 Enable, 0 Disable
+
+
+
+	COM1                     = __custom_counter(),
+    COM2                     = __custom_counter(),
+    COM3                     = __custom_counter(),
+
+
 }
 
 start_command   = 3000
@@ -42,5 +68,20 @@ local function __counter()
 end
 
 device_commands = {
+
+    radar_planprofile               = __counter(),
+    radar_range                     = __counter(),
+    radar_storage                   = __counter(),
+    radar_brilliance                = __counter(),
+    radar_detail                    = __counter(),
+    radar_gain                      = __counter(),
+    radar_filter                    = __counter(),
+    radar_reticle                   = __counter(),
+    radar_mode                      = __counter(),
+    radar_aoacomp                   = __counter(),
+    radar_angle                     = __counter(),
+    radar_angle_axis                = __counter(),
+    radar_angle_axis_abs            = __counter(),
+    radar_volume                    = __counter(),
 }
 

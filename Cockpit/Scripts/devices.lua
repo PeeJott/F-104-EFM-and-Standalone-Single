@@ -10,3 +10,9 @@ devices["AVIONIC_SYSTEM"]		= counter() --Nummer 2
 devices["ELECTRIC_SYSTEM"]      = counter() --Nummer 3
 devices["WEAPON_SYSTEM"]        = counter() --Nummer 4
 
+devices["VUHF1_RADIO"]          = counter()
+devices["VUHF2_RADIO"]          = counter()
+devices["HF3_RADIO"]          = counter()
+devices["RADIO"]          = counter()
+
+devices["INTERCOM"]			=counter()
