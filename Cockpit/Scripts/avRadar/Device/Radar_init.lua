@@ -1,6 +1,6 @@
 range_scale 		  	= 60000.0
 TDC_range_carret_size 	= 5000
-render_debug_info 		= false--true
+render_debug_info 		= false --true
 
 
 perfomance = 
@@ -18,7 +18,7 @@ perfomance =
 	scan_speed				= math.rad(3*60),
 	
 	
-	max_available_distance  = 64820.0,--200*60000.0, das ist denke ich in Metern. Das erhöhe ich mal von 20km auf 35nm, also auf 64820
+	max_available_distance  = 20000.0,--200*60000.0, das ist denke ich in Metern. Das erhöhe ich mal von 20km auf 35nm, also auf 64820
 	dead_zone 				= 300.0,
 	
 	ground_clutter =
@@ -150,17 +150,23 @@ function SetCommand(command,value)
 	
 	if command == 2032  then
 			Radar.tdc_range_h:set(Radar.tdc_range_h:get()- value*200000)
-		
+		--print_message_to_user("RadarRangeUP/DOWN")
 	end
 	
 	if command == 2031  then
 			Radar.tdc_azi_h:set(Radar.tdc_azi_h:get()+ value*10)
-	
+			--print_message_to_user("RadarRangeLeftRight")
 	end
 
 -------------------------------------------------	
 	
+	--[[ NUR EIN TEST
 	
+	if command == 285 then
+		Radar.mode_h:set(Radar.mode_h:get()+ 1)
+		print_message_to_user("RadarModeChanged")
+	end
+	]]
 	
 	
 end
@@ -174,7 +180,15 @@ function update()
 	Radar.tdc_ele_up_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() + (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))
 	Radar.tdc_ele_down_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() - (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))
 	
-	
+	mode = Radar.mode_h:get()
+    
+    if mode == 3 then -- TRACKING
+        Radar.ws_ir_slave_azimuth_h:set(Radar.stt_azimuth_h:get())
+        Radar.ws_ir_slave_elevation_h:set(Radar.stt_elevation_h:get())
+    else
+        Radar.ws_ir_slave_azimuth_h:set(0)
+        Radar.ws_ir_slave_elevation_h:set(0)
+    end
 	
 end
 

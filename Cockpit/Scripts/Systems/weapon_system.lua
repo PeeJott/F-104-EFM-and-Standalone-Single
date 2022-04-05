@@ -23,6 +23,8 @@ local ir_missile_az_param = get_param_handle("WS_IR_MISSILE_TARGET_AZIMUTH")
 local ir_missile_el_param = get_param_handle("WS_IR_MISSILE_TARGET_ELEVATION")
 local ir_missile_des_az_param = get_param_handle("WS_IR_MISSILE_SEEKER_DESIRED_AZIMUTH")
 local ir_missile_des_el_param = get_param_handle("WS_IR_MISSILE_SEEKER_DESIRED_ELEVATION")
+local stt_azimuth_h 	= get_param_handle("RADAR_STT_AZIMUTH")
+local stt_elevation_h 	= get_param_handle("RADAR_STT_ELEVATION")
 --local gunpipper_sideways_automatic_param = get_param_handle("WS_GUN_PIPER_AZIMUTH")
 --local gunpipper_updown_automatic_param = get_param_handle("WS_GUN_PIPER_ELEVATION")
 --local target_range_param = get_param_handle("WS_TARGET_RANGE")
@@ -38,8 +40,10 @@ function keys_pickle_on(value)
     local info = dev:get_station_info(current_station)
     print_message_to_user("Station "..tostring(current_station).." "..tostring(info.count))
     
+	
     dev:launch_station(current_station)
     current_station = (current_station + 1) % 11
+	
 end
 
 function keys_trigger_on(value)
@@ -68,7 +72,8 @@ end
 
 
 function post_initialize()
-    dev:select_station(current_station)
+    
+	--dev:select_station(current_station)
 	
 	--print_message_to_user("Missile_Seeker_Elevation " ..tostring(ir_missile_des_el_param:get()))
 	--print_message_to_user("Missile_Seeker_Azimuth " ..tostring(ir_missile_des_az_param:get()))
@@ -78,6 +83,8 @@ end
 
 function update()
 
+	dev:select_station(current_station)
+	
 --gunpipper_auto_movement_side 		= gunpipper_sideways_automatic_param:get()
 --gunpipper_auto_movement_updown		= gunpipper_updown_automatic_param:get()
 
@@ -86,24 +93,13 @@ function update()
         print_message_to_user("Missile Lock")
 	end
 	
-	if ir_missile_az_param:get() > 0.0 then
+	--[[if ir_missile_az_param:get() > 0.0 then
 		print_message_to_user("Target_Azimuth " ..tostring(ir_missile_az_param:get()))
 	end
 	
-	if ir_missile_des_az_param:get() > 0.0 then
-		print_message_to_user("Target_Elevation " ..tostring(ir_missile_des_az_param:get()))
-	end
-	
-	if ir_missile_des_az_param:get() > 0.0 then
-		print_message_to_user("Desired Azimuth " ..tostring(ir_missile_des_az_param:get()))
-	end
-	
-	if ir_missile_des_el_param:get() > 0.0 then
-		print_message_to_user("Desired Elevation " ..tostring(ir_missile_des_el_param:get()))
-    end
 	
 	--print_message_to_user("GunPipper_Automatic_Sideways " ..tostring(gunpipper_auto_movement_side))
-	--print_message_to_user("GunPipper_Automatic_UpDown " ..tostring(gunpipper_auto_movement_updown))
+	--print_message_to_user("GunPipper_Automatic_UpDown " ..tostring(gunpipper_auto_movement_updown))]]
 
 end
 

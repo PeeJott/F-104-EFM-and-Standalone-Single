@@ -1,7 +1,8 @@
 dofile(LockOn_Options.script_path.."avRadar/Indicator/definitions.lua")
 
 --local MARK_MATERIAL   = MakeMaterial(nil,{255,120,0,255})
-RS = RADAR_SCALE
+-- RadarScale verändere ich mal von 1.1 auf geringer, damit das Radar auch mal ins Radar passt...
+RS = RADAR_SCALE * 0.40
 
 ud_scale 	= 0.00001 * 0.9		* RS	--0.00001
 lr_scale 	= 0.095	  * 0.9	*2	* RS	--0.2		--0.085
@@ -61,8 +62,8 @@ end
 ]]
 
 
-local x_size = 0.01 *2
-local y_size = 0.01 *2
+local x_size = 0.01 *3 --0.01 *2
+local y_size = 0.01 *3 --0.01 *2
 
 --	for ia = 1,999 do
 	for ia = 1,900 do
@@ -83,7 +84,7 @@ local y_size = 0.01 *2
 													{ x_size ,-y_size},	
 											      }
 				radar_contact.indices	   		= { 0,1,2,	0,2,3}--{0, 1, 2, 0, 2, 3} 
-				radar_contact.init_pos	   		= {0, 0.10*RS, 0}-- ALT {0, -0.90*RS, 0} das ist in der Mitte ganz unten auf dem Radar
+				radar_contact.init_pos	   		= {0, -1.80*RS, 0}--{0, 0.10*RS, 0}-- ALT {0, -0.90*RS, 0} das ist in der Mitte ganz unten auf dem Radar
 				radar_contact.material    	 	= MFCD_ORANGE
 				radar_contact.isdraw			= true
 				radar_contact.isvisible			= true
@@ -114,8 +115,8 @@ local y_size = 0.01 *2
 --------------------------------------------------------------------------
 
 
-local x_size = 0.006
-local y_size = 0.05
+local x_size = 0.01--ALT 0.005--0.006
+local y_size = 0.07--ALT 0.03--0.05
 
 
 local	radar_cursor			   		= CreateElement "ceMeshPoly"
@@ -133,7 +134,7 @@ local	radar_cursor			   		= CreateElement "ceMeshPoly"
 											{ x_size+0.04 ,-y_size},	
 											}
 		radar_cursor.indices	   		= { 0,1,2,	0,2,3	,4,5,6,4,6,7}--{0, 1, 2, 0, 2, 3} 
-		radar_cursor.init_pos	   		= {0, -0.10*RS, 0} --ALT {0, -0.90*RS, 0}
+		radar_cursor.init_pos	   		= {0, -2.0*RS, 0} --ALT {0, -0.90*RS, 0}
 		radar_cursor.material    	 	= MFCD_ORANGE
 		radar_cursor.isdraw				= true
 		radar_cursor.isvisible			= true
@@ -277,7 +278,7 @@ local	radar_STT_iff			   		= CreateElement "ceMeshPoly"
 	
 	local 	radar_cursor_upper_alt 					= Copy(radar_cursor_range)
 			radar_cursor_upper_alt.name				= "radar_cursor_upper_alt"
-			radar_cursor_upper_alt.init_pos			= {0.25,0.05,0}--{0.15,0.05,0} 		
+			radar_cursor_upper_alt.init_pos			= {0.3,0.15,0}--{0.25,0.05,0}--{0.15,0.05,0} 		
 			radar_cursor_upper_alt.alignment    	= "RightCenter"--"LeftTop"	
 			radar_cursor_upper_alt.element_params  	= {"RADAR_TDC_ELEVATION_AT_RANGE_UPPER"}
 			radar_cursor_upper_alt.controllers     	= {{"text_using_parameter",0,0}}	
@@ -285,7 +286,7 @@ local	radar_STT_iff			   		= CreateElement "ceMeshPoly"
 
 	local 	radar_cursor_lower_alt 					= Copy(radar_cursor_range)
 			radar_cursor_lower_alt.name				= "radar_cursor_lower_alt"
-			radar_cursor_lower_alt.init_pos			= {0.25,-0.05,0} 		--{0.15,-0.05,0} 		
+			radar_cursor_lower_alt.init_pos			= {0.3,-0.15,0} 		--{0.15,-0.05,0} 		
 			radar_cursor_lower_alt.element_params  	= {"RADAR_TDC_ELEVATION_AT_RANGE_LOWER"}
 			radar_cursor_lower_alt.controllers     	= {{"text_using_parameter",0,0}}	
 		Add(radar_cursor_lower_alt)		
@@ -296,7 +297,7 @@ local	radar_STT_iff			   		= CreateElement "ceMeshPoly"
 	local 	radar_bearing_L15	 				= CreateElement "ceStringPoly"
 			radar_bearing_L15.name			  	= "radar_bearing_L15"
 			radar_bearing_L15.material        	= HUD_FONT
-			radar_bearing_L15.init_pos		  	= {-0.40*RS,0.9*RS,0} --ALT {-0.45*RS,0.9*RS,0} 
+			radar_bearing_L15.init_pos		  	= {-1.1*RS,2.2*RS,0}--{-0.40*RS,0.9*RS,0} --ALT {-0.45*RS,0.9*RS,0} 
 			radar_bearing_L15.stringdefs      	= txt_m_stringdefs
 			radar_bearing_L15.alignment       	= "CenterBottom"--"LeftTop"
 			radar_bearing_L15.value				= "15"
@@ -309,25 +310,25 @@ local	radar_STT_iff			   		= CreateElement "ceMeshPoly"
 	
 	local 	radar_bearing_R15				= Copy(radar_bearing_L15)
 			radar_bearing_R15.name			= "radar_bearing_R15"
-			radar_bearing_R15.init_pos		= {0.40*RS,0.9*RS,0} --ALT {0.45*RS,0.9*RS,0}
+			radar_bearing_R15.init_pos		= {1.1*RS,2.2*RS,0}--{0.40*RS,0.9*RS,0} --ALT {0.45*RS,0.9*RS,0}
 		Add(radar_bearing_R15)	
 		
 	local 	radar_bearing_L30				= Copy(radar_bearing_L15)
 			radar_bearing_L30.name			= "radar_bearing_L30"
 			radar_bearing_L30.value			= "30"
-			radar_bearing_L30.init_pos		= {-0.80*RS,0.0*RS,0} -- ALT {-0.90*RS,0.9*RS,0}
+			radar_bearing_L30.init_pos		= {-2.2*RS,0.0*RS,0}--{-0.80*RS,0.0*RS,0} -- ALT {-0.90*RS,0.9*RS,0}
 		Add(radar_bearing_L30)		
 	
 	local 	radar_bearing_R30				= Copy(radar_bearing_L15)
 			radar_bearing_R30.name			= "radar_bearing_R30"
 			radar_bearing_R30.value			= "30"
-			radar_bearing_R30.init_pos		= {0.80*RS,0.0*RS,0} --ALT {0.90*RS,0.9*RS,0}
+			radar_bearing_R30.init_pos		= {2.2*RS,0.0*RS,0}--{0.80*RS,0.0*RS,0} --ALT {0.90*RS,0.9*RS,0}
 		Add(radar_bearing_R30)
 	
 	
 	
-	x_size = 0.01
-	y_size = 0.15	
+	x_size = 0.02 --0.01
+	y_size = 0.25  --0.15	
 local	radar_SZ_AZIMUTH			   		= CreateElement "ceMeshPoly"
 		radar_SZ_AZIMUTH.name		   		= "radar_SZ_AZIMUTH" 
 		radar_SZ_AZIMUTH.primitivetype		= "triangles"	--"lines"--
@@ -338,7 +339,7 @@ local	radar_SZ_AZIMUTH			   		= CreateElement "ceMeshPoly"
 										{ x_size ,0},	
 									  }
 		radar_SZ_AZIMUTH.indices	   		= { 0,1,2,	0,2,3}--{0, 1, 2, 0, 2, 3} 
-		radar_SZ_AZIMUTH.init_pos	   		= {0, -0.85*RS, 0} -- ALT {0, -0.9*RS, 0}
+		radar_SZ_AZIMUTH.init_pos	   		= {0, -2.2*RS, 0} -- ALT {0, -0.85*RS, 0}
 		radar_SZ_AZIMUTH.material    	 	= MFCD_ORANGE--MakeMaterial(nil,{10,10,255,150})
 		radar_SZ_AZIMUTH.isdraw				= true
 		radar_SZ_AZIMUTH.isvisible			= true

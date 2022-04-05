@@ -27,7 +27,7 @@ local gunpipper_updown_automatic_param = get_param_handle("WS_GUN_PIPER_ELEVATIO
 local target_range_param = get_param_handle("WS_TARGET_RANGE")
 
 gunpipper_center_param:set(0.0)
-target_range_param:set(800.0) --Target-Range auf 800m gesetzt
+--target_range_param:set(800.0) --Target-Range auf 800m gesetzt
 
 local gunpipper_mode = 0
 
@@ -129,12 +129,21 @@ function update()
 	if (gunpipper_mode == 1) then
 		gunpipper_horizontal_movement_param:set(gunpipper_sideways_automatic_param:get())
 		gunpipper_vertical_movement_param:set(gunpipper_updown_automatic_param:get())
+		end
+	
+	--if target_range_param:get() > 0.0 then
+		--print_message_to_user("Target aquired")
+		--print_message_to_user("Target Range  " tostring (target_range_param:get()))
+	--else
+		--target_range_param:set(800.0)
+		--print_message_to_user("Range set to 800m")
 	end
 	
 	
 	
 	
-end
+	
+
 
 need_to_be_closed = false
 

@@ -3,6 +3,7 @@ SetScale(FOV)
 
 RADAR_DEFAULT_LEVEL = 4
 RADAR_DEFAULT_NOCLIP_LEVEL  = RADAR_DEFAULT_LEVEL - 1
+
 RADAR_SCALE = 1.1--1
 
 function AddElement(object)
@@ -41,7 +42,7 @@ MFCD_ORANGE_SOFT	= MakeMaterial(nil, TEXT_ORANGE_SOFT)
 HUD_FONT 	= MakeFont({used_DXUnicodeFontData = "font_arial_17"},TEXT_ORANGE_COLOR)		--5 "font_arial_17"  is good 
 HUD_FONT_INV= MakeFont({used_DXUnicodeFontData = "font_arial_17"},TEXT_BLACK_COLOR)
 
-FONT_SCALE = 0.7 --war 1.0
+FONT_SCALE = 0.9--0.7 --war 1.0
 
 local font_size 					= 0.008						* FONT_SCALE
 local default_char_height  			= font_size or 0.004		* FONT_SCALE
