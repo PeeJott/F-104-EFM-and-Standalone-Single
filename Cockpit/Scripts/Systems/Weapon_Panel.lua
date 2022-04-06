@@ -42,11 +42,11 @@ dev:listen_command(Keys.change_station)
 function keys_station_one(value)
 	
 	if (station_ONE == 0) then
-		station_ONE == 1
+		station_ONE = 1
 		Station_One_Param:set(1)
 		print_message_to_user("Station 1 AN!")
 	else
-		station_ONE == 0
+		station_ONE = 0
 		Station_One_Param:set(0)
 		print_message_to_user("Station 1 AUS!")
 	end
@@ -56,11 +56,11 @@ end
 function keys_station_two(value)
 	
 	if (station_TWO == 0) then
-		station_TWO == 1
+		station_TWO = 1
 		Station_Two_Param:set(1)
 		print_message_to_user("Station 2 AN!")
 	else
-		station_TWO == 0
+		station_TWO = 0
 		Station_Two_Param:set(0)
 		print_message_to_user("Station 2 AUS!")
 	end
@@ -70,11 +70,11 @@ end
 function keys_station_three(value)
 	
 	if (station_THREE == 0) then
-		station_THREE == 1
+		station_THREE = 1
 		Station_Three_Param:set(1)
 		print_message_to_user("Station 3 AN!")
 	else
-		station_THREE == 0
+		station_THREE = 0
 		Station_Three_Param:set(0)
 		print_message_to_user("Station 3 AUS!")
 	end
@@ -84,11 +84,11 @@ end
 function keys_station_four(value)
 	
 	if (station_FOUR == 0) then
-		station_FOUR == 1
+		station_FOUR = 1
 		Station_Four_Param:set(1)
 		print_message_to_user("Station 4 AN!")
 	else
-		station_FOUR == 0
+		station_FOUR = 0
 		Station_Four_Param:set(0)
 		print_message_to_user("Station 4 AUS!")
 	end
@@ -97,11 +97,11 @@ end
 function keys_station_five(value)
 
 	if (station_FIVE == 0) then
-		station_FIVE == 1
+		station_FIVE = 1
 		Station_Five_Param:set(1)
 		print_message_to_user("Station 5 AN!")
 	else
-		station_FIVE == 0
+		station_FIVE = 0
 		Station_Five_Param:set(0)
 		print_message_to_user("Station 5 AUS!")
 	end
@@ -111,11 +111,11 @@ end
 function keys_station_six(value)
 
 	if (station_SIX == 0) then
-		station_SIX == 1
+		station_SIX = 1
 		Station_Six_Param:set(1)
 		print_message_to_user("Station 6 AN!")
 	else
-		station_SIX == 0
+		station_SIX = 0
 		Station_Six_Param:set(0)
 		print_message_to_user("Station 6 AUS!")
 	end
@@ -125,11 +125,11 @@ end
 function keys_station_seven(value)
 
 	if (station_SEVEN == 0) then
-		station_SEVEN == 1
+		station_SEVEN = 1
 		Station_Seven_Param:set(1)
 		print_message_to_user("Station 7 AN!")
 	else
-		station_SEVEN == 0
+		station_SEVEN = 0
 		Station_Seven_Param:set(0)
 		print_message_to_user("Station 7 AUS!")
 	end
@@ -142,15 +142,14 @@ end
 
 
 command_table = {
-  [Keys.station_one]		= keys_station_one
-  [Keys.station_two]		= keys_station_two
-  [Keys.station_three]		= keys_station_three
-  [Keys.station_four]		= keys_station_four
-  [Keys.station_five]		= keys_station_five
-  [Keys.station_six]		= keys_station_six
-  [Keys.station_seven]		= keys_station_seven
-  [Keys.change_station]		= keys_change_station
-  
+  [Keys.station_one]		= keys_station_one,
+  [Keys.station_two]		= keys_station_two,
+  [Keys.station_three]		= keys_station_three,
+  [Keys.station_four]		= keys_station_four,
+  [Keys.station_five]		= keys_station_five,
+  [Keys.station_six]		= keys_station_six,
+  [Keys.station_seven]		= keys_station_seven,
+  [Keys.change_station]		= keys_change_station  
 }
 
 
