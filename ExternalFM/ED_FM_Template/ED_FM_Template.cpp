@@ -986,12 +986,12 @@ void ed_fm_set_fc3_cockpit_draw_args_v2(float* data, size_t size)
 	data[612] = s_airframe->overSpeedFlapDamageInd();//Indcator for overspeed flap damage
 	data[613] = s_airframe->overSpeedGearDamageInd();//Indicator for overspeed gear damage
 	data[614] = s_flightModel->getStabAugSystem();//Indicator for function of stability augmentation system for pitch axis
-	data[621] = s_airframe->getPylonIndLightA();//pylon indicator loghts 0.0; 0.5; 1.0 == off; inner; on
-	data[622] = s_airframe->getPylonIndLightG();
-	data[623] = s_airframe->getPylonIndLightG();
-	data[624] = s_airframe->getPylonIndLightG();
-	data[625] = s_airframe->getPylonIndLightG();
-	data[626] = s_airframe->getPylonIndLightA();
+	//data[621] = s_airframe->getPylonIndLightA();//pylon indicator loghts 0.0; 0.5; 1.0 == off; inner; on
+	//data[622] = s_airframe->getPylonIndLightG();
+	//data[623] = s_airframe->getPylonIndLightG();
+	//data[624] = s_airframe->getPylonIndLightG();
+	//data[625] = s_airframe->getPylonIndLightG();
+	//data[626] = s_airframe->getPylonIndLightA();
 	data[627] = s_airframe->gunIndSwitch();//gun-selector-switch 0.0; 1.0
 	data[628] = s_airframe->getGearLeverLamp();//Gear-Lever-Lamp an bei 0.0 > und < 1.0; bei 0.0 und 1.0 aus.
 	data[629] = s_airframe->getQNHinThousand();//QNH-Anzeige tausender Bereich

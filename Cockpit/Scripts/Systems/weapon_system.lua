@@ -166,7 +166,7 @@ end
 
 function update()
 
-	if(station_1_selector == 1) then
+	if(station_1_selector:get() == 1) then
 	--current_station = 1
 	station_1 = 1
 	dev:select_station(2)
@@ -175,7 +175,7 @@ function update()
 	station_1 = 0
 	end
 	
-	if(station_2_selector == 1) then
+	if(station_2_selector:get() == 1) then
 	--current_station = 2
 	station_2 = 1
 	dev:select_station(4)
@@ -184,31 +184,31 @@ function update()
 	station_2 = 0
 	end
 	
-	if(station_3_selector == 1) then
+	if(station_3_selector:get() == 1) then
 	--current_station = 3
 	station_3 = 1
 	dev:select_station(5)
 	end
 	
-	if(station_4_selector == 1) then
+	if(station_4_selector:get() == 1) then
 	--current_station = 4
 	station_4 = 1
 	dev:select_station(6)
 	end
 	
-	if(station_5_selector == 1) then
+	if(station_5_selector:get() == 1) then
 	--current_station = 5
 	station_5	= 1
 	dev:select_station(7)
 	end
 	
-	if(station_6_selector == 1) then
+	if(station_6_selector:get() == 1) then
 	--current_station = 6
 	station_6 = 1
 	dev:select_station(8)
 	end
 	
-	if(station_7_selector == 1) then
+	if(station_7_selector:get() == 1) then
 	--current_station = 7
 	station_7 = 1
 	dev:select_station(10)

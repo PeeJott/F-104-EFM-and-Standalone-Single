@@ -9,6 +9,7 @@ devices["HUD_SYSTEM"]			= counter() --Nummer 1
 devices["AVIONIC_SYSTEM"]		= counter() --Nummer 2
 devices["ELECTRIC_SYSTEM"]      = counter() --Nummer 3
 devices["WEAPON_SYSTEM"]        = counter() --Nummer 4
+devices["WEAPON_PANEL"]			= counter() --Nummer 5
 
 devices["VUHF1_RADIO"]          = counter()
 devices["VUHF2_RADIO"]          = counter()
