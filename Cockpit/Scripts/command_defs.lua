@@ -21,43 +21,45 @@ Keys =
 	--PlaneGearUp	               				= 430, 
 	--PlaneGearDown              				= 431,
 	
+	-------------------AtoA-RADAR-COMMANDS----------------------------
+	iCommandPlaneChangeLock						= 100,
+	iCommandSelecterLeft						= 139,
+	iCommandSelecterRight						= 140,
+	iCommandSelecterUp							= 141,
+	iCommandSelecterDown						= 142,
+	iCommandPlaneChangeRadarPRF					= 394,
+	iCommandPlane_LockOn_start					= 509,
+	iCommandPlane_LockOn_finish					= 510,
+	iCommandPlaneRadarChangeMode				= 285,
+	iCommandPlaneRadarHorizontal				= 2025,
+	iCommandPlaneRadarVertical					= 2026,
+	iCommandPlaneSelecterHorizontal				= 2031,
+	iCommandPlaneSelecterVertical				= 2032,
+	
+	------------------WEAPON SYSTEM---------------------------------
+	-----------------Launch, Fire, Release and Drop-----------------
 	pickle_on 									= __custom_counter(),
 	pickle_off 									= __custom_counter(),
 	trigger_on									= __custom_counter(),
 	trigger_off									= __custom_counter(),
 	
+	----------------Station Selection--------------------------------
+	station_one									= __custom_counter(),
+	station_two									= __custom_counter(),
+	station_three								= __custom_counter(),
+	station_four								= __custom_counter(),
+	station_five								= __custom_counter(),
+	station_six									= __custom_counter(),
+	station_seven								= __custom_counter(),
+	-----------------------------------------------------------------
+	-----------------------------HUD--------------------------------
 	GunPipper_Up								= __custom_counter(),
 	GunPipper_Down								= __custom_counter(),
 	GunPipper_Right								= __custom_counter(),
 	GunPipper_Left								= __custom_counter(),
 	GunPipper_Center							= __custom_counter(),
 	GunPipper_Automatic							= __custom_counter(),
-
-
-
-
-	-- APG-53A Radar
-    RadarModeOFF                    = __custom_counter(),
-    RadarModeSTBY                   = __custom_counter(),
-    RadarModeSearch                 = __custom_counter(),
-    RadarModeTC                     = __custom_counter(),
-    RadarModeA2G                    = __custom_counter(),
-    RadarMode                       = __custom_counter(),  -- cycles between "on" radar modes
-    RadarModeCW                     = __custom_counter(),  -- cycles mode button clockwise
-    RadarModeCCW                    = __custom_counter(),  -- cycles mode button counter clockwise
-    RadarTCPlanProfile              = __custom_counter(),  -- 1 Plan, 0 Profile, -1 Toggle
-    RadarRangeLongShort             = __custom_counter(),  -- 1 Long, 0 Short, -1 Toggle
-    RadarVolume                     = __custom_counter(),  -- 1 Inc, 0 Dec
-    RadarAntennaAngle               = __custom_counter(),  -- 1 Inc, 0 Dec
-    RadarAoAComp                    = __custom_counter(),  -- 1 Enable, 0 Disable
-
-
-
-	COM1                     = __custom_counter(),
-    COM2                     = __custom_counter(),
-    COM3                     = __custom_counter(),
-
-
+	-----------------------------------------------------------------
 }
 
 start_command   = 3000

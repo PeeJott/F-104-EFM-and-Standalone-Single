@@ -36,6 +36,7 @@ G_meterGauge.arg_number = 6
 G_meterGauge.input = { -5.0, -4.0, 0.0, 4.0, 8.0, 10.0} 
 G_meterGauge.output = {-1.0, -0.8, 0.0, 0.4, 0.8, 1.0}
 G_meterGauge.parameter_name = "G_METER"
+
 ---------Radar Altimeter----------------------------------------------------------
 RadAltimeterHunHand 				= CreateGauge("parameter")
 RadAltimeterHunHand.arg_number		= 18
@@ -48,6 +49,52 @@ RadAltimeterKHand.arg_number		= 19
 RadAltimeterKHand.input				= {0.0, 5000.0, 10000.0, 50000.0}
 RadAltimeterKHand.output			= {0.0, 0.5, 0.64, 0.80}
 RadAltimeterKHand.parameter_name	= "RAD_ALT_K_HAND"
+
+-----Pylon-Selectors and Light----------------------------------------------------
+Pylon1SelectorAndLight1						= CreateGauge("parameter")
+Pylon1SelectorAndLight1.arg_number			= 621
+Pylon1SelectorAndLight1.input				= {0.0, 1.0}
+Pylon1SelectorAndLight1.output				= {0.0, 1.0}
+Pylon1SelectorAndLight1.parameter_name		= "PYLON_ONE_SELECTOR_LIGHT"
+
+Pylon1SelectorAndLight2						= CreateGauge("parameter")
+Pylon1SelectorAndLight2.arg_number			= 622
+Pylon1SelectorAndLight2.input				= {0.0, 1.0}
+Pylon1SelectorAndLight2.output				= {0.0, 1.0}
+Pylon1SelectorAndLight2.parameter_name		= "PYLON_TWO_SELECTOR_LIGHT"
+
+Pylon1SelectorAndLight3						= CreateGauge("parameter")
+Pylon1SelectorAndLight3.arg_number			= 623
+Pylon1SelectorAndLight3.input				= {0.0, 1.0}
+Pylon1SelectorAndLight3.output				= {0.0, 1.0}
+Pylon1SelectorAndLight3.parameter_name		= "PYLON_THREE_SELECTOR_LIGHT"
+
+Pylon1SelectorAndLight4						= CreateGauge("parameter")
+Pylon1SelectorAndLight4.arg_number			= 624
+Pylon1SelectorAndLight4.input				= {0.0, 1.0}
+Pylon1SelectorAndLight4.output				= {0.0, 1.0}
+Pylon1SelectorAndLight4.parameter_name		= "PYLON_FOUR_SELECTOR_LIGHT"
+
+Pylon1SelectorAndLight5						= CreateGauge("parameter")
+Pylon1SelectorAndLight5.arg_number			= 625
+Pylon1SelectorAndLight5.input				= {0.0, 1.0}
+Pylon1SelectorAndLight5.output				= {0.0, 1.0}
+Pylon1SelectorAndLight5.parameter_name		= "PYLON_FIVE_SELECTOR_LIGHT"
+
+Pylon1SelectorAndLight6						= CreateGauge("parameter")
+Pylon1SelectorAndLight6.arg_number			= 626
+Pylon1SelectorAndLight6.input				= {0.0, 1.0}
+Pylon1SelectorAndLight6.output				= {0.0, 1.0}
+Pylon1SelectorAndLight6.parameter_name		= "PYLON_SIX_SELECTOR_LIGHT"
+
+Pylon1SelectorAndLight7						= CreateGauge("parameter")
+Pylon1SelectorAndLight7.arg_number			= 627
+Pylon1SelectorAndLight7.input				= {0.0, 1.0}
+Pylon1SelectorAndLight7.output				= {0.0, 1.0}
+Pylon1SelectorAndLight7.parameter_name		= "PYLON_SEVEN_SELECTOR_LIGHT"
+
+
+
 
 
 --HUD_BRIGHTNESS_DOWN      		= CreateGauge("parameter")

@@ -2,6 +2,10 @@ dofile(LockOn_Options.script_path.."devices.lua")
 dofile(LockOn_Options.common_script_path.."tools.lua")
 dofile(LockOn_Options.common_script_path.."KNEEBOARD/declare_kneeboard_device.lua")
 dofile(LockOn_Options.script_path.."avRadar/radarexample_device_init.lua")
+dofile(LockOn_Options.script_path.."avRWR/rwrexample_device_init.lua")
+
+-- remove this line to disable a2g radar
+dofile(LockOn_Options.script_path.."avTerrain/terrainexample_device_init.lua")
 
 -- set panel
 layoutGeometry = {}
@@ -31,14 +35,13 @@ creators[devices.HF3_RADIO]       = {"avUHF_ARC_164"         ,LockOn_Options.scr
 creators[devices.INTERCOM]        = {"avIntercom"            ,LockOn_Options.script_path.."Systems/intercom.lua", {devices.VUHF1_RADIO, devices.ELECTRIC_SYSTEM}}
 
 
+
+
+
+
+
+
 indicators = {} --DAS HIER MUSS SEIN SONST CRASHT ES DCS
-
--- remove this line to disable a2g radar
-dofile(LockOn_Options.script_path.."avTerrain/terrainexample_device_init.lua")
-
-dofile(LockOn_Options.script_path.."avRadar/radarexample_device_init.lua")
-dofile(LockOn_Options.script_path.."avRWR/rwrexample_device_init.lua")
-
 indicators[#indicators + 1] = {"ccIndicator", LockOn_Options.script_path.."HUD/init.lua",	--init script
  nil, 
     {

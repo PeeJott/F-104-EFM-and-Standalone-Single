@@ -76,6 +76,17 @@ join(res.keyCommands,{
 --CUSTOM WEAPONs Keys :-)
 {combos = {{key = 'Space', reformers = {'RShift'}}}, down = Keys.pickle_on,	up = Keys.pickle_off, name = _('Weapon Release'), category = _('Weapons')},
 {combos = {{key = 'Space'}}, down = Keys.trigger_on,	up = Keys.trigger_off, name = _('Gun Trigger'), category = _('Weapons')},
+{down = Keys.station_one,														name = _('Station Button One'), category = _('Weapons')},
+{down = Keys.station_two,														name = _('Station Button Two'), category = _('Weapons')},
+{down = Keys.station_three,														name = _('Station Button Three'), category = _('Weapons')},
+{down = Keys.station_four,														name = _('Station Button Four'), category = _('Weapons')},
+{down = Keys.station_five,														name = _('Station Button Five'), category = _('Weapons')},
+{down = Keys.station_six,														name = _('Station Button Six'), category = _('Weapons')},
+{down = Keys.station_seven,														name = _('Station Button Seven'), category = _('Weapons')},
+
+
+
+
 
 -- Countermeasures
 {combos = {{key = 'Q', reformers = {'LShift'}}},	down = iCommandPlaneDropSnar,			name = _('Countermeasures Continuously Dispense'),					category = _('Countermeasures') , features = {"Countermeasures"}},
