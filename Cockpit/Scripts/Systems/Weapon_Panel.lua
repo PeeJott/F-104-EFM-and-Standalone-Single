@@ -149,7 +149,8 @@ command_table = {
   [Keys.station_five]		= keys_station_five,
   [Keys.station_six]		= keys_station_six,
   [Keys.station_seven]		= keys_station_seven,
-  [Keys.change_station]		= keys_change_station  
+  --[Keys.change_station]		= keys_change_station,
+  
 }
 
 
@@ -170,7 +171,7 @@ end
 function update()
 
 --AoA-Meter--
-Actual_AoA = sensor_data:getAngleOfAttack() * rad_to_deg
+--[[Actual_AoA = sensor_data:getAngleOfAttack() * rad_to_deg
 AOA_Meter_Param:set(Actual_AoA)
 --print_message_to_user("AoA Wert " ..tostring(Actual_AoA))
 
@@ -197,7 +198,7 @@ RadAltHunHand_Param:set(RadAltHun)
 --ThousandFeetHand--
 RadAltKHand_Param:set(RadAltInFeet)
 
-
+]]
 	
 end
 

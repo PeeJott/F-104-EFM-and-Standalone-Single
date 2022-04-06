@@ -26,6 +26,7 @@ creators[devices.AVIONIC_SYSTEM]		={"avLuaDevice", LockOn_Options.script_path.."
 
 creators[devices.ELECTRIC_SYSTEM]		={"avSimpleElectricSystem",LockOn_Options.script_path.."Systems/electric_system.lua"}
 creators[devices.WEAPON_SYSTEM]         ={"avSimpleWeaponSystem",LockOn_Options.script_path.."Systems/weapon_system.lua"}
+creators[devices.WEAPON_PANEL]			={"avLuaDevice", LockOn_Options.script_path.."Systems/Weapon_Panel.lua"}
 
 creators[devices.RADIO]           = {"avLuaDevice"           ,LockOn_Options.script_path.."Systems/radio.lua"}
 creators[devices.VUHF1_RADIO]     = {"avUHF_ARC_164"         ,LockOn_Options.script_path.."Systems/uhf_radio.lua", {devices.ELECTRIC_SYSTEM}}
