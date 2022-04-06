@@ -1,6 +1,9 @@
 range_scale 		  	= 60000.0
 TDC_range_carret_size 	= 5000
+
 render_debug_info 		= false --true
+
+
 
 
 perfomance = 
@@ -48,13 +51,18 @@ make_default_activity(update_time_step)
 
 
 Radar = 	{
+				-- NONE = 0
+				-- SCAN = 1
+				-- ACQUISITION = 2
+				-- TRACKING = 3
+				-- BUILT_IN_TEST = 4
 				mode_h 		= get_param_handle("RADAR_MODE"),
 				szoe_h 		= get_param_handle("SCAN_ZONE_ORIGIN_ELEVATION"),
 				szoa_h 		= get_param_handle("SCAN_ZONE_ORIGIN_AZIMUTH"),
 				
-				opt_pb_stab_h 	= get_param_handle("RADAR_PITCH_BANK_STABILIZATION"),
-				opt_bank_stab_h = get_param_handle("RADAR_BANK_STABILIZATION"),
-				opt_pitch_stab_h= get_param_handle("RADAR_PITCH_STABILIZATION"),
+				opt_pb_stab_h 	= get_param_handle("RADAR_PITCH_BANK_STABILIZATION"),				
+				opt_bank_stab_h = get_param_handle("RADAR_BANK_STABILIZATION"), -- available?
+				opt_pitch_stab_h= get_param_handle("RADAR_PITCH_STABILIZATION"), -- available?
 				
 				
 				tdc_azi_h 		= get_param_handle("RADAR_TDC_AZIMUTH"),
@@ -65,10 +73,12 @@ Radar = 	{
 				tdc_acqzone_h   = get_param_handle("ACQUSITION_ZONE_VOLUME_AZIMUTH"),
 				
 
-				
+				stt_range_h 	= get_param_handle("RADAR_STT_RANGE"),
 				stt_azimuth_h 	= get_param_handle("RADAR_STT_AZIMUTH"),
 				stt_elevation_h = get_param_handle("RADAR_STT_ELEVATION"),
 				
+				sz_volume_azimuth_h 	= get_param_handle("SCAN_ZONE_VOLUME_AZIMUTH"),
+				sz_volume_elevation_h 	= get_param_handle("SCAN_ZONE_VOLUME_ELEVATION"),
 				sz_azimuth_h 	= get_param_handle("SCAN_ZONE_ORIGIN_AZIMUTH"),
 				sz_elevation_h 	= get_param_handle("SCAN_ZONE_ORIGIN_ELEVATION"),
 				
@@ -87,6 +97,7 @@ function post_initialize()
 
 	print_message_to_user("Radar - INIT")
 		
+		-- most likely not used
 		dev:listen_command(100)		--iCommandPlaneChangeLock
 		
 		dev:listen_command(139)		--scanzone left // iCommandSelecterLeft
@@ -95,19 +106,25 @@ function post_initialize()
 		dev:listen_command(141)		--scanzone up//iCommandSelecterUp
 		dev:listen_command(142)		--scanzone down//iCommandSelecterDown
 		
+		-- most likely not used
 		dev:listen_command(394)		--change PRF (radar puls freqency)//iCommandPlaneChangeRadarPRF
 	
 		dev:listen_command(509)		--lock start//iCommandPlane_LockOn_start
 		dev:listen_command(510)		--lock finish//iCommandPlane_LockOn_finish
-		
+	
+		-- most likely not used
 		dev:listen_command(285)		--Change radar mode RWS/TWS //iCommandPlaneRadarChangeMode
 		
+
+		-- not used!
 		dev:listen_command(2025)	--iCommandPlaneRadarHorizontal
 		dev:listen_command(2026)	--iCommandPlaneRadarVertical
+
+		-- used!
 		dev:listen_command(2031)	--iCommandPlaneSelecterHorizontal
 		dev:listen_command(2032)	--iCommandPlaneSelecterVertical
 		
-
+		
 		Radar.opt_pb_stab_h:set(1)
 		Radar.opt_pitch_stab_h:set(1)
 		Radar.opt_bank_stab_h:set(1)
@@ -175,20 +192,21 @@ end
 function update()
 	
 	Sensor_Data_Raw = get_base_data()
-
-	
+		
 	Radar.tdc_ele_up_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() + (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))
 	Radar.tdc_ele_down_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() - (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))
 	
-	mode = Radar.mode_h:get()
-    
-    if mode == 3 then -- TRACKING
-        Radar.ws_ir_slave_azimuth_h:set(Radar.stt_azimuth_h:get())
-        Radar.ws_ir_slave_elevation_h:set(Radar.stt_elevation_h:get())
-    else
-        Radar.ws_ir_slave_azimuth_h:set(0)
-        Radar.ws_ir_slave_elevation_h:set(0)
-    end
+ 	mode = Radar.mode_h:get()
+	
+	if mode == 3 then -- TRACKING
+		az = Radar.stt_azimuth_h:get()
+		Radar.ws_ir_slave_azimuth_h:set(az)
+		el = Radar.stt_elevation_h:get()
+		Radar.ws_ir_slave_elevation_h:set(el)
+	else
+		Radar.ws_ir_slave_azimuth_h:set(0.0)
+		Radar.ws_ir_slave_elevation_h:set(0.0)
+	end
 	
 end
 
