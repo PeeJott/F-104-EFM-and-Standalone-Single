@@ -73,8 +73,8 @@ function keys_pickle_on(value)
     --current_station = (current_station + 1) % 11
 	
 
-	dev:launch_station(current_station)
-    print_message_to_user(" Launching selected station: ".. tostring(current_station).." "..tostring(info.count))	
+	--dev:launch_station(current_station)
+    --print_message_to_user(" Launching selected station: ".. tostring(current_station).." "..tostring(info.count))	
 	--dev:drop_flare(1, 1)
 
 
@@ -222,7 +222,7 @@ function update()
 --gunpipper_auto_movement_updown		= gunpipper_updown_automatic_param:get()
 
 	--print_message_to_user("IR Missile got lock = " ..tostring(ir_missile_lock_param:get()))
-    if ir_missile_lock_param:get() == 1.0 then --vorher if ir_lock:get() > 0 then 
+    if ir_missile_lock_param:get() > 0.0 then --vorher if ir_lock:get() > 0 then 
         print_message_to_user("Missile Lock")
 
 	end
