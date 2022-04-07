@@ -36,6 +36,26 @@ Keys =
 	iCommandPlaneSelecterHorizontal				= 2031,
 	iCommandPlaneSelecterVertical				= 2032,
 	
+	-------------------AtoG-RADAR-COMMANDS----------------------------
+    RadarModeOFF                    = __custom_counter(),
+    RadarModeSTBY                   = __custom_counter(),
+    RadarModeSearch                 = __custom_counter(),
+    RadarModeTC                     = __custom_counter(),
+    RadarModeA2G                    = __custom_counter(),
+    RadarMode                       = __custom_counter(),  -- cycles between "on" radar modes
+    RadarModeCW                     = __custom_counter(),  -- cycles mode button clockwise
+    RadarModeCCW                    = __custom_counter(),  -- cycles mode button counter clockwise
+    RadarTCPlanProfile              = __custom_counter(),  -- 1 Plan, 0 Profile, -1 Toggle
+    RadarRangeLongShort             = __custom_counter(),  -- 1 Long, 0 Short, -1 Toggle
+    RadarVolume                     = __custom_counter(),  -- 1 Inc, 0 Dec
+    RadarAntennaAngle               = __custom_counter(),  -- 1 Inc, 0 Dec
+    RadarAoAComp                    = __custom_counter(),  -- 1 Enable, 0 Disable
+
+	-------------------Radio-COMMANDS----------------------------
+	COM1                     = __custom_counter(),
+    COM2                     = __custom_counter(),
+    COM3                     = __custom_counter(),
+
 	------------------WEAPON SYSTEM---------------------------------
 	-----------------Launch, Fire, Release and Drop-----------------
 	pickle_on 									= __custom_counter(),
