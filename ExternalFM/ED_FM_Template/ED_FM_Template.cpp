@@ -988,7 +988,7 @@ void ed_fm_set_fc3_cockpit_draw_args_v2(float* data, size_t size)
 	data[614] = s_flightModel->getStabAugSystem();//Indicator for function of stability augmentation system for pitch axis
 	//data[621] = s_airframe->getPylonIndLightA();//pylon indicator loghts 0.0; 0.5; 1.0 == off; inner; on
 	//data[622] = s_airframe->getPylonIndLightG();
-	//data[623] = s_airframe->getPylonIndLightG();
+	//data[623] = s_airframe->getPylonIndLightG(); !!!! Auskommentiert für Standalone!!!
 	//data[624] = s_airframe->getPylonIndLightG();
 	//data[625] = s_airframe->getPylonIndLightG();
 	//data[626] = s_airframe->getPylonIndLightA();

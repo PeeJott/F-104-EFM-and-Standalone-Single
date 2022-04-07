@@ -69,26 +69,27 @@ Pylon1SelectorAndLight3.input				= {0.0, 1.0}
 Pylon1SelectorAndLight3.output				= {0.0, 1.0}
 Pylon1SelectorAndLight3.parameter_name		= "PYLON_THREE_SELECTOR_LIGHT"
 
-Pylon1SelectorAndLight4						= CreateGauge("parameter")
+--[[Pylon1SelectorAndLight4						= CreateGauge("parameter")
 Pylon1SelectorAndLight4.arg_number			= 624
 Pylon1SelectorAndLight4.input				= {0.0, 1.0}
 Pylon1SelectorAndLight4.output				= {0.0, 1.0}
 Pylon1SelectorAndLight4.parameter_name		= "PYLON_FOUR_SELECTOR_LIGHT"
+]]
 
 Pylon1SelectorAndLight5						= CreateGauge("parameter")
-Pylon1SelectorAndLight5.arg_number			= 625
+Pylon1SelectorAndLight5.arg_number			= 624
 Pylon1SelectorAndLight5.input				= {0.0, 1.0}
 Pylon1SelectorAndLight5.output				= {0.0, 1.0}
 Pylon1SelectorAndLight5.parameter_name		= "PYLON_FIVE_SELECTOR_LIGHT"
 
 Pylon1SelectorAndLight6						= CreateGauge("parameter")
-Pylon1SelectorAndLight6.arg_number			= 626
+Pylon1SelectorAndLight6.arg_number			= 625
 Pylon1SelectorAndLight6.input				= {0.0, 1.0}
 Pylon1SelectorAndLight6.output				= {0.0, 1.0}
 Pylon1SelectorAndLight6.parameter_name		= "PYLON_SIX_SELECTOR_LIGHT"
 
 Pylon1SelectorAndLight7						= CreateGauge("parameter")
-Pylon1SelectorAndLight7.arg_number			= 627
+Pylon1SelectorAndLight7.arg_number			= 626
 Pylon1SelectorAndLight7.input				= {0.0, 1.0}
 Pylon1SelectorAndLight7.output				= {0.0, 1.0}
 Pylon1SelectorAndLight7.parameter_name		= "PYLON_SEVEN_SELECTOR_LIGHT"

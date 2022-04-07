@@ -96,31 +96,31 @@ function keys_pickle_on(value)
 	]]
 	
 	if (station_1 == 1) then
-		dev:launch_station(2)
+		dev:launch_station(1)
 	end
 	
 	if (station_2 == 1) then
-		dev:launch_station(4)
+		dev:launch_station(3)
 	end
 	
 	if (station_3 == 1) then
-		dev:launch_station(5)
+		dev:launch_station(4)
 	end
 	
 	if (station_4 == 1) then
-		dev:launch_station(6)
+		dev:launch_station(5)
 	end
 	
 	if (station_5 == 1) then
-		dev:launch_station(7)
+		dev:launch_station(6)
 	end
 	
 	if (station_6 == 1) then
-		dev:launch_station(8)
+		dev:launch_station(7)
 	end
 	
 	if (station_7 == 1) then
-		dev:launch_station(10)
+		dev:launch_station(9)
 	end
 	
 	
@@ -169,49 +169,66 @@ function update()
 	if(station_1_selector:get() == 1) then
 	--current_station = 1
 	station_1 = 1
-	dev:select_station(2)
+	dev:select_station(1)
 	else
 	--current_station = 0
 	station_1 = 0
+	dev:select_station(0)
 	end
 	
 	if(station_2_selector:get() == 1) then
 	--current_station = 2
 	station_2 = 1
-	dev:select_station(4)
+	dev:select_station(3)
 	else
 	--current_station = 0
 	station_2 = 0
+	dev:select_station(0)
 	end
 	
 	if(station_3_selector:get() == 1) then
 	--current_station = 3
 	station_3 = 1
-	dev:select_station(5)
+	dev:select_station(4)
+	else
+	station_3 = 0
+	dev:select_station(0)
 	end
 	
 	if(station_4_selector:get() == 1) then
 	--current_station = 4
 	station_4 = 1
-	dev:select_station(6)
+	dev:select_station(5)
+	else
+	station_4 = 0
+	dev:select_station(0)
 	end
 	
 	if(station_5_selector:get() == 1) then
 	--current_station = 5
 	station_5	= 1
-	dev:select_station(7)
+	dev:select_station(6)
+	else
+	station_5 = 0
+	dev:select_station(0)
 	end
 	
 	if(station_6_selector:get() == 1) then
 	--current_station = 6
 	station_6 = 1
-	dev:select_station(8)
+	dev:select_station(7)
+	else
+	station_6 = 0
+	dev:select_station(0)
 	end
 	
 	if(station_7_selector:get() == 1) then
 	--current_station = 7
 	station_7 = 1
-	dev:select_station(10)
+	dev:select_station(9)
+	else
+	station_7 = 0
+	dev:select_station(0)
 	end
 	
 	

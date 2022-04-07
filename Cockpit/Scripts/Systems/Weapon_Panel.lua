@@ -85,11 +85,13 @@ function keys_station_four(value)
 	
 	if (station_FOUR == 0) then
 		station_FOUR = 1
-		Station_Four_Param:set(1)
+		Station_Three_Param:set(1)
+		Station_Five_Param:set(1)
 		print_message_to_user("Station 4 AN!")
 	else
 		station_FOUR = 0
-		Station_Four_Param:set(0)
+		Station_Three_Param:set(0)
+		Station_Five_Param:set(0)
 		print_message_to_user("Station 4 AUS!")
 	end
 end
