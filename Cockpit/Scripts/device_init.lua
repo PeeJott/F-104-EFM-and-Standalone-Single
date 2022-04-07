@@ -1,11 +1,7 @@
 dofile(LockOn_Options.script_path.."devices.lua")
 dofile(LockOn_Options.common_script_path.."tools.lua")
 dofile(LockOn_Options.common_script_path.."KNEEBOARD/declare_kneeboard_device.lua")
-dofile(LockOn_Options.script_path.."avRadar/radarexample_device_init.lua")
-dofile(LockOn_Options.script_path.."avRWR/rwrexample_device_init.lua")
 
--- remove this line to disable a2g radar
-dofile(LockOn_Options.script_path.."avTerrain/terrainexample_device_init.lua")
 
 -- set panel
 layoutGeometry = {}
@@ -28,16 +24,20 @@ creators[devices.ELECTRIC_SYSTEM]		={"avSimpleElectricSystem",LockOn_Options.scr
 creators[devices.WEAPON_SYSTEM]         ={"avSimpleWeaponSystem",LockOn_Options.script_path.."Systems/weapon_system.lua"}
 creators[devices.WEAPON_PANEL]			={"avLuaDevice", LockOn_Options.script_path.."Systems/Weapon_Panel.lua"}
 
-creators[devices.RADIO]           = {"avLuaDevice"           ,LockOn_Options.script_path.."Systems/radio.lua"}
-creators[devices.VUHF1_RADIO]     = {"avUHF_ARC_164"         ,LockOn_Options.script_path.."Systems/uhf_radio.lua", {devices.ELECTRIC_SYSTEM}}
-creators[devices.VUHF2_RADIO]     = {"avUHF_ARC_164"         ,LockOn_Options.script_path.."Systems/uhf_radio.lua", {devices.ELECTRIC_SYSTEM}}
-creators[devices.HF3_RADIO]       = {"avUHF_ARC_164"         ,LockOn_Options.script_path.."Systems/uhf_radio.lua", {devices.ELECTRIC_SYSTEM}}
+creators[devices.RADIO]           		= {"avLuaDevice"           ,LockOn_Options.script_path.."Systems/radio.lua"}
+creators[devices.VUHF1_RADIO]     		= {"avUHF_ARC_164"         ,LockOn_Options.script_path.."Systems/uhf_radio.lua", {devices.ELECTRIC_SYSTEM}}
+creators[devices.VUHF2_RADIO]     		= {"avUHF_ARC_164"         ,LockOn_Options.script_path.."Systems/uhf_radio.lua", {devices.ELECTRIC_SYSTEM}}
+creators[devices.HF3_RADIO]       		= {"avUHF_ARC_164"         ,LockOn_Options.script_path.."Systems/uhf_radio.lua", {devices.ELECTRIC_SYSTEM}}
 
-creators[devices.INTERCOM]        = {"avIntercom"            ,LockOn_Options.script_path.."Systems/intercom.lua", {devices.VUHF1_RADIO, devices.ELECTRIC_SYSTEM}}
-
-
+creators[devices.INTERCOM]        		= {"avIntercom"            ,LockOn_Options.script_path.."Systems/intercom.lua", {devices.VUHF1_RADIO, devices.ELECTRIC_SYSTEM}}
 
 
+
+dofile(LockOn_Options.script_path.."avRadar/radarexample_device_init.lua")
+dofile(LockOn_Options.script_path.."avRWR/rwrexample_device_init.lua")
+
+-- remove this line to disable a2g radar
+dofile(LockOn_Options.script_path.."avTerrain/terrainexample_device_init.lua")
 
 
 
