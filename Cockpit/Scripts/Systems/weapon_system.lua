@@ -163,6 +163,15 @@ function post_initialize()
 
 end
 
+function select_next_station()
+	
+
+	local info = dev:get_station_info(current_station)
+    --print_message_to_user("Station "..tostring(current_station).." "..tostring(info.count))
+    
+
+end
+
 
 function update()
 
@@ -173,7 +182,6 @@ function update()
 	else
 	--current_station = 0
 	station_1 = 0
-	dev:select_station(0)
 	end
 	
 	if(station_2_selector:get() == 1) then
@@ -183,25 +191,21 @@ function update()
 	else
 	--current_station = 0
 	station_2 = 0
-	dev:select_station(0)
 	end
 	
 	if(station_3_selector:get() == 1) then
 	--current_station = 3
 	station_3 = 1
-	dev:select_station(4)
+	dev:select_station(4)	
 	else
 	station_3 = 0
-	dev:select_station(0)
 	end
 	
 	if(station_4_selector:get() == 1) then
 	--current_station = 4
 	station_4 = 1
-	dev:select_station(5)
 	else
 	station_4 = 0
-	dev:select_station(0)
 	end
 	
 	if(station_5_selector:get() == 1) then
@@ -210,7 +214,6 @@ function update()
 	dev:select_station(6)
 	else
 	station_5 = 0
-	dev:select_station(0)
 	end
 	
 	if(station_6_selector:get() == 1) then
@@ -219,7 +222,6 @@ function update()
 	dev:select_station(7)
 	else
 	station_6 = 0
-	dev:select_station(0)
 	end
 	
 	if(station_7_selector:get() == 1) then
@@ -228,10 +230,18 @@ function update()
 	dev:select_station(9)
 	else
 	station_7 = 0
-	dev:select_station(0)
 	end
-	
-	
+
+	if station_1 == 0 and 
+		station_2 == 0 and 
+		station_3 == 0 and 
+		station_4 == 0 and 
+		station_5 == 0 and 
+		station_6 == 0 and 
+		station_7 == 0 then
+			dev:select_station(0)
+	end
+
 	
 	--dev:select_station(current_station)
 	
