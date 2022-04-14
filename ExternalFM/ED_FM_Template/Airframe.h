@@ -6,6 +6,7 @@
 #include "Input.h"
 #include "AeroData_1.h"
 #include "Engine.h"
+#include "ElectricSystemAPI.h"
 #include "Maths.h"
 #include "Actuators.h"
 #include "BaseComponent.h"
@@ -29,7 +30,7 @@
 class Airframe
 {
 public:
-	Airframe(State& state, Input& input, Engine& engine); 
+	Airframe(State& state, Input& input, Engine& engine, ElectricSystemAPI& electricSystemAPI); 
 	
 	~Airframe();
 
@@ -71,6 +72,7 @@ public:
 	
 	//Flaps
 	inline double setFlapsPosition(double dt);
+	inline bool areFlapsOperating();
 
 	//Hook
 	inline double setHookPosition(double dt);
@@ -466,6 +468,7 @@ private:
 	State& m_state;
 	Input& m_input;
 	Engine& m_engine; //neu 21Feb21 // wieder rausgenommen
+	ElectricSystemAPI& m_electricSystemAPI;
 	std::vector<DamageDelta> m_damageStack;
 
 	//Gear
@@ -576,8 +579,8 @@ private:
 	double m_vMach = 0.0;
 	int m_altInM = 0;
 	int m_altInFt = 0;
-	int m_altIndTenThousands = 0.0;
-	int m_altIndThousands = 0.0;
+	int m_altIndTenThousands = 0;
+	int m_altIndThousands = 0;
 	double m_altIndHundreds = 0.0;
 	double m_altIndTens = 0.0;
 	double m_retAltIndTK = 0.0;
@@ -704,6 +707,18 @@ double Airframe::setFlapsPosition(double dt)
 {
 		double input = m_input.getFlapsToggle();
 		return m_actuatorFlap.inputUpdate(input, dt);
+}
+
+bool Airframe::areFlapsOperating()
+{
+	if (m_input.getFlapsToggle() != m_actuatorFlap.getPosition())
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 

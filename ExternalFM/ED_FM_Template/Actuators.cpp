@@ -72,51 +72,54 @@ double Actuator::inputUpdate(double targetPosition, double dt)
 
 void Actuator::physicsUpdate(double dt)
 {
-	double speedToTarget = (m_actuatorTargetPos - m_actuatorPos) / dt;
-
-
-	double actuatorSpeed = 0.0;
-
-	if (m_overSpeedMalFunction == true)
+	if (m_actuatorPos != m_actuatorTargetPos)
 	{
-		return;
-	}
+		double speedToTarget = (m_actuatorTargetPos - m_actuatorPos) / dt;
 
-	// dependent on aerodynamic load
-	if (m_actuatorPos > 0.0)
-	{
-		if (m_actuatorTargetPos - m_actuatorPos < 0.0)
+
+		double actuatorSpeed = 0.0;
+
+		if (m_overSpeedMalFunction == true)
 		{
-			actuatorSpeed = m_actuatorSpeed;
+			return;
+		}
+
+		// dependent on aerodynamic load
+		if (m_actuatorPos > 0.0)
+		{
+			if (m_actuatorTargetPos - m_actuatorPos < 0.0)
+			{
+				actuatorSpeed = m_actuatorSpeed;
+			}
+			else
+			{
+				actuatorSpeed = m_actuatorSpeed * m_actuatorFactor;
+			}
 		}
 		else
 		{
-			actuatorSpeed = m_actuatorSpeed * m_actuatorFactor;
+			if (m_actuatorTargetPos - m_actuatorPos > 0.0)
+			{
+				actuatorSpeed = m_actuatorSpeed;
+			}
+			else
+			{
+				actuatorSpeed = m_actuatorSpeed * m_actuatorFactor;
+			}
 		}
-	}
-	else
-	{
-		if (m_actuatorTargetPos - m_actuatorPos > 0.0)
+
+
+		if (abs(speedToTarget) <= actuatorSpeed)
 		{
-			actuatorSpeed = m_actuatorSpeed;
+			m_actuatorPos = m_actuatorTargetPos;
 		}
 		else
 		{
-			actuatorSpeed = m_actuatorSpeed * m_actuatorFactor;
+			m_actuatorPos += copysign(1.0, speedToTarget) * actuatorSpeed * dt;
 		}
-	}
 
-
-	if (abs(speedToTarget) <= actuatorSpeed)
-	{
-		m_actuatorPos = m_actuatorTargetPos;
+		m_actuatorPos = clamp(m_actuatorPos, -1.0, 1.0);
 	}
-	else
-	{
-		m_actuatorPos += copysign(1.0, speedToTarget) * actuatorSpeed * dt;
-	}
-
-	m_actuatorPos = clamp(m_actuatorPos, -1.0, 1.0);
 }
 
 double Actuator::getPosition()

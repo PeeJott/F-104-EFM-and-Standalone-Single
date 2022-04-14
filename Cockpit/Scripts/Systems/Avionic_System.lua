@@ -2,7 +2,7 @@ local dev = GetSelf()
 
 dofile(LockOn_Options.script_path.."devices.lua")
 dofile(LockOn_Options.script_path.."command_defs.lua")
-dofile(LockOn_Options.script_path.."Systems/electric_system_api.lua")
+--dofile(LockOn_Options.script_path.."Systems/electric_system_api.lua")
 
 local update_time_step = 0.05
 make_default_activity(update_time_step)--update will be called 20 times per second

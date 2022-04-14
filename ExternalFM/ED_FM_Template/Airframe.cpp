@@ -25,16 +25,11 @@ using std::chrono::seconds;
 using std::chrono::system_clock;
 //-----------------------------------------------------------------
 
-Airframe::Airframe
-(
-	State& state,
-	Input& input,
-	Engine& engine
-
-) :
+Airframe::Airframe(State& state, Input& input, Engine& engine,ElectricSystemAPI& electricSystemAPI) :
 	m_state(state),
 	m_input(input),
 	m_engine(engine),
+	m_electricSystemAPI(electricSystemAPI),
 	m_actuatorFlap(0.9),
 	m_actuatorAirbrk(1.2),
 	m_actuatorGearL(0.2),
@@ -45,7 +40,6 @@ Airframe::Airframe
 	m_actuatorNosewheel(2.0),
 	m_actuatorChuteY(3.0),
 	m_actuatorChuteZ(3.0)
-
 {
 	m_integrityElement = new float[(int)Damage::COUNT];
 	zeroInit();
@@ -994,12 +988,12 @@ double Airframe::brkChutePosition()
 	else if (m_input.getBrkChute() == 0.0)
 	{
 		m_chuteState = 0.0;
-		m_timePassed = 0.0;
+		m_timePassed = 0;
 	}
 	else if (m_input.getBrkChute() == 2.0)
 	{
 		m_chuteState = 0.0;
-		m_timePassed = 0.0;
+		m_timePassed = 0;
 		m_chuteDeployed = true; //jetzt gibt es keine unendlichen Bremsfallschirme mehr...
 	}
 	if ((m_engine.getRPMNorm() == 0.0) && (m_state.m_mach <= 0.1))
@@ -1181,13 +1175,14 @@ double Airframe::brkChuteSlewY()
 		}
 		if (m_mach_speed == 0.00)
 		{
-		m_chuteSlewY = 0.00;//was -1.0
-		//m_chuteSlewingY = false;
+			m_chuteSlewY = 0.00;//was -1.0
+			//m_chuteSlewingY = false;
 
-		return m_chuteSlewY;
-		}
-		
+			return m_chuteSlewY;
+		}		
 	}
+	
+	return 0.0;
 
 	/*if (m_chuteSlewingY == true)
 	{
@@ -1209,7 +1204,7 @@ double Airframe::brkChuteSlewY()
 
 	printf("ChuteYTimePassed %f \n", m_chuteTimeYPassed);
 	*/
-	}
+}
 
 double Airframe::brkChuteSlewZ()
 {
@@ -1368,14 +1363,16 @@ double Airframe::brkChuteSlewZ()
 		}
 		if (m_mach_speed == 0.00)
 		{
-		m_chuteSlewZ = 0.0;
-		//m_chuteSlewingZ = false;
+			m_chuteSlewZ = 0.0;
+			//m_chuteSlewingZ = false;
 		
-		//printf("ChuteSlewZ-Value %f \n", m_chuteSlewZ);
+			//printf("ChuteSlewZ-Value %f \n", m_chuteSlewZ);
 
-		return m_chuteSlewZ;
+			return m_chuteSlewZ;
 		}
 	}
+	
+	return 0.0;
 	
 	/*if (m_chuteSlewingZ == true)
 	{

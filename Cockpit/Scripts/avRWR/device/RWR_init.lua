@@ -1,9 +1,11 @@
+dofile(LockOn_Options.script_path.."definitions.lua")
+
 dofile(LockOn_Options.common_script_path..'wsTypes_SAM.lua')
 dofile(LockOn_Options.common_script_path..'wsTypes_Airplane.lua')
 dofile(LockOn_Options.common_script_path..'wsTypes_Ship.lua')
 dofile(LockOn_Options.common_script_path..'wsTypes_Missile.lua')
 
-render_debug_info = true
+render_debug_info = false
 
 local gettext = require("i_18n")
 _ = gettext.translate
@@ -18,7 +20,7 @@ DefaultType          = 100
 
 RWR_detection_coeff = 0.85
 
-
+power_bus_handle = ELECTRIC_SYSTEM.NO_2_AC_BUS
 
 	eyes ={}	
 

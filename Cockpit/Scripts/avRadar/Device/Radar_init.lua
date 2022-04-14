@@ -1,10 +1,10 @@
+dofile(LockOn_Options.script_path.."definitions.lua")
+
+render_debug_info 		= false
+power_bus_handle = ELECTRIC_SYSTEM.NO_2_AC_BUS
+
 range_scale 		  	= 60000.0
 TDC_range_carret_size 	= 5000
-
-render_debug_info 		= false --true
-
-
-
 
 perfomance = 
 {
@@ -39,7 +39,7 @@ perfomance =
 ------------------------------------------------------------------------------
 
 dev 	    	= GetSelf()
-DEBUG_ACTIVE 	= false
+DEBUG_ACTIVE 	= true
 
 
 

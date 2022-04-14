@@ -16,7 +16,7 @@ Sensors = {
 
 
 		
-	creators[130]	= 	{ "avSimpleElectricSystem", LockOn_Options.script_path.."avTerrain/miscSystems/simple_electric_system.lua" }
+--	creators[130]	= 	{ "avSimpleElectricSystem", LockOn_Options.script_path.."avTerrain/miscSystems/simple_electric_system.lua" }
 								
 	creators[150]		= {	"avLuaDevice", LockOn_Options.script_path.."avTerrain/Device/Terrain_init.lua"}
 ------------------------------------------------------------------------------------------------------------								  

@@ -1,4 +1,4 @@
-dofile(LockOn_Options.script_path.."Systems/electric_system_api.lua")
+dofile(LockOn_Options.script_path.."ElectricSystems/electric_system_api.lua")
 dofile(LockOn_Options.script_path.."command_defs.lua")
 
 local dev = GetSelf()
@@ -130,7 +130,7 @@ function keys_pickle_on(value)
 end
 
 function keys_trigger_on(value)
-    if electric_system_api:get_AC() then
+	if electric_system_api.emergency_ac_bus:get() == 1.0 then    
         dispatch_action(nil, Keys.iCommandPlaneFire)
     end
 end

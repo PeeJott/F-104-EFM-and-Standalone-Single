@@ -23,7 +23,7 @@ public:
 		m_max(max)
 	{
 		m_dx = (max - min) / ((double)table.size()-1);
-		m_minIndex = min / m_dx;
+		m_minIndex = (int)(min / m_dx);
 	}
 
 	double operator()(double value)
@@ -34,8 +34,8 @@ public:
 
 		double index = (value - m_min) / m_dx;
 
-		int lower = floor(index);
-		int upper = ceil(index);
+		int lower = (int)floor(index);
+		int upper = (int)ceil(index);
 
 		if (lower == upper)
 			upper++;
@@ -68,7 +68,7 @@ public:
 		m_max( max )
 	{
 		m_dx = (max - min) / ((double)table.size() - 1);
-		m_minIndex = min / m_dx;
+		m_minIndex = (int)(min / m_dx);
 	}
 
 	double operator()( double value )
@@ -79,8 +79,8 @@ public:
 
 		double index = (value - m_min) / m_dx;
 
-		int lower = floor( index );
-		int upper = ceil( index );
+		int lower = (int)floor( index );
+		int upper = (int)ceil( index );
 
 		if ( lower == upper )
 			upper++;

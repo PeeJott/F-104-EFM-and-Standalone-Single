@@ -97,7 +97,14 @@ enum Command
 
 	COMMAND_INST_LIGHT_TGL = 1011,
 
-
+	COMMAND_NO_1_GENERATOR_ON_RESET = 706,	// iCommandPowerBattery1 706
+	COMMAND_NO_1_GENERATOR_COVER = 707,		// iCommandPowerBattery1_Cover 707
+	COMMAND_NO_2_GENERATOR_ON_RESET = 708,	// iCommandPowerBattery2 708
+	COMMAND_NO_2_GENERATOR_COVER = 709,		// iCommandPowerBattery2_Cover 709
+	COMMAND_HYDRAULIC_DRIVEN_GENERATOR_RESET = 710, //----iCommandGroundPowerAC 710
+	COMMAND_NO_1_GENERATOR_OFF = 711,		// iCommandPowerGeneratorLeft 711
+	COMMAND_NO_2_GENERATOR_OFF = 712,		// iCommandPowerGeneratorRight 712
+	COMMAND_RAT_EXTEND = 713,				// iCommandElectricalPowerInverter 713
 
 	//--------------------------------------
 
@@ -141,7 +148,13 @@ class Input
 			m_nwsteering = 0.0;
 			m_autoPilotEng = 0.0;
 			m_light_toggle = 0.0;
+
+			m_ramAirTurbineExtensionHandle = 0.0;
+
 			m_electricSystem = 0.0;
+			m_no1generatorSwitch = 0.0;
+			m_no2generatorSwitch = 0.0;
+			m_hydraulicDrivenGeneratorReset = 0.0;
 
 			m_crossHUp = 0.0;
 			m_crossHDown = 0.0;
@@ -720,6 +733,73 @@ class Input
 			return m_electricSystem;
 		}
 
+
+		inline const void setNo1GeneratorSwitchOnReset()
+		{
+			m_no1generatorSwitch = 1.0;
+		}
+
+		inline const void setNo1GeneratorSwitchOff()
+		{
+			m_no1generatorSwitch = -1.0;
+		}
+
+		inline const void setNo1GeneratorSwitchNeutral()
+		{
+			m_no1generatorSwitch = 0.0;
+		}
+
+		inline const double getNo1GeneratorSwitch()
+		{
+			return m_no1generatorSwitch;
+		}
+
+		inline const void setNo2GeneratorSwitchOnReset()
+		{
+			m_no2generatorSwitch = 1.0;
+		}
+
+		inline const void setNo2GeneratorSwitchOff()
+		{
+			m_no2generatorSwitch = -1.0;
+		}
+
+		inline const void setNo2GeneratorSwitchNeutral()
+		{
+			m_no2generatorSwitch = 0.0;
+		}
+
+		inline const double getNo2GeneratorSwitch()
+		{
+			return m_no2generatorSwitch;
+		}
+
+
+		inline const void setHydraulicDrivenGeneratorResetSwitchPressed()
+		{
+			m_hydraulicDrivenGeneratorReset = 1.0;
+		}
+
+		inline const void setHydraulicDrivenGeneratorResetSwitchReleased()
+		{
+			m_hydraulicDrivenGeneratorReset = 0.0;
+		}
+
+		inline const double getHydraulicDrivenGeneratorResetSwitch()
+		{
+			return m_hydraulicDrivenGeneratorReset;
+		}
+
+		inline const double getRamAirTurbineExtensionHandle()
+		{
+			return m_ramAirTurbineExtensionHandle;
+		}
+
+		inline const void setRamAirTurbineExtensionHandlePulled()
+		{
+			m_ramAirTurbineExtensionHandle = 1.0;
+		}
+
 		inline const void masterAtoA1()
 		{
 			if (m_masterAtoA1 == 0.0)
@@ -1250,7 +1330,12 @@ class Input
 	double m_engine_start = 0.0;
 	double m_engine_stop = 0.0;
 
+	double m_ramAirTurbineExtensionHandle = 0.0;
+
 	double m_electricSystem = 0.0;
+	double m_no1generatorSwitch = 0.0;
+	double m_no2generatorSwitch = 0.0;
+	double m_hydraulicDrivenGeneratorReset = 0.0;
 
 	double m_crossHUp = 0.0;
 	double m_crossHDown = 0.0;

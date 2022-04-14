@@ -94,8 +94,11 @@ Pylon1SelectorAndLight7.input				= {0.0, 1.0}
 Pylon1SelectorAndLight7.output				= {0.0, 1.0}
 Pylon1SelectorAndLight7.parameter_name		= "PYLON_SEVEN_SELECTOR_LIGHT"
 
-
-
+Canopy    							= CreateGauge()
+Canopy.arg_number 					= 181
+Canopy.input   						= {0,1}
+Canopy.output  						= {0,1}
+Canopy.controller 					= controllers.base_gauge_CanopyPos
 
 
 --HUD_BRIGHTNESS_DOWN      		= CreateGauge("parameter")

@@ -187,13 +187,31 @@ join(res.keyCommands,{
 {down = Keys.RadarVolume, value_down = 1,   name = _('Radar Obstacle Tone Volume Knob - Increase'),          category = {_('Left Console'), _('Radar Control Panel')}},
 {down = Keys.RadarVolume, value_down = 0,   name = _('Radar Obstacle Tone Volume Knob - Decrease'),          category = {_('Left Console'), _('Radar Control Panel')}},
 
+-- Radio
+{down = Keys.COM1, up = Keys.COM1, name = _('PTT (AN/ARC-552 UHF)'), category = {_('Throttle'), _('HOTAS'), _('Communications')}, value_down =  1.0,		value_up = 0.0},
+{down = Keys.COM2, up = Keys.COM2, name = _('PTT (EMERGENCY UHF)'), category = {_('Throttle'), _('HOTAS'), _('Communications')}, value_down =  1.0,		value_up = 0.0},
 
-{down = Keys.COM1, up = Keys.COM1, name = _('COM Fwd - COM1 (V/UHF1)'), category = {_('Throttle'), _('HOTAS'), _('Communications')}, value_down =  1.0,		value_up = 0.0},
-{down = Keys.COM2, up = Keys.COM2, name = _('COM Aft - COM2 (V/UHF2)'), category = {_('Throttle'), _('HOTAS'), _('Communications')}, value_down =  1.0,		value_up = 0.0},
-{down = Keys.COM3, up = Keys.COM3, name = _('COM Up - COM3 (HF)'), category = {_('Throttle'), _('HOTAS'), _('Communications')}, value_down =  1.0,		value_up = 0.0},
+-- Electric System
+{down = iCommandPowerBattery1,              up = iCommandPowerBattery1,             value_down =  1.0,		value_up = 0.0,     name = _('No. 1 Generator - On Reset'),     category = _('Electric')},
+{down = iCommandPowerBattery1_Cover,        up = iCommandPowerBattery1_Cover,       value_down =  1.0,		value_up = 0.0,     name = _('No. 1 Generator - Cover'),        category = _('Electric')},
+{down = iCommandPowerBattery2,              up = iCommandPowerBattery2,             value_down =  1.0,		value_up = 0.0,     name = _('No. 2 Generator - On Reset'), category = _('Electric')},
+{down = iCommandPowerBattery2_Cover,        up = iCommandPowerBattery2_Cover,       value_down =  1.0,		value_up = 0.0,     name = _('No. 2 Generator - Cover'), category = _('Electric')},
+{down = iCommandPowerGeneratorLeft,         up = iCommandPowerGeneratorLeft,        value_down =  1.0,		value_up = 0.0,     name = _('No. 1 Generator - Off'), category = _('Electric')},
+{down = iCommandPowerGeneratorRight,        up = iCommandPowerGeneratorRight,       value_down =  1.0,		value_up = 0.0,     name = _('No. 2 Generator - Off'), category = _('Electric')},
+{down = iCommandGroundPowerAC,              up = iCommandGroundPowerAC,             value_down =  1.0,		value_up = 0.0,     name = _('Hydraulic Driven Generator - Reset'), category = _('Electric')},
+{down = iCommandElectricalPowerInverter,    up = iCommandElectricalPowerInverter,   value_down =  1.0,		value_up = 0.0,     name = _('Ram Air Turbine - Extend'), category = _('Electric')},
 
-
-
+--iCommandGroundPowerDC	704
+--iCommandGroundPowerDC_Cover	705
+--iCommandPowerBattery1 706
+--iCommandPowerBattery1_Cover 707
+--iCommandPowerBattery2	708
+--iCommandPowerBattery2_Cover 709
+--iCommandGroundPowerAC 710
+--iCommandPowerGeneratorLeft 711
+--iCommandPowerGeneratorRight 712
+--iCommandElectricalPowerInverter 713
+--iCommandAPUGeneratorPower	1071
 
 
 --{combos = {{key = 'Enter'}}, down = iCommandPlaneChangeLock, up = iCommandPlaneChangeLockUp, name = _('Target Lock'), category = _('Sensors')},

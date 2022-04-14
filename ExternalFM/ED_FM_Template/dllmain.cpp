@@ -15,11 +15,11 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	{
 	case DLL_PROCESS_ATTACH:
 
-#ifdef CONSOLE_ENABLED //Console commented out
+#ifdef _DEBUG //Console commented out
 		if ( AllocConsole() )
 		{
 			freopen_s(&stream, "CONOUT$", "w", stdout);
-			SetConsoleTitle((L"DCS F-104 Debug Console"));
+			SetConsoleTitle("DCS F-104 Debug Console");
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_BLUE);
 		}
 #endif

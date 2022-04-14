@@ -6,6 +6,7 @@
 #include "FlightModel.h"
 #include "State.h"
 #include "Engine.h"
+#include "ElectricSystem.h"
 #include "Fuel_System.h"
 #include <Math.h>
 #include <stdio.h>
@@ -14,7 +15,6 @@
 #include "Airframe.h"
 #include "BaseComponent.h"
 #include "Maths.h"
-
 
 //Vec3	common_moment;
 //Vec3	common_force;
@@ -44,27 +44,29 @@
 
 //--------------------------NEW Statics-------------------------------------//
 
+static ElectricSystemAPI* s_electricSystemAPI = NULL;
+
 static Input* s_input = NULL;
 static State* s_state = NULL;
 static Engine* s_engine = NULL; //NEU (s_input, s_state)// !!WICHTIG!! überall muss die Reihenfolge Input/State/Engine/Flightmodel sein, NICHT andersrum
+static ElectricSystem* s_electricSystem = NULL;
 static Fuelsystem* s_fuelsystem = NULL;
 static Airframe* s_airframe = NULL;
 static FlightModel* s_flightModel = NULL;
-
-//------------------------NEW static functions-------------------------------//
-static void init();
-static void cleanup();
-//---------------------------------------------------------------------------//
+static RamAirTurbine* s_ramAirTurbine = NULL;
 
 void init()
 {
+	s_electricSystemAPI = new ElectricSystemAPI();
+
 	s_input = new Input;
 	s_state = new State;
-	s_engine = new Engine(*s_state, *s_input);
+	s_ramAirTurbine = new RamAirTurbine(*s_state, *s_input);
+	s_engine = new Engine(*s_state, *s_input);	
 	s_fuelsystem = new Fuelsystem(*s_state, *s_input, *s_engine);
-	s_airframe = new Airframe(*s_state, *s_input, *s_engine);
+	s_airframe = new Airframe(*s_state, *s_input, *s_engine, *s_electricSystemAPI);
+	s_electricSystem = new ElectricSystem(*s_electricSystemAPI, *s_state, *s_input, *s_engine, *s_airframe, *s_ramAirTurbine);
 	s_flightModel = new FlightModel(*s_state, *s_input, *s_engine, *s_airframe);
-
 }
 
 void cleanup()
@@ -78,9 +80,11 @@ void cleanup()
 
 	s_input = NULL;
 	s_state = NULL;
+	s_ramAirTurbine = NULL;
 	s_engine = NULL;
 	s_fuelsystem = NULL;
 	s_airframe = NULL;
+	s_electricSystem = NULL;
 	s_flightModel = NULL;
 
 }
@@ -115,9 +119,12 @@ void ed_fm_add_local_moment(double& x,double& y,double& z)
 
 void ed_fm_simulate(double dt)
 {
+	
 	s_input->inputUpdate(dt);
 	s_flightModel->update(dt);
+	s_ramAirTurbine->update(dt);
 	s_engine->update(dt);
+	s_electricSystem->update(dt);
 	s_airframe->airframeUpdate(dt);
 	s_fuelsystem->update(dt);
 }
@@ -683,9 +690,70 @@ void ed_fm_set_command(int command,
 			s_input->m_ail_left_stop = 0.0;
 		}*/
 		break;
-	case COMMAND_ELECTRIC_SYSTEM:
+			
+#pragma region Electric System
+
+	case COMMAND_ELECTRIC_SYSTEM: // TODO: Remove this command and replace by bus check
 		s_input->electricSystem();
 		break;
+	case COMMAND_NO_1_GENERATOR_ON_RESET:
+		if (value == 1.0)
+		{
+			s_input->setNo1GeneratorSwitchOnReset();
+		}
+		else
+		{
+			s_input->setNo1GeneratorSwitchNeutral();
+		}
+		break;
+	case COMMAND_NO_2_GENERATOR_ON_RESET:
+		if (value == 1.0)
+		{
+			s_input->setNo2GeneratorSwitchOnReset();
+		}
+		else
+		{
+			s_input->setNo2GeneratorSwitchNeutral();
+		}
+		break;
+	case COMMAND_NO_1_GENERATOR_OFF:
+		if (value == 1.0)
+		{
+			s_input->setNo1GeneratorSwitchOff();
+		}
+		else
+		{
+			s_input->setNo1GeneratorSwitchNeutral();
+		}
+		break;
+	case COMMAND_NO_2_GENERATOR_OFF:
+		if (value == 1.0)
+		{
+			s_input->setNo2GeneratorSwitchOff();
+		}
+		else
+		{
+			s_input->setNo2GeneratorSwitchNeutral();
+		}
+		break;
+	case COMMAND_HYDRAULIC_DRIVEN_GENERATOR_RESET:
+		if (value == 1.0)
+		{
+			s_input->setHydraulicDrivenGeneratorResetSwitchPressed();
+		}
+		else
+		{
+			s_input->setHydraulicDrivenGeneratorResetSwitchReleased();
+		}
+		break;
+	case COMMAND_RAT_EXTEND:
+		s_input->setRamAirTurbineExtensionHandlePulled();
+		break;
+
+#pragma endregion
+
+
+
 	case COMMAND_CROSSHAIR_LEFT:
 		s_input->crossHLeft();
 		break;
@@ -1155,10 +1223,13 @@ bool ed_fm_pop_simulation_event(ed_fm_simulation_event& out)
 
 void ed_fm_cold_start()
 {
+	s_electricSystemAPI->coldInit();
+
 	s_state->coldInit();
 	s_input->coldInit();
 	s_airframe->coldInit();
 	s_engine->coldInit();
+	s_electricSystem->coldInit();
 	s_fuelsystem->coldInit();
 	s_flightModel->coldInit();
 	
@@ -1166,21 +1237,26 @@ void ed_fm_cold_start()
 
 void ed_fm_hot_start()
 {
+	s_electricSystemAPI->hotInit();
+
 	s_state->hotInit();
 	s_input->hotInit();
 	s_airframe->hotInit();
 	s_engine->hotInit();
+	s_electricSystem->hotInit();
 	s_fuelsystem->hotInit();
 	s_flightModel->hotInit();
 }
 
 void ed_fm_hot_start_in_air()
 {
+	s_electricSystemAPI->airborneInit();
+
 	s_state->airborneInit();
 	s_input->airborneInit();
 	s_airframe->airborneInit();
 	s_engine->airborneInit();
-	s_engine->airborneInit();
+	s_electricSystem->airborneInit();
 	s_flightModel->airborneInit();
 }
 

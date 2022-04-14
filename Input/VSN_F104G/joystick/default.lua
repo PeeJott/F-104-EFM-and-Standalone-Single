@@ -61,6 +61,31 @@ join(res.keyCommands,{
 {down = iCommandPlaneThreatWarnSoundVolumeUp, name = _('RWR/SPO Sound Signals Volume Up'), category = _('Sensors')},
 {down = iCommandPlane_LockOn_start, up = iCommandPlane_LockOn_finish, name = 'Target Lock', category = 'Sensors'},
 
+-- Electric System
+{down = iCommandPowerBattery1,              up = iCommandPowerBattery1,             value_down =  1.0,		value_up = 0.0,     name = _('No. 1 Generator - On Reset'),     category = _('Electric')},
+{down = iCommandPowerBattery1_Cover,        up = iCommandPowerBattery1_Cover,       value_down =  1.0,		value_up = 0.0,     name = _('No. 1 Generator - Cover'),        category = _('Electric')},
+{down = iCommandPowerBattery2,              up = iCommandPowerBattery2,             value_down =  1.0,		value_up = 0.0,     name = _('No. 2 Generator - On Reset'), category = _('Electric')},
+{down = iCommandPowerBattery2_Cover,        up = iCommandPowerBattery2_Cover,       value_down =  1.0,		value_up = 0.0,     name = _('No. 2 Generator - Cover'), category = _('Electric')},
+{down = iCommandPowerGeneratorLeft,         up = iCommandPowerGeneratorLeft,        value_down =  1.0,		value_up = 0.0,     name = _('No. 1 Generator - Off'), category = _('Electric')},
+{down = iCommandPowerGeneratorRight,        up = iCommandPowerGeneratorRight,       value_down =  1.0,		value_up = 0.0,     name = _('No. 2 Generator - Off'), category = _('Electric')},
+{down = iCommandGroundPowerAC,              up = iCommandGroundPowerAC,             value_down =  1.0,		value_up = 0.0,     name = _('Hydraulic Driven Generator - Reset'), category = _('Electric')},
+{down = iCommandElectricalPowerInverter,    up = iCommandElectricalPowerInverter,   value_down =  1.0,		value_up = 0.0,     name = _('Ram Air Turbine - Extend'), category = _('Electric')},
+
+--iCommandGroundPowerDC	704
+--iCommandGroundPowerDC_Cover	705
+--iCommandPowerBattery1 706
+--iCommandPowerBattery1_Cover 707
+--iCommandPowerBattery2	708
+--iCommandPowerBattery2_Cover 709
+--iCommandGroundPowerAC 710
+--iCommandPowerGeneratorLeft 711
+--iCommandPowerGeneratorRight 712
+--iCommandElectricalPowerInverter 713
+--iCommandAPUGeneratorPower	1071
+
+
+
+
 -- Weapons
 {down = iCommandPlaneSalvoOnOff, name = _('Salvo Mode'), category = _('Weapons')},
 --{combos = {{key = 'JOY_BTN2'}}, down = iCommandPlanePickleOn,	up = iCommandPlanePickleOff, name = _('Weapon Release'), category = _('Weapons')},

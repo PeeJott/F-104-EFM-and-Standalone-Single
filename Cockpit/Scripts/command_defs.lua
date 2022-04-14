@@ -20,6 +20,8 @@ Keys =
 	--PlaneGear                   				= 68,
 	--PlaneGearUp	               				= 430, 
 	--PlaneGearDown              				= 431,
+
+	iCommandPlaneFonar	= 71,
 	
 	-------------------AtoA-RADAR-COMMANDS----------------------------
 	iCommandPlaneChangeLock						= 100,
@@ -35,7 +37,22 @@ Keys =
 	iCommandPlaneRadarVertical					= 2026,
 	iCommandPlaneSelecterHorizontal				= 2031,
 	iCommandPlaneSelecterVertical				= 2032,
-	
+
+	--------------------- Electric System ----------------------------
+
+	iCommandGroundPowerDC = 704,
+	iCommandGroundPowerDC_Cover = 	705,
+	iCommandPowerBattery1 =  706,
+	iCommandPowerBattery1_Cover =  707,
+	iCommandPowerBattery2 = 	708,
+	iCommandPowerBattery2_Cover =  709,
+	iCommandGroundPowerAC =  710,
+	iCommandPowerGeneratorLeft =  711,
+	iCommandPowerGeneratorRight =  712,
+	iCommandElectricalPowerInverter =  713,
+	iCommandAPUGeneratorPower	 = 1071,
+
+
 	-------------------AtoG-RADAR-COMMANDS----------------------------
     RadarModeOFF                    = __custom_counter(),
     RadarModeSTBY                   = __custom_counter(),
@@ -54,7 +71,6 @@ Keys =
 	-------------------Radio-COMMANDS----------------------------
 	COM1                     = __custom_counter(),
     COM2                     = __custom_counter(),
-    COM3                     = __custom_counter(),
 
 	------------------WEAPON SYSTEM---------------------------------
 	-----------------Launch, Fire, Release and Drop-----------------

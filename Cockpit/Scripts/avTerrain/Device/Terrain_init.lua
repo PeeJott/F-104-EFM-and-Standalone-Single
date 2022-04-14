@@ -1,5 +1,5 @@
 dofile(LockOn_Options.script_path.."command_defs.lua")
---dofile(LockOn_Options.script_path.."avTerr/electric_system_api.lua")
+dofile(LockOn_Options.script_path.."ElectricSystems/electric_system_api.lua")
 dofile(LockOn_Options.script_path.."avTerrain/Device/utils.lua")
 dofile(LockOn_Options.script_path.."avTerrain/radar_scope_api.lua")
 
@@ -1297,8 +1297,7 @@ end
 
 local elec_26=true
 function update()
-    if true then
-    --if get_elec_26V_ac_ok() then
+    if electric_system_api.no_2_ac_bus:get() == 1.0 then
         if not elec_26 then -- triggered on power restoration
             change_state(apg53a_state, apg53a_state)
         end
@@ -1315,8 +1314,7 @@ function update()
         elec_26=false
     end
 
-    --if get_elec_primary_ac_ok() then
-    if true then
+    if electric_system_api.no_2_ac_bus:get() == 1.0 then
         local obst_val=profile_obstruction
         if master_test_param:get()==1 then
             obst_val = 1
