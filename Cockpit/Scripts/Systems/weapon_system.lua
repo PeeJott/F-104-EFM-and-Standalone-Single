@@ -62,71 +62,139 @@ local station_7 = 0
 --gunpipper_auto_movement_side 	= 0.0
 --gunpipper_auto_movement_updown	= 0.0
 
+
+-------------Variables and initializing----
+local station_ONE 		= 0
+local station_TWO 		= 0
+local station_THREE 	= 0
+local station_FOUR		= 0
+local station_FIVE		= 0
+local station_SIX 		= 0
+local station_SEVEN     = 0
+
+-------------Params-----------------
+local Station_One_Param			= get_param_handle("PYLON_ONE_SELECTOR_LIGHT")
+local Station_Two_Param			= get_param_handle("PYLON_TWO_SELECTOR_LIGHT")
+local Station_Three_Param		= get_param_handle("PYLON_THREE_SELECTOR_LIGHT")
+local Station_Four_Param		= get_param_handle("PYLON_FOUR_SELECTOR_LIGHT")
+local Station_Five_Param		= get_param_handle("PYLON_FIVE_SELECTOR_LIGHT")
+local Station_Six_Param			= get_param_handle("PYLON_SIX_SELECTOR_LIGHT")
+local Station_Seven_Param		= get_param_handle("PYLON_SEVEN_SELECTOR_LIGHT")
+
+
+function keys_station_one(value)
+	
+	local info = dev:get_station_info(PYLON.LH_TIP)
+	if station_ONE == 0 and info.count > 0 then
+		station_ONE = 1
+		Station_One_Param:set(1)
+	else
+		station_ONE = 0
+		Station_One_Param:set(0)
+	end
+		
+	current_station = GetNextStation()
+end
+
+function keys_station_two(value)
+	
+	local info = dev:get_station_info(PYLON.LH_PYLON)
+	if station_TWO == 0 and info.count > 0 then
+		station_TWO = 1
+		Station_Two_Param:set(1)
+	else
+		station_TWO = 0
+		Station_Two_Param:set(0)
+	end
+	
+	current_station = GetNextStation()
+end
+
+function keys_station_three(value)
+
+	local info = dev:get_station_info(PYLON.LH_FUS)
+	if station_THREE == 0 and info.count > 0 then
+		station_THREE = 1
+		Station_Three_Param:set(1)
+	else
+		station_THREE = 0
+		Station_Three_Param:set(0)
+	end
+	
+	current_station = GetNextStation()
+end
+
+function keys_station_four(value)
+	
+	local info = dev:get_station_info(PYLON.CENTERLINE)
+	if station_FOUR == 0 and info.count > 0 then
+		station_FOUR = 1
+		Station_Three_Param:set(1)
+		Station_Five_Param:set(1)
+	else
+		station_FOUR = 0
+		Station_Three_Param:set(0)
+		Station_Five_Param:set(0)
+	end
+
+	current_station = GetNextStation()
+end
+
+function keys_station_five(value)
+
+	local info = dev:get_station_info(PYLON.RH_FUS)
+	if station_FIVE == 0 and info.count > 0 then
+		station_FIVE = 1
+		Station_Five_Param:set(1)
+	else
+		station_FIVE = 0
+		Station_Five_Param:set(0)
+	end
+	
+	current_station = GetNextStation()
+end
+
+function keys_station_six(value)
+
+	local info = dev:get_station_info(PYLON.RH_PYLON)
+	if station_SIX == 0 and info.count > 0 then
+		station_SIX = 1
+		Station_Six_Param:set(1)
+	else
+		station_SIX = 0
+		Station_Six_Param:set(0)
+	end
+	
+	current_station = GetNextStation()
+end
+
+function keys_station_seven(value)
+
+	local info = dev:get_station_info(PYLON.RH_TIP)
+	if station_SEVEN == 0 and info.count > 0 then
+		station_SEVEN = 1
+		Station_Seven_Param:set(1)
+	else
+		station_SEVEN = 0
+		Station_Seven_Param:set(0)
+	end
+	
+	current_station = GetNextStation()
+end
+
+function keys_change_station(value)
+	-- Not implemented
+end
+
 function keys_pickle_on(value)
 
+	dev:launch_station(current_station)
+	
+	UpdateSelectorButtons()
+	
+	current_station = GetNextStation()
+
     --dev:drop_flare(1, 1)
-    local info = dev:get_station_info(current_station)
-    --print_message_to_user("Station "..tostring(current_station).." "..tostring(info.count))
-    
-	
-    --dev:launch_station(current_station)
-    --current_station = (current_station + 1) % 11
-	
-
-	--dev:launch_station(current_station)
-    --print_message_to_user(" Launching selected station: ".. tostring(current_station).." "..tostring(info.count))	
-	--dev:drop_flare(1, 1)
-
-
-	-- TODO: Improve station selection to use one station pressed/activated by the pilot
-	--[[next_station = current_station + 1
-	while(next_station <= 11)
-	do
-		info = dev:get_station_info(next_station)
-		if info.count == 0 then
-			next_station = next_station + 1
-		else
-			break
-		end
-	end
-
-	current_station = next_station
-	dev:select_station(current_station)
-	print_message_to_user("Selected station: ".. current_station)
-	]]
-	
-	if (station_1 == 1) then
-		dev:launch_station(1)
-	end
-	
-	if (station_2 == 1) then
-		dev:launch_station(3)
-	end
-	
-	if (station_3 == 1) then
-		dev:launch_station(4)
-	end
-	
-	if (station_4 == 1) then
-		dev:launch_station(5)
-	end
-	
-	if (station_5 == 1) then
-		dev:launch_station(6)
-	end
-	
-	if (station_6 == 1) then
-		dev:launch_station(7)
-	end
-	
-	if (station_7 == 1) then
-		dev:launch_station(9)
-	end
-	
-	
-	
-	
-	
 end
 
 function keys_trigger_on(value)
@@ -144,7 +212,136 @@ command_table = {
     [Keys.trigger_on] 			= keys_trigger_on,
     [Keys.trigger_off] 			= keys_trigger_off,
 	[Keys.GunPipper_Automatic]	= keys_gunpipper_automatic,
+
+	-- Weapon panel
+	[Keys.station_one]		= keys_station_one,
+	[Keys.station_two]		= keys_station_two,
+	[Keys.station_three]		= keys_station_three,
+	[Keys.station_four]		= keys_station_four,
+	[Keys.station_five]		= keys_station_five,
+	[Keys.station_six]		= keys_station_six,
+	[Keys.station_seven]		= keys_station_seven,
+	--[Keys.change_station]		= keys_change_station,  
 }
+
+-- Use this function to disable the selector buttons after weapon release or jettison
+function UpdateSelectorButtons()
+	if (station_ONE == 1) then
+		-- check if loaded
+		local info = dev:get_station_info(PYLON.LH_TIP)
+		if(info.count == 0) then
+			station_ONE = 0
+			Station_One_Param:set(0)
+		end
+	end
+
+	if (station_SEVEN == 1) then
+		-- check if loaded
+		local info = dev:get_station_info(PYLON.RH_TIP)
+		if(info.count == 0) then
+			station_SEVEN = 0
+			Station_Seven_Param:set(0)
+		end
+	end
+
+	if (station_THREE == 1) then
+		-- check if loaded
+		local info = dev:get_station_info(PYLON.LH_FUS)
+		if(info.count == 0) then
+			station_THREE = 0
+			Station_Three_Param:set(0)
+		end
+	end
+
+	if (station_FIVE == 1) then
+	-- check if loaded
+		local info = dev:get_station_info(PYLON.RH_FUS)
+		if(info.count == 0) then
+			station_FIVE = 0
+			Station_Five_Param:set(0)
+		end
+	end
+
+	if (station_TWO == 1) then
+	-- check if loaded
+		local info = dev:get_station_info(PYLON.LH_PYLON)
+		if(info.count == 0) then
+			station_TWO = 0
+			Station_Two_Param:set(0)
+		end
+	end
+
+	if (station_SIX == 1) then
+		-- check if loaded
+		local info = dev:get_station_info(PYLON.RH_PYLON)
+		if(info.count == 0) then
+			station_SIX = 0
+			Station_Six_Param:set(0)
+		end
+	end
+
+
+end
+
+-- Use this function to determine the next station that will be fired depeding on the order for the activated stations.
+function GetNextStation()
+	-- find the next active station 
+	-- order for sidewinder is: LH tip, RH tip, LH fus, RH fus, assumed: LH pyl, RH pyl 	
+	if (station_ONE == 1) then
+		-- check if loaded
+		local info = dev:get_station_info(PYLON.LH_TIP)
+		if(info.count > 0) then
+			print_message_to_user("Next station: PYLON.LH_TIP")
+			return PYLON.LH_TIP		
+		end
+	end
+	-- check RH tip active
+	if (station_SEVEN == 1) then
+		-- check if loaded
+		local info = dev:get_station_info(PYLON.RH_TIP)
+		if(info.count > 0) then
+			print_message_to_user("Next station: PYLON.RH_TIP")
+			return PYLON.RH_TIP
+		end
+	end
+	if (station_THREE == 1) then
+		-- check if loaded
+		local info = dev:get_station_info(PYLON.LH_FUS)
+		if(info.count > 0) then
+			print_message_to_user("Next station: PYLON.LH_FUS")
+			return PYLON.LH_FUS
+		end
+	end
+	if (station_FIVE == 1) then
+	-- check if loaded
+		local info = dev:get_station_info(PYLON.RH_FUS)
+		if(info.count > 0) then
+		print_message_to_user("Next station: PYLON.RH_FUS")
+			return PYLON.RH_FUS
+		end
+	end
+
+	if (station_TWO == 1) then
+	-- check if loaded
+		local info = dev:get_station_info(PYLON.LH_PYLON)
+		if(info.count > 0) then
+			print_message_to_user("Next station: PYLON.LH_PYLON")
+			return PYLON.LH_PYLON
+		end
+	end
+
+	if (station_SIX == 1) then
+		-- check if loaded
+		local info = dev:get_station_info(PYLON.RH_PYLON)
+		if(info.count > 0) then
+			print_message_to_user("Next station: PYLON.RH_PYLON")
+			return PYLON.RH_PYLON
+		end
+	end
+
+	print_message_to_user("Next station: None")
+	return 0
+end
 
 function SetCommand(command, value)
 
@@ -163,90 +360,10 @@ function post_initialize()
 
 end
 
-function select_next_station()
-	
-
-	local info = dev:get_station_info(current_station)
-    --print_message_to_user("Station "..tostring(current_station).." "..tostring(info.count))
-    
-
-end
-
-
 function update()
-
-	if(station_1_selector:get() == 1) then
-	--current_station = 1
-	station_1 = 1
-	dev:select_station(1)
-	else
-	--current_station = 0
-	station_1 = 0
-	end
 	
-	if(station_2_selector:get() == 1) then
-	--current_station = 2
-	station_2 = 1
-	dev:select_station(3)
-	else
-	--current_station = 0
-	station_2 = 0
-	end
-	
-	if(station_3_selector:get() == 1) then
-	--current_station = 3
-	station_3 = 1
-	dev:select_station(4)	
-	else
-	station_3 = 0
-	end
-	
-	if(station_4_selector:get() == 1) then
-	--current_station = 4
-	station_4 = 1
-	else
-	station_4 = 0
-	end
-	
-	if(station_5_selector:get() == 1) then
-	--current_station = 5
-	station_5	= 1
-	dev:select_station(6)
-	else
-	station_5 = 0
-	end
-	
-	if(station_6_selector:get() == 1) then
-	--current_station = 6
-	station_6 = 1
-	dev:select_station(7)
-	else
-	station_6 = 0
-	end
-	
-	if(station_7_selector:get() == 1) then
-	--current_station = 7
-	station_7 = 1
-	dev:select_station(9)
-	else
-	station_7 = 0
-	end
-
-	if station_1 == 0 and 
-		station_2 == 0 and 
-		station_3 == 0 and 
-		station_4 == 0 and 
-		station_5 == 0 and 
-		station_6 == 0 and 
-		station_7 == 0 then
-			dev:select_station(0)
-	end
-
-	
-	--dev:select_station(current_station)
-	
---gunpipper_auto_movement_side 		= gunpipper_sideways_automatic_param:get()
---gunpipper_auto_movement_updown		= gunpipper_updown_automatic_param:get()
+	--gunpipper_auto_movement_side 		= gunpipper_sideways_automatic_param:get()
+	--gunpipper_auto_movement_updown		= gunpipper_updown_automatic_param:get()
 
 	--print_message_to_user("IR Missile got lock = " ..tostring(ir_missile_lock_param:get()))
     if ir_missile_lock_param:get() > 0.0 then --vorher if ir_lock:get() > 0 then 

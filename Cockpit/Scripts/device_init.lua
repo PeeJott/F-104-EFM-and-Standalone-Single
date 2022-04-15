@@ -29,7 +29,6 @@ creators[devices.HUD_SYSTEM] 			={"avLuaDevice", LockOn_Options.script_path.."HU
 creators[devices.AVIONIC_SYSTEM]		={"avLuaDevice", LockOn_Options.script_path.."Systems/Avionic_System.lua"}
 
 creators[devices.WEAPON_SYSTEM]         ={"avSimpleWeaponSystem",LockOn_Options.script_path.."Systems/weapon_system.lua"}
-creators[devices.WEAPON_PANEL]			={"avLuaDevice", LockOn_Options.script_path.."Systems/Weapon_Panel.lua"}
 
 creators[devices.CANOPY]          = {"avLuaDevice"           ,LockOn_Options.script_path.."Systems/canopy.lua"}
 
