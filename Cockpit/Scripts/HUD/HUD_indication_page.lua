@@ -58,3 +58,22 @@ GUN_PIPPER.element_params 		= {"GUNPIPPER_SIDE","GUNPIPPER_UPDOWN"}
 GUN_PIPPER.controllers    		= {{"move_left_right_using_parameter", 0, 1.0}, {"move_up_down_using_parameter", 1, 1.0}}
 AddHudElement(GUN_PIPPER)
 
+
+local circleColour = {255.0, 139.0, 50.0, 150.0}
+local circleMaterial = MakeMaterial(nil, circleColour)
+
+local circle			= CreateElement "ceCircle"
+--setSymbolCommonProperties(circle, name, pos, parent, controllers, material)
+--setStrokeSymbolProperties(circle)
+
+circle.name				= create_guid_string()
+circle.init_pos	    = {0.0, 0.0, 0.0}
+circle.radius			= {5.0, 6.0}
+circle.arc				= {0, math.pi * 2}
+circle.segment			= math.pi * 4 / 64
+circle.gap				= math.pi * 4 / 64
+circle.segment_detail	= 4
+circle.dashed		= false
+circle.material = circleMaterial
+
+AddHudElement(circle)

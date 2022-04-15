@@ -10,7 +10,6 @@ render_debug_info = false
 local gettext = require("i_18n")
 _ = gettext.translate
 
-device_timer_dt     = 0.2
 MaxThreats          = 16
 EmitterLiveTime     = 7.0
 EmitterSoundTime    = 0.5
@@ -66,8 +65,8 @@ power_bus_handle = ELECTRIC_SYSTEM.NO_2_AC_BUS
 ---------------------------------------------------------------------------------
 
 
-update_time_step = 0.01666		--0.0166 --once every 1/60 sec
---update_time_step = 0.1666		--0.166 --once every 6 times a sec
+update_time_step = 0.05
+device_timer_dt     = update_time_step
 
 make_default_activity(update_time_step) 
 dev 	    = GetSelf()

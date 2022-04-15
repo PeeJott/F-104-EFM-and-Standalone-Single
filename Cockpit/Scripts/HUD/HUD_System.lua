@@ -1,11 +1,12 @@
-dofile(LockOn_Options.script_path.."command_defs.lua")
+dofile(LockOn_Options.script_path .."command_defs.lua")
 dofile(LockOn_Options.script_path .. "devices.lua")
 dofile(LockOn_Options.script_path .. "Systems/weapon_system.lua")
+dofile(LockOn_Options.script_path .. "avRadar/Device/Radar_init.lua")
 
 
 
 dev = GetSelf()
-local update_time_step = 0.001 --update will be called 1000 times per second
+local update_time_step = 0.01
 make_default_activity(update_time_step)
 local sensor_data = get_base_data()
 
@@ -22,8 +23,10 @@ dev:listen_command(Keys.GunPipper_Automatic)
 local gunpipper_horizontal_movement_param = get_param_handle("GUNPIPPER_SIDE")
 local gunpipper_vertical_movement_param = get_param_handle("GUNPIPPER_UPDOWN")
 local gunpipper_center_param = get_param_handle("GUNPIPPER_CENTER")
+
 local gunpipper_sideways_automatic_param = get_param_handle("WS_GUN_PIPER_AZIMUTH")
 local gunpipper_updown_automatic_param = get_param_handle("WS_GUN_PIPER_ELEVATION")
+
 local target_range_param = get_param_handle("WS_TARGET_RANGE")
 
 gunpipper_center_param:set(0.0)
@@ -110,7 +113,8 @@ function post_initialize()
 	--gunpipper_horizontal_movement_param:set(0.0)
 	--gunpipper_vertical_movement_param:set(0.0)
 	
-
+	-- for testing:
+	gunpipper_mode = 1
 end
 
 
@@ -123,27 +127,25 @@ function SetCommand(command,value)
 end
 
 function update()
+	if gunpipper_mode == 1 then
+			
+ 		local mode = Radar.mode_h:get()	
+		if mode == 3 then -- TRACKING
+			local target_az = Radar.stt_azimuth_h:get()
+			local target_el = Radar.stt_elevation_h:get()
 
-	
-	
-	if (gunpipper_mode == 1) then
-		gunpipper_horizontal_movement_param:set(gunpipper_sideways_automatic_param:get())
-		gunpipper_vertical_movement_param:set(gunpipper_updown_automatic_param:get())
-		end
-	
-	--if target_range_param:get() > 0.0 then
-		--print_message_to_user("Target aquired")
-		--print_message_to_user("Target Range  " tostring (target_range_param:get()))
-	--else
-		--target_range_param:set(800.0)
-		--print_message_to_user("Range set to 800m")
-	end
-	
-	
-	
-	
-	
+			gunpipper_horizontal_movement_param:set(target_az)
+			gunpipper_vertical_movement_param:set(target_el)
 
+			if target_range_param:get() > 0.0 then
+				print_message_to_user("Target Range  " .. tostring(target_range_param:get()))			
+			end
+		else
+			gunpipper_horizontal_movement_param:set(0.0)
+			gunpipper_vertical_movement_param:set(0.0)
+		end		
+	end	
+end	
 
 need_to_be_closed = false
 

@@ -1,9 +1,10 @@
 dofile(LockOn_Options.script_path.."ElectricSystems/electric_system_api.lua")
+dofile(LockOn_Options.script_path.."avRadar/Device/Radar_init.lua")
 dofile(LockOn_Options.script_path.."command_defs.lua")
 
 local dev = GetSelf()
 
-local update_time_step = 0.05
+local update_time_step = 0.01
 make_default_activity(update_time_step)
 
 local sensor_data = get_base_data()
@@ -35,9 +36,11 @@ local ir_missile_des_az_param = get_param_handle("WS_IR_MISSILE_SEEKER_DESIRED_A
 local ir_missile_des_el_param = get_param_handle("WS_IR_MISSILE_SEEKER_DESIRED_ELEVATION")
 local stt_azimuth_h 	= get_param_handle("RADAR_STT_AZIMUTH")
 local stt_elevation_h 	= get_param_handle("RADAR_STT_ELEVATION")
---local gunpipper_sideways_automatic_param = get_param_handle("WS_GUN_PIPER_AZIMUTH")
---local gunpipper_updown_automatic_param = get_param_handle("WS_GUN_PIPER_ELEVATION")
---local target_range_param = get_param_handle("WS_TARGET_RANGE")
+
+local gunpipper_sideways_automatic_param = get_param_handle("WS_GUN_PIPER_AZIMUTH")
+local gunpipper_updown_automatic_param = get_param_handle("WS_GUN_PIPER_ELEVATION")
+local target_range_param = get_param_handle("WS_TARGET_RANGE")
+
 local station_1_selector = get_param_handle("PYLON_ONE_SELECTOR_LIGHT")
 local station_2_selector = get_param_handle("PYLON_TWO_SELECTOR_LIGHT")
 local station_3_selector = get_param_handle("PYLON_THREE_SELECTOR_LIGHT")
@@ -361,44 +364,34 @@ function post_initialize()
 end
 
 function update()
-	
-	--gunpipper_auto_movement_side 		= gunpipper_sideways_automatic_param:get()
-	--gunpipper_auto_movement_updown		= gunpipper_updown_automatic_param:get()
+		
+ 	local mode = Radar.mode_h:get()	
+	if mode == 3 then -- TRACKING
+		local target_range = Radar.stt_range_h:get()
+		local target_az = Radar.stt_azimuth_h:get()
+		local target_el = Radar.stt_elevation_h:get()
 
+		-- Slew the seeker to the target
+		-- This feature is most likely not available in a real F-104G
+		ir_missile_des_az_param:set(target_az)		
+		ir_missile_des_el_param:set(target_el)
+
+
+		--gunpipper_sideways_automatic_param:set(ir_missile_des_az_param)
+		--gunpipper_updown_automatic_param:set(target_el)
+
+		dev:set_target_range(target_range)
+	else
+		ir_missile_des_az_param:set(0.0)
+		ir_missile_des_el_param:set(0.0)
+		dev:set_target_range(1200.0)
+	end
+	
 	--print_message_to_user("IR Missile got lock = " ..tostring(ir_missile_lock_param:get()))
     if ir_missile_lock_param:get() > 0.0 then --vorher if ir_lock:get() > 0 then 
         print_message_to_user("Missile Lock")
 
 	end
-	
-	--[[if ir_missile_az_param:get() > 0.0 then
-		print_message_to_user("Target_Azimuth " ..tostring(ir_missile_az_param:get()))
-	end
-	
-	
-		--if ir_missile_az_param:get() > 0.0 then
-		--	print_message_to_user("Target_Azimuth " ..tostring(ir_missile_az_param:get()))
-		--end
-		--
-		--if ir_missile_el_param:get() > 0.0 then
-		--	print_message_to_user("Target_Elevation " ..tostring(ir_missile_el_param:get()))
-		--end
-	else	
-
-		-- radar is providíng target position, but it no lock was achieved yet
-	    if ir_missile_des_az_param:get() ~= 0.0 then
-			print_message_to_user("Desired Azimuth " ..tostring(ir_missile_des_az_param:get()))
-		end
-		
-		if ir_missile_des_el_param:get() ~= 0.0 then
-			print_message_to_user("Desired Elevation " ..tostring(ir_missile_des_el_param:get()))
-		end
-	end
-
-	
-	--print_message_to_user("GunPipper_Automatic_Sideways " ..tostring(gunpipper_auto_movement_side))
-	--print_message_to_user("GunPipper_Automatic_UpDown " ..tostring(gunpipper_auto_movement_updown))]]
-
 end
 
 need_to_be_closed = false

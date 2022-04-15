@@ -43,8 +43,8 @@ DEBUG_ACTIVE 	= true
 
 
 
-update_time_step 	= 0.01666		--0.166 --once every 6 times a sec
-device_timer_dt		= 0.01666
+update_time_step 	= 0.05
+device_timer_dt		= update_time_step
 
 make_default_activity(update_time_step) 
 
@@ -85,8 +85,8 @@ Radar = 	{
 				tdc_ele_up_h 	= get_param_handle("RADAR_TDC_ELEVATION_AT_RANGE_UPPER"),
 				tdc_ele_down_h 	= get_param_handle("RADAR_TDC_ELEVATION_AT_RANGE_LOWER"),
 				
-				ws_ir_slave_azimuth_h	= get_param_handle("WS_IR_MISSILE_SEEKER_DESIRED_AZIMUTH"),
-				ws_ir_slave_elevation_h	= get_param_handle("WS_IR_MISSILE_SEEKER_DESIRED_ELEVATION"),
+				--ws_ir_slave_azimuth_h	= get_param_handle("WS_IR_MISSILE_SEEKER_DESIRED_AZIMUTH"),
+				--ws_ir_slave_elevation_h	= get_param_handle("WS_IR_MISSILE_SEEKER_DESIRED_ELEVATION"),
 				
 				iff_status_h			= get_param_handle("IFF_INTERROGATOR_STATUS"),
 				bit_h 					= get_param_handle("RADAR_BIT"),
@@ -194,20 +194,7 @@ function update()
 	Sensor_Data_Raw = get_base_data()
 		
 	Radar.tdc_ele_up_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() + (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))
-	Radar.tdc_ele_down_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() - (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))
-	
- 	mode = Radar.mode_h:get()
-	
-	if mode == 3 then -- TRACKING
-		az = Radar.stt_azimuth_h:get()
-		Radar.ws_ir_slave_azimuth_h:set(az)
-		el = Radar.stt_elevation_h:get()
-		Radar.ws_ir_slave_elevation_h:set(el)
-	else
-		Radar.ws_ir_slave_azimuth_h:set(0.0)
-		Radar.ws_ir_slave_elevation_h:set(0.0)
-	end
-	
+	Radar.tdc_ele_down_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() - (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))	
 end
 
 
