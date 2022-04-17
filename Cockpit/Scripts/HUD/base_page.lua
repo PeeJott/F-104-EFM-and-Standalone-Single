@@ -53,6 +53,7 @@ cockpit_base_clipping_mask.isvisible		= false --erstmal zum testen, dann auf fal
 Add(cockpit_base_clipping_mask)
 ---------------------------globale Clipping-Mask zugefügt------------------------------------------------------------------------
 
-dofile(LockOn_Options.script_path.."HUD/HUD_indication_page.lua")--wird geladen, weil bei falschgeschrieben wird sie als Fehler angezeigt...
+--dofile(LockOn_Options.script_path.."HUD/HUD_indication_page.lua")--wird geladen, weil bei falschgeschrieben wird sie als Fehler angezeigt...
+dofile(LockOn_Options.script_path.."HUD/optical_sight.lua")
 
  

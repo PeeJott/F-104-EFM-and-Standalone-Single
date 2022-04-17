@@ -20,6 +20,9 @@ dev:listen_command(Keys.GunPipper_Left)
 dev:listen_command(Keys.GunPipper_Center)
 dev:listen_command(Keys.GunPipper_Automatic) 
 
+local hud_roll = get_param_handle("HUD_ROLL")
+
+
 local gunpipper_horizontal_movement_param = get_param_handle("GUNPIPPER_SIDE")
 local gunpipper_vertical_movement_param = get_param_handle("GUNPIPPER_UPDOWN")
 local gunpipper_center_param = get_param_handle("GUNPIPPER_CENTER")
@@ -127,24 +130,28 @@ function SetCommand(command,value)
 end
 
 function update()
-	if gunpipper_mode == 1 then
-			
- 		local mode = Radar.mode_h:get()	
-		if mode == 3 then -- TRACKING
-			local target_az = Radar.stt_azimuth_h:get()
-			local target_el = Radar.stt_elevation_h:get()
+	hud_roll:set(sensor_data.getRoll())
 
-			gunpipper_horizontal_movement_param:set(target_az)
-			gunpipper_vertical_movement_param:set(target_el)
+	-- No need to set the azimuth and elevation of the gun pipper as it is directly linked to the param_handles of the WeaponSystem
+	-- This is not ideal to support different gun pipper modes, but necessary to loose a frame.
+	-- Instead the different modes can be realized by having multiple gun pippers that are set invisible depending on the mode. 
 
-			if target_range_param:get() > 0.0 then
-				print_message_to_user("Target Range  " .. tostring(target_range_param:get()))			
-			end
-		else
-			gunpipper_horizontal_movement_param:set(0.0)
-			gunpipper_vertical_movement_param:set(0.0)
-		end		
-	end	
+	--if gunpipper_mode == 1 then
+	--		
+ 	--	local mode = Radar.mode_h:get()	
+	--	if mode == 3 then -- TRACKING
+	--		--local target_az = Radar.stt_azimuth_h:get()
+	--		--local target_el = Radar.stt_elevation_h:get()
+	--		local gunpipper_az = gunpipper_sideways_automatic_param:get() --* GetScale()
+	--		local gunpipper_el = gunpipper_updown_automatic_param:get() --* GetScale()
+	--
+	--		gunpipper_horizontal_movement_param:set(gunpipper_az)
+	--		gunpipper_vertical_movement_param:set(gunpipper_el)
+	--	else
+	--		gunpipper_horizontal_movement_param:set(0.0)
+	--		gunpipper_vertical_movement_param:set(0.0)
+	--	end		
+	--end	
 end	
 
 need_to_be_closed = false
