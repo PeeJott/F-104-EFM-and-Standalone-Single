@@ -4,7 +4,7 @@ dofile(LockOn_Options.script_path.."command_defs.lua")
 
 local dev = GetSelf()
 
-local update_time_step = 0.01
+local update_time_step = 0.05
 make_default_activity(update_time_step)
 
 local sensor_data = get_base_data()
@@ -380,7 +380,13 @@ function update()
 		--gunpipper_sideways_automatic_param:set(ir_missile_des_az_param)
 		--gunpipper_updown_automatic_param:set(target_el)
 
-		dev:set_target_range(target_range)
+		-- Limit the range that is set to the weapon system to the maximum effective range of the gun
+		-- If this is not done, the gun pipper will move strangely at it has a lot of lead for the long ranges.
+		if target_range < 1200.0 then
+			dev:set_target_range(target_range)
+		else
+			dev:set_target_range(1200.0)
+		end
 	else
 		ir_missile_des_az_param:set(0.0)
 		ir_missile_des_el_param:set(0.0)

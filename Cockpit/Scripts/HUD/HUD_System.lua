@@ -6,7 +6,7 @@ dofile(LockOn_Options.script_path .. "avRadar/Device/Radar_init.lua")
 
 
 dev = GetSelf()
-local update_time_step = 0.01
+local update_time_step = 0.05
 make_default_activity(update_time_step)
 local sensor_data = get_base_data()
 
@@ -21,7 +21,7 @@ dev:listen_command(Keys.GunPipper_Center)
 dev:listen_command(Keys.GunPipper_Automatic) 
 
 local hud_roll = get_param_handle("HUD_ROLL")
-
+local hud_range = get_param_handle("HUD_RANGE")
 
 local gunpipper_horizontal_movement_param = get_param_handle("GUNPIPPER_SIDE")
 local gunpipper_vertical_movement_param = get_param_handle("GUNPIPPER_UPDOWN")
@@ -123,19 +123,39 @@ end
 
 function SetCommand(command,value)	
 
- if command_table[command] then
+	if command_table[command] then
         command_table[command](value)
-    end
+	end
 	
 end
 
 function update()
 	hud_roll:set(sensor_data.getRoll())
 
+	local mode = Radar.mode_h:get()	
+	if mode == 3 then -- TRACKING
+		local max_range = 1200
+		local range = target_range_param:get()
+
+		if range >= max_range then
+			hud_range:set(180.1)
+		elseif range <= 0 then
+			hud_range:set(0.0)
+		else
+			-- 0°	= 0m
+			-- 90°	= 600m
+			-- 180° = 1200m
+			local degree = (range/max_range) * 180
+			hud_range:set(degree)
+		end
+	else
+		hud_range:set(0.0)
+	end
+
 	-- No need to set the azimuth and elevation of the gun pipper as it is directly linked to the param_handles of the WeaponSystem
 	-- This is not ideal to support different gun pipper modes, but necessary to loose a frame.
 	-- Instead the different modes can be realized by having multiple gun pippers that are set invisible depending on the mode. 
-
+	--
 	--if gunpipper_mode == 1 then
 	--		
  	--	local mode = Radar.mode_h:get()	

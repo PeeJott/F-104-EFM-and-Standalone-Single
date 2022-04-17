@@ -54,7 +54,7 @@ otpical_sight_roll.controllers    		= {{"rotate_using_parameter", 0, 1.0}}
 AddHudElement(otpical_sight_roll)
 
 
-local optical_sight_colour = {255.0, 139.0, 50.0, 150.0}
+local optical_sight_colour = {251.0, 114.0, 0.0, 200.0 } -- {255.0, 139.0, 50.0, 150.0}
 local optical_sight_material = MakeMaterial(nil, optical_sight_colour)
 
 -- 50 milliradian diameter ring, 1 millirad thick
@@ -85,19 +85,41 @@ center_dot.dashed		= false
 center_dot.material = optical_sight_material
 AddHudElement(center_dot)
 
--- 5 milliradian range bar
-local range_bar			= CreateElement "ceCircle"
-range_bar.name				= create_guid_string()
-range_bar.init_pos	        = {0.0, 0.0, 0.0}
-range_bar.parent_element	= otpical_sight_base.name
-range_bar.radius			= {19.5, 24.5}
-range_bar.arc				= {math.pi, math.pi * 2}
-range_bar.segment			= math.pi * 4 / 64
-range_bar.gap				= math.pi * 4 / 64
-range_bar.segment_detail	= 4
-range_bar.dashed		= false
-range_bar.material = optical_sight_material
-AddHudElement(range_bar)
+
+local range_bar_segments=180 -- one segment for each degree
+for i=1,range_bar_segments do
+    -- 5 milliradian range bar
+    local range_bar			    = CreateElement "ceCircle"
+    range_bar.name				= create_guid_string()
+    range_bar.init_pos	        = {0.0, 0.0, 0.0}
+    range_bar.parent_element	= otpical_sight_base.name
+    range_bar.radius			= {19.5, 24.5}
+    range_bar.arc				= {math.pi, math.pi + ((math.pi/180) * i) }
+    range_bar.segment			= math.pi * 4 / 64
+    range_bar.gap				= math.pi * 4 / 64
+    range_bar.segment_detail	= 4
+    range_bar.dashed		    = false
+    range_bar.material          = optical_sight_material
+    range_bar.element_params    = {"HUD_RANGE"}
+    range_bar.controllers       = {{"parameter_in_range" ,0, i, (i+0.99999)} }
+    AddHudElement(range_bar)
+
+    -- Add the small index at the end of the range bar
+    local range_index			= CreateElement "ceCircle"
+    range_index.name			= create_guid_string()
+    range_index.init_pos	    = {0.0, 0.0, 0.0}
+    range_index.parent_element	= otpical_sight_base.name
+    range_index.radius			= {17.0, 19.5}
+    range_index.arc				= {(math.pi + ((math.pi/180) * i))-(0.0174533*5), math.pi + ((math.pi/180) * i)}
+    range_index.segment			= math.pi * 4 / 64
+    range_index.gap				= math.pi * 4 / 64
+    range_index.segment_detail	= 4
+    range_index.dashed		    = false
+    range_index.material        = optical_sight_material
+    range_index.element_params  = {"HUD_RANGE"}
+    range_index.controllers     = {{"parameter_in_range" ,0, i, (i+0.99999)} }
+    AddHudElement(range_index)
+end
 
 
 local INDEX_SIZE = 0.5
