@@ -1,6 +1,7 @@
 dofile(LockOn_Options.script_path.."HUD/HUD_definitions.lua")
 dofile(LockOn_Options.common_script_path.."devices_defs.lua")
 dofile(LockOn_Options.common_script_path .."elements_defs.lua")
+dofile(LockOn_Options.script_path.."definitions.lua")
 
 local ClippingMaskGlobal 	= MakeMaterial(nil,{232,51,0,150}) --Lachsfarben und Vollton {R,G,B,H} von H-Wert 255 auf 150 runtergesetzt
 local ClippingMaskSpecial 	= MakeMaterial(nil,{0,159,229,150}) --hellblau-türkis und Vollton 
@@ -53,7 +54,58 @@ cockpit_base_clipping_mask.isvisible		= false --erstmal zum testen, dann auf fal
 Add(cockpit_base_clipping_mask)
 ---------------------------globale Clipping-Mask zugefügt------------------------------------------------------------------------
 
---dofile(LockOn_Options.script_path.."HUD/HUD_indication_page.lua")--wird geladen, weil bei falschgeschrieben wird sie als Fehler angezeigt...
+
+
+
+----------------------------- Add the optical sight -----------------------------------
+
+--dofile(LockOn_Options.script_path.."HUD/HUD_indication_page.lua") -- the old texture based static gun pipper
 dofile(LockOn_Options.script_path.."HUD/optical_sight.lua")
 
- 
+local otpical_sight_base		= CreateElement "ceSimple"
+otpical_sight_base.name  					= create_guid_string()
+otpical_sight_base.init_pos				= {0.0, 0.0, 0.0}
+otpical_sight_base.element_params 		= { HUD.POWER }  -- Only enable gunsight if power in bus
+otpical_sight_base.controllers    		= {{"parameter_in_range" ,0, 0.9, 1.1}}
+AddHudElement(otpical_sight_base)
+
+
+local otpical_sight_manual_base		= CreateElement "ceSimple"
+otpical_sight_manual_base.name  					= create_guid_string()
+otpical_sight_manual_base.init_pos				= {0.0, 0.0, 0.0}
+otpical_sight_manual_base.parent_element	= otpical_sight_base.name
+otpical_sight_manual_base.element_params 		= { HUD.MANUAL, HUD.DEPRESSION }
+otpical_sight_manual_base.controllers    		= {{"parameter_in_range" ,0, 0.9, 1.1}, {"move_up_down_using_parameter", 1, 1.0}}
+AddHudElement(otpical_sight_manual_base)
+
+local otpical_sight_manual_roll		= CreateElement "ceSimple"
+otpical_sight_manual_roll.name  					= create_guid_string()
+otpical_sight_manual_roll.init_pos				= {0.0, 0.0, 0.0}
+otpical_sight_manual_roll.parent_element	= otpical_sight_manual_base.name
+otpical_sight_manual_roll.element_params 		= { HUD.ROLL }
+otpical_sight_manual_roll.controllers    		= {{"rotate_using_parameter", 0, 1.0}}
+AddHudElement(otpical_sight_manual_roll)
+
+AddOpticalSight(otpical_sight_manual_base.name, otpical_sight_manual_roll.name)
+
+
+
+local otpical_sight_auto_base		= CreateElement "ceSimple"
+otpical_sight_auto_base.name  					= create_guid_string()
+otpical_sight_auto_base.init_pos				= {0.0, 0.0, 0.0}
+otpical_sight_auto_base.parent_element	= otpical_sight_base.name
+otpical_sight_auto_base.element_params 		= { HUD.AUTO, HUD.AUTO_AZIMUTH, HUD.AUTO_ELEVATION }
+otpical_sight_auto_base.controllers    		= {{"parameter_in_range" ,0, 0.9, 1.1}, {"move_left_right_using_parameter", 1, 1.0}, {"move_up_down_using_parameter", 2, 1.0}}
+AddHudElement(otpical_sight_auto_base)
+
+local otpical_sight_auto_roll		= CreateElement "ceSimple"
+otpical_sight_auto_roll.name  					= create_guid_string()
+otpical_sight_auto_roll.init_pos				= {0.0, 0.0, 0.0}
+otpical_sight_auto_roll.parent_element	= otpical_sight_auto_base.name
+otpical_sight_auto_roll.element_params 		= { HUD.ROLL }
+otpical_sight_auto_roll.controllers    		= {{"rotate_using_parameter", 0, 1.0}}
+AddHudElement(otpical_sight_auto_roll)
+
+AddOpticalSight(otpical_sight_auto_base.name, otpical_sight_auto_roll.name)
+
+

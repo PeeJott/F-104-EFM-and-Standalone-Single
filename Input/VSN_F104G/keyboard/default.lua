@@ -248,8 +248,6 @@ join(res.keyCommands,{
 --Gunpipper Commands
 {combos = {{key = 'ü', reformers = {'RAlt'}}},	down = Keys.GunPipper_Up,				name = _('Crosshairs-Up'),		category = _('Gunpipper')},
 {combos = {{key = 'ä', reformers = {'RAlt'}}},	down = Keys.GunPipper_Down,				name = _('Crosshairs-Down'),	category = _('Gunpipper')},
-{combos = {{key = '#', reformers = {'RAlt'}}},	down = Keys.GunPipper_Right,			name = _('Crosshairs-Right'),	category = _('Gunpipper')},
-{combos = {{key = 'ö', reformers = {'RAlt'}}},	down = Keys.GunPipper_Left,				name = _('Crosshairs-Left'),	category = _('Gunpipper')},
 {combos = {{key = '-', reformers = {'RAlt'}}},	down = Keys.GunPipper_Center,			name = _('Crosshairs-Center'),	category = _('Gunpipper')},
 {combos = {{key = '.', reformers = {'RAlt'}}},	down = Keys.GunPipper_Automatic,			name = _('Crosshairs-Automatic'),	category = _('Gunpipper')},
 

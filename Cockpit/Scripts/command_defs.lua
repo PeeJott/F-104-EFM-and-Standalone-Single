@@ -91,8 +91,6 @@ Keys =
 	-----------------------------HUD--------------------------------
 	GunPipper_Up								= __custom_counter(),
 	GunPipper_Down								= __custom_counter(),
-	GunPipper_Right								= __custom_counter(),
-	GunPipper_Left								= __custom_counter(),
 	GunPipper_Center							= __custom_counter(),
 	GunPipper_Automatic							= __custom_counter(),
 	-----------------------------------------------------------------

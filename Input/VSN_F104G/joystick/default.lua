@@ -221,8 +221,6 @@ join(res.keyCommands,{
 --Gunpipper Commands
 {down = Keys.GunPipper_Up,			name = _('Crosshairs-Up'),			category = _('Gunpipper')},
 {down = Keys.GunPipper_Down,			name = _('Crosshairs-Down'),			category = _('Gunpipper')},
-{down = Keys.GunPipper_Right,			name = _('Crosshairs-Right'),			category = _('Gunpipper')},
-{down = Keys.GunPipper_Left,			name = _('Crosshairs-Left'),			category = _('Gunpipper')},
 {down = Keys.GunPipper_Center,			name = _('Crosshairs-Center'),			category = _('Gunpipper')},
 {down = Keys.GunPipper_Automatic,		name = _('Crosshairs-Automatic'),		category = _('Gunpipper')},
 })
