@@ -10,6 +10,7 @@
 #include "Fuel_System.h"
 #include "BaseComponent.h"
 #include "Timer.h"
+#include "ElectricSystemAPI.h"
 
 //=========================================================================//
 //
@@ -27,7 +28,7 @@
 class FlightModel
 {
 public:
-	FlightModel(State& state, Input& input, Engine& engine, Airframe& airframe); //Engine& engine NEU 21FEb21
+	FlightModel(State& state, Input& input, Engine& engine, Airframe& airframe, ElectricSystemAPI& electricSystemAPI); //Engine& engine NEU 21FEb21
 
 	virtual void zeroInit();
 	virtual void coldInit();
@@ -87,6 +88,7 @@ private:
 	Input& m_input;
 	Engine& m_engine; //neu 21Feb21 // wieder rausgenommen
 	Airframe& m_airframe;
+	ElectricSystemAPI& m_electricSystemAPI;
 	
 
 	//--------------Aerodynamic Values--------------------------------
@@ -113,7 +115,7 @@ private:
 	//---------Pitch Stability-augmentation--------------------------
 	double m_CmqStAg = 0.0;
 	double m_CmaDOTStAg = 0.0;
-	double m_StabAugSys = 0.0;
+	double m_PitStabSys = 0.0;
 	double m_pitchHydroForce = 0.0;
 
 
@@ -123,6 +125,7 @@ private:
 	double m_YawStabSys = 0.0;
 	double m_CnrMulti = 0.0;
 	double m_yawHydroForce = 0.0;
+	
 	//---------Roll-Stab System--------------------------------------
 	double m_ClpStab = 0.0;
 	double m_ClrStab = 0.0;
@@ -130,6 +133,7 @@ private:
 	double m_ClrMulti = 0.0;
 	double m_ClpMulti = 0.0;
 	double m_rollHydroForce = 0.0;
+	
 
 	//--------------Formula-Parts STAB--------------------------------
 	//s : area
@@ -298,7 +302,7 @@ double FlightModel::getCockpitShake()
 
 double FlightModel::getStabAugSystem()
 {
-	return m_StabAugSys;
+	return m_PitStabSys;
 }
 
 double FlightModel::getYawStabAugSystem()

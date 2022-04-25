@@ -7,6 +7,7 @@
 #include "AeroData_1.h"
 #include "Engine.h"
 #include "ElectricSystemAPI.h"
+#include "RamAirTurbine.h"
 #include "Maths.h"
 #include "Actuators.h"
 #include "BaseComponent.h"
@@ -30,7 +31,7 @@
 class Airframe
 {
 public:
-	Airframe(State& state, Input& input, Engine& engine, ElectricSystemAPI& electricSystemAPI); 
+	Airframe(State& state, Input& input, Engine& engine, ElectricSystemAPI& electricSystemAPI, RamAirTurbine& ramAirTurbine); 
 	
 	~Airframe();
 
@@ -48,15 +49,26 @@ public:
 	inline double setGearLPosition(double dt);
 	inline double setGearRPosition(double dt);
 	inline double setGearNPosition(double dt);
+	void updateGear();
 	
 	//Airbrake
 	//inline void setAirbrakePosition(double position);//OLD
 	inline double setAirbrakePosition(double dt);
+	void updateAirBrake();
 	
 	//Hydraulik System
 	void hydraulicPump();
 	inline double getHydraulicPumpState();
 	inline double getHyraulicPumpPower();
+	inline double getHydroPumpONE();
+	inline double getHydroPumpTWO();
+	inline double getEmergencyHydroPump();
+
+	void hydroGaugeSysONE();
+	void hydroGaugeSysTWO();
+	inline double getHydroSysGaugeONE();
+	inline double getHydroSysGaugeTWO();
+
 
 
 	//Fuel
@@ -205,14 +217,15 @@ public:
 	inline double getHorizonPitch();
 
 	//-----------Crosshair Test Functions-------------
-	void crossHairHori();
-	void crossHairVerti();
-	inline double getCrossHairHori();
-	inline double getCrossHairVerti();
-	void CHforceMovementV(double dt);
-	void CHforceMovementH(double dt);
-	void moveSightHorizontal();
-	void moveSightVertical();
+	//-----------auskommentiert, da jetzt über Lua----
+	//void crossHairHori();
+	//void crossHairVerti();
+	//inline double getCrossHairHori();
+	//inline double getCrossHairVerti();
+	//void CHforceMovementV(double dt);
+	//void CHforceMovementH(double dt);
+	//void moveSightHorizontal();
+	//void moveSightVertical();
 	//inline double getSightHorizontal();//vielleicht überflüssig
 	//inline double getSIghtVertical();//vielleicht überflüssig
 
@@ -224,13 +237,15 @@ public:
 	inline double overSpeedFlapDamageInd();
 
 	//----------Weapons-Pylon_Indicator_Lights--------------------
-	void pylonIndLights();
+	
 	inline double gunIndSwitch();
 
+	//-----------Jetzt in CockpitScripts--------------------------
+	/*void pylonIndLights();
 	inline double getPylonIndLightG();
 	inline double getPylonIndLightA();
-
-
+	*/
+	//------------------------------------------------------------
 
 	//---------Overspeed to Damage-Modell---------------
 	double osGearDamage();
@@ -469,6 +484,7 @@ private:
 	Input& m_input;
 	Engine& m_engine; //neu 21Feb21 // wieder rausgenommen
 	ElectricSystemAPI& m_electricSystemAPI;
+	RamAirTurbine& m_ramAirTurbine;
 	std::vector<DamageDelta> m_damageStack;
 
 	//Gear
@@ -476,12 +492,11 @@ private:
 	double m_gearRPosition = 0.0;
 	double m_gearNPosition = 0.0;
 
+	double m_gear = 0.0;
+
 	double m_gearLLamp = 0.0;
 	double m_gearRLamp = 0.0;
 	double m_gearFLamp = 0.0;
-
-	double m_pylonIndLightG = 0.0;
-	double m_pylonIndLightA = 0.0;
 
 	double m_gearOversped = 0.0;
 
@@ -492,6 +507,8 @@ private:
 	//aerodynamic surfaces
 	double m_flapsPosition = 0.0;
 	double m_speedBrakePosition = 0.0;
+	double m_speedBrakeFunctional = 0.0;
+	double m_airbrake = 0.0;
 	double m_hookPosition = 0.0;
 
 	double m_aileronLeft = 0.0;
@@ -560,7 +577,9 @@ private:
 	double m_flapsIndLEPos = 0.0;
 
 	//------------Pylon Indicator Lights and switches--------------
-	double m_pylonIndLight = 0.0;
+	//double m_pylonIndLight = 0.0; //jetzt in CockpitScripts
+	//double m_pylonIndLightG = 0.0;//jetzt in CockpitScripts
+	//double m_pylonIndLightA = 0.0;//jetzt in CockpitScripts
 	double m_gunSwitch = 0.0;
 
 	//-----------Instrument Lights--------------------------------
@@ -652,6 +671,8 @@ private:
 	double m_hydroSystemStatus = 0.0;
 	double m_hydroPower = 0.0;
 
+	double m_hydroSysOneVALUE = 0.0;
+	double m_hydroSysTwoVALUE = 0.0;
 
 
 
@@ -729,14 +750,14 @@ bool Airframe::areFlapsOperating()
 
 double Airframe::setGearLPosition(double dt)
 {
-		double input = m_input.getGearToggle();
+		double input = m_gear;
 		return m_actuatorGearL.inputUpdate(input, dt);	
 }
 
 double Airframe::setGearRPosition(double dt)
 {
 	
-		double input = m_input.getGearToggle();
+		double input = m_gear;
 		return m_actuatorGearR.inputUpdate(input, dt);
 
 }
@@ -744,14 +765,14 @@ double Airframe::setGearRPosition(double dt)
 double Airframe::setGearNPosition(double dt)
 {	
 	
-		double input = m_input.getGearToggle();
+		double input = m_gear;
 		return m_actuatorGearN.inputUpdate(input, dt);
 	
 }
 
 double Airframe::setAirbrakePosition(double dt)
 {
-	double input = m_input.getAirbrake();
+	double input = m_airbrake;
 	return m_actuatorAirbrk.inputUpdate(input, dt);
 }
 
@@ -1196,7 +1217,8 @@ double Airframe::gunIndSwitch()
 	return m_gunSwitch;
 }
 
-double Airframe::getPylonIndLightG()
+//-----------PylonIndLights jetzt durch CockpitScripts--------------
+/*double Airframe::getPylonIndLightG()
 {
 	return m_pylonIndLightG;
 }
@@ -1205,6 +1227,9 @@ double Airframe::getPylonIndLightA()
 {
 	return m_pylonIndLightA;
 }
+*/
+
+//----------Hydraulic-Stuff-------------
 
 double Airframe::getHydraulicPumpState()
 {
@@ -1214,6 +1239,31 @@ double Airframe::getHydraulicPumpState()
 double Airframe::getHyraulicPumpPower()
 {
 	return m_hydroPower;
+}
+
+double Airframe::getHydroPumpONE()
+{
+	return m_hydroPumpOne;
+}
+
+double Airframe::getHydroPumpTWO()
+{
+	return m_hydroPumpTwo;
+}
+
+double Airframe::getEmergencyHydroPump()
+{
+	return m_ramAirHydroPump;
+}
+
+double Airframe::getHydroSysGaugeONE()
+{
+	return m_hydroSysOneVALUE;
+}
+
+double Airframe::getHydroSysGaugeTWO()
+{
+	return m_hydroSysTwoVALUE;
 }
 
 
@@ -1260,6 +1310,8 @@ double Airframe::getAutoPilotInd()
 }
 
 //-------------CrossHair Test-Stuff-------------------------
+//-----------auskommentiert da über Lua---------------------
+/*
 double Airframe::getCrossHairHori()
 {
 	return m_crossHairHori;
@@ -1269,7 +1321,7 @@ double Airframe::getCrossHairVerti()
 {
 	return m_crossHairVerti;
 }
-
+*/
 //----------Damage-Stuff-------------------------------------
 
 double Airframe::getDamageElement(Damage element) const

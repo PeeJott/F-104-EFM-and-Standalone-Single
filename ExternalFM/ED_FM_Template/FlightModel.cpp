@@ -19,13 +19,15 @@ FlightModel::FlightModel
 	State& state,
 	Input& input,
 	Engine& engine, //NEU 21Feb21
-	Airframe& airframe
+	Airframe& airframe,
+	ElectricSystemAPI& electricSystemAPI
 	//der letzte Eintrag hier darf kein Komma haben!
 ) :
 	m_state(state),
 	m_input(input),
 	m_engine(engine), //NEU 21Feb21
 	m_airframe(airframe),
+	m_electricSystemAPI(electricSystemAPI),
 
 	m_scalarVelocity(0.0),
 	m_scalarVelocitySquared(0.0),
@@ -173,7 +175,7 @@ void FlightModel::zeroInit()
 	//------PitStabSystem----
 	m_CmqStAg = 0.0;
 	m_CmaDOTStAg = 0.0;
-	m_StabAugSys = 0.0;
+	m_PitStabSys = 0.0;
 	m_pitchHydroForce = 0.0;
 
 	//------RollStabSystem---
@@ -185,6 +187,7 @@ void FlightModel::zeroInit()
 	m_ClrMulti = 0.0;
 	m_ClpMulti = 0.0;
 	m_rollHydroForce = 0.0;
+	
 
 	//------YawStabSystem-----
 	m_CnpStab = 0.0;
@@ -193,6 +196,7 @@ void FlightModel::zeroInit()
 	Cnr_S = 0.0;
 	m_CnrMulti = 0.0;
 	m_yawHydroForce = 0.0;
+	
 
 	M_mcrit = 0.0;
 	M_mcrit_b = 0.0;
@@ -532,79 +536,136 @@ void FlightModel::calcLiftFlaps()
 
 void FlightModel::pitchStabAugSystem()
 {
-	if ((m_airframe.getCompressorDamage() >= 0.35) && (m_input.getElectricSystem() == 1.0))
+	double instElAvailable = 0.0;
+	instElAvailable = m_electricSystemAPI.GetEngineInstrumentAndIndicatorPower();
+
+	if (m_airframe.getHydroPumpTWO() == 1.0)
 	{
 		m_CmqStAg = CmqStAg(m_state.m_mach);
 		m_CmaDOTStAg = CmaDOTStAg(m_state.m_mach);
-		m_StabAugSys = 0.5;
+
+		if (instElAvailable == 1.0)
+		{
+			m_PitStabSys = 0.5;//das muss verändert werden weil sonst 3 StabAugSys die gleiche Variable bespielen!!!!
+		}
+		else
+		{
+			m_PitStabSys = 0.0;
+		}
 	}
-	else if ((m_airframe.getCompressorDamage() < 0.35) && (m_input.getElectricSystem() == 1.0))
+	else if (m_airframe.getHydroPumpTWO() == 0.0)
 	{
 		m_CmqStAg = 0.0;
 		m_CmaDOTStAg = 0.0;
-		m_StabAugSys = 1.0;
+
+		if (instElAvailable == 1.0)
+		{
+			m_PitStabSys = 1.0;
+		}
+		else
+		{
+			m_PitStabSys = 0.0;
+		}
+		
 	}
-	else if (m_input.getElectricSystem() == 0.0)
-	{
-		m_CmqStAg = 0.0;
-		m_CmaDOTStAg = 0.0;
-		m_StabAugSys = 0.0;
-	}
+	
 
 	m_pitchHydroForce = (m_airframe.getHyraulicPumpPower() / 2.0) * 1.25;
 }
 
 void FlightModel::yawStabAugSystem()
 {
-	if ((m_airframe.getCompressorDamage() >= 0.35) && (m_input.getElectricSystem() == 1.0))
+
+	double instElAvailable = 0.0;
+	instElAvailable = m_electricSystemAPI.GetEngineInstrumentAndIndicatorPower();
+
+	if (m_airframe.getHydroPumpONE() == 1.0)
 	{
 		m_CnrStab = (Cnr(m_state.m_mach) + CnrStab(m_state.m_mach));
 		m_CnrMulti = 2.0;
-		m_YawStabSys = 0.5;
-	}
-	else if ((m_airframe.getCompressorDamage() < 0.35) && (m_input.getElectricSystem() == 1.0))
-	{
-		m_CnrStab = Cnr(m_state.m_mach);
-		m_CnrMulti = 1.65;
-		m_YawStabSys = 1.0;
-		
-	}
-	else if (m_input.getElectricSystem() == 0.0)
-	{
-		
-		m_CnrStab = Cnr(m_state.m_mach);
-		m_CnrMulti = 1.65;
-		m_YawStabSys = 0.0;
-	}
 
+		if (instElAvailable == 1.0)
+		{
+			m_YawStabSys = 0.5;
+		}
+		else
+		{
+			m_YawStabSys = 0.0;
+		}
+
+	}
+	else if ((m_airframe.getHydroPumpONE() == 0.0) && (m_airframe.getEmergencyHydroPump() == 1.0))
+	{
+		m_CnrStab = 0.85 * (Cnr(m_state.m_mach) + CnrStab(m_state.m_mach));
+		m_CnrMulti = 1.85;
+
+		if (instElAvailable == 1.0)
+		{
+			m_YawStabSys = 0.75;//das soll dann wenn möglich gelb sein
+		}
+		else
+		{
+			m_YawStabSys = 0.0;
+		}
+
+
+	}
+	else if ((m_airframe.getHydroPumpONE() == 0.0) && (m_airframe.getEmergencyHydroPump() == 0.0))
+	{
+		m_CnrStab = Cnr(m_state.m_mach);
+		m_CnrMulti = 1.65;
+		
+		if (instElAvailable == 1.0)
+		{
+			m_YawStabSys = 1.0;
+		}
+		else
+		{
+			m_YawStabSys = 0.0;
+		}
+
+	}
+	
 	m_yawHydroForce = (m_airframe.getHyraulicPumpPower() / 2.0) * 1.25;
 }
 
 
 void FlightModel::rollStabAugSystem()
 {
-	if ((m_airframe.getCompressorDamage() >= 0.35) && (m_input.getElectricSystem() == 1.0))
+	double instElAvailable = 0.0;
+	instElAvailable = m_electricSystemAPI.GetEngineInstrumentAndIndicatorPower();
+
+	if (m_airframe.getHydroPumpTWO() == 1.0)
 	{
 		m_ClrStab = (Clr(m_state.m_mach) + ClrStab(m_state.m_mach));//1.55 zu 2.25 zu 4.0
 		m_ClrMulti = 3.0;
 		m_ClpMulti = 2.0;
-		m_RollStabSys = 0.5;
+
+		if (instElAvailable == 1.0)
+		{
+			m_RollStabSys = 0.5;//0.5 ist grünes Lämpchen
+		}
+		else
+		{
+			m_RollStabSys = 0.0;
+		}
+
 	}
-	else if ((m_airframe.getCompressorDamage() < 0.35) && (m_input.getElectricSystem() == 1.0))
+	else if (m_airframe.getHydroPumpTWO() == 0.0)
 	{
 		m_ClrStab = (Clr(m_state.m_mach));
 		m_ClrMulti = 1.65;
 		m_ClpMulti = 1.45;
-		m_RollStabSys = 1.0;
 
-	}
-	else if (m_input.getElectricSystem() == 0.0)
-	{
+		if (instElAvailable == 1.0)
+		{
+			m_RollStabSys = 1.0;//1.0 ist rotes Lämpchen
+		}
+		else
+		{
+			m_RollStabSys = 0.0;
+		}
 
-		m_CnrStab = (Clr(m_state.m_mach));
-		m_ClrMulti = 1.65;
-		m_ClpMulti = 1.45;
-		m_RollStabSys = 0.0;
 	}
 
 	//Hydraulic-Pump-Multiplyer for AileronEffectiveness

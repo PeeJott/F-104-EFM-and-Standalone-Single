@@ -48,12 +48,13 @@ static ElectricSystemAPI* s_electricSystemAPI = NULL;
 
 static Input* s_input = NULL;
 static State* s_state = NULL;
+static RamAirTurbine* s_ramAirTurbine = NULL;
 static Engine* s_engine = NULL; //NEU (s_input, s_state)// !!WICHTIG!! überall muss die Reihenfolge Input/State/Engine/Flightmodel sein, NICHT andersrum
 static ElectricSystem* s_electricSystem = NULL;
 static Fuelsystem* s_fuelsystem = NULL;
 static Airframe* s_airframe = NULL;
 static FlightModel* s_flightModel = NULL;
-static RamAirTurbine* s_ramAirTurbine = NULL;
+
 
 void init()
 {
@@ -64,20 +65,25 @@ void init()
 	s_ramAirTurbine = new RamAirTurbine(*s_state, *s_input);
 	s_engine = new Engine(*s_state, *s_input);	
 	s_fuelsystem = new Fuelsystem(*s_state, *s_input, *s_engine);
-	s_airframe = new Airframe(*s_state, *s_input, *s_engine, *s_electricSystemAPI);
+	s_airframe = new Airframe(*s_state, *s_input, *s_engine, *s_electricSystemAPI, *s_ramAirTurbine);
 	s_electricSystem = new ElectricSystem(*s_electricSystemAPI, *s_state, *s_input, *s_engine, *s_airframe, *s_ramAirTurbine);
-	s_flightModel = new FlightModel(*s_state, *s_input, *s_engine, *s_airframe);
+	s_flightModel = new FlightModel(*s_state, *s_input, *s_engine, *s_airframe, *s_electricSystemAPI);
 }
 
 void cleanup()
 {
+	delete s_electricSystemAPI;
 	delete s_input;
 	delete s_state;
+	delete s_ramAirTurbine;
 	delete s_engine;
+	delete s_electricSystem;
 	delete s_fuelsystem;
 	delete s_airframe;
 	delete s_flightModel;
+	
 
+	s_electricSystemAPI = NULL;
 	s_input = NULL;
 	s_state = NULL;
 	s_ramAirTurbine = NULL;
@@ -86,6 +92,7 @@ void cleanup()
 	s_airframe = NULL;
 	s_electricSystem = NULL;
 	s_flightModel = NULL;
+	
 
 }
 
@@ -1021,6 +1028,12 @@ void ed_fm_set_draw_args (EdDrawArgument * drawargs,size_t size)
 
 void ed_fm_set_fc3_cockpit_draw_args_v2(float* data, size_t size)
 {
+	data[30] = s_airframe->getHorizonRoll(); // Values for 3d-Horizon on Roll-Axis (+/- 180) -1.0 - 0.0 - +1.0
+	data[81] = s_airframe->getHorizonPitch(); //Values for 3d-horizon on Pitch-Axis (+/-180°) -1.0 - 0.0 - +1.0
+	
+	data[109] = s_airframe->getHydroSysGaugeONE();//HydraulicSystemONE Gauge
+	data[110] = s_airframe->getHydroSysGaugeTWO();//HydraulicSystemTWO Gauge
+	
 	data[635] = s_airframe->getGearLLamp();//39 zu 635 Fahrwerkslampe linkes Fahrwerk
 	data[636] = s_airframe->getGearFLamp();//40 zu 636Fahrwerkslampe Bugrad
 	data[637] = s_airframe->getGearRLamp();//41 zu 637Fahrwerkslampe rechtes Fahrwerk
@@ -1045,8 +1058,8 @@ void ed_fm_set_fc3_cockpit_draw_args_v2(float* data, size_t size)
 	data[645] = s_airframe->stabDamageIndicator();//209 zu 645 Damage-Indicator for horizontal stabilizer 1.0=an; 0.0=aus
 	data[610] = s_airframe->airSpeedInKnotsEASInd();// Airspeedindicator in Knots 0.0 = 0; 1.0 = 1.000
 	data[611] = s_airframe->airSpeedInMachInd();//Airspeedindicator in Mach 0.0 = 0; 1.0 = Mach 10
-	data[616] = s_airframe->getCrossHairHori();//CrossHair horizontal movement
-	data[615] = s_airframe->getCrossHairVerti();//CrossHair vertical movement
+	//data[616] = s_airframe->getCrossHairHori();//CrossHair horizontal movement// über Lua
+	//data[615] = s_airframe->getCrossHairVerti();//CrossHair vertical movement// über Lua 
 	data[617] = s_airframe->getAltIndHundreds();//Altimeter 100er
 	data[618] = s_airframe->getAltIndThousands();//Altimeter 1000er
 	data[619] = s_airframe->getAltIndTenThousands();//Altimeter 10000er
@@ -1069,8 +1082,7 @@ void ed_fm_set_fc3_cockpit_draw_args_v2(float* data, size_t size)
 	data[633] = s_fuelsystem->getAdjFuelQtyInternal();//neue interne Fuel Anzeige.
 	data[634] = s_airframe->getNozzlePosition();//für die Nozzle-Pos-Anzeige die Werte der externen Nozzle-Position, 0.4, 0.2, 0.8
 	data[640] = s_airframe->getInstLight();//Instrument Light toggle 1.0 = on 0.0 = off
-	data[647] = s_airframe->getHorizonPitch(); //Values for 3d-horizon on Pitch-Axis (+/-180°) -1.0 - 0.0 - +1.0
-	data[648] = s_airframe->getHorizonRoll(); // Values for 3d-Horizon on Roll-Axis (+/- 180) -1.0 - 0.0 - +1.0
+	
 
 }
 
@@ -1118,7 +1130,7 @@ case ED_FM_ANTI_SKID_ENABLE:
 
 //NWS-Stuff
 case ED_FM_SUSPENSION_0_WHEEL_SELF_ATTITUDE:
-	return s_input->getNWS() == 1.0 ? 0.0 : 1.0; //was return s_airframe->NWSstate() == 1.0 ? 1.0 : 0.0;
+	return s_airframe->NWSstate() == 1.0 ? 0.0 : 1.0;//s_input->getNWS() == 1.0 ? 0.0 : 1.0; //was return s_airframe->NWSstate() == 1.0 ? 1.0 : 0.0;
 case ED_FM_SUSPENSION_0_WHEEL_YAW:
 	return s_airframe->getNoseWheelAngle() * 0.65; //war 1.0 dan 0.75 //> 0.5 ? -s_input.m_yaw * 0.5 : 0.0; //rotation to 45 degrees, half 90 (range of the wheel)
 

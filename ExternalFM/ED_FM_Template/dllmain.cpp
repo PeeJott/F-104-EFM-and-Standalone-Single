@@ -15,7 +15,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	{
 	case DLL_PROCESS_ATTACH:
 
-#ifdef _DEBUG //Console commented out
+#ifdef _debug //Console commented out
 		if ( AllocConsole() )
 		{
 			freopen_s(&stream, "CONOUT$", "w", stdout);
