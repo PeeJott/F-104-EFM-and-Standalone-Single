@@ -22,3 +22,4 @@ devices["WEAPON_PANEL"]			= counter()
 
 devices["CANOPY"]			= counter()
 
+devices["RADAR"]			= counter()

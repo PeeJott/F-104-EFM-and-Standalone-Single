@@ -21,8 +21,7 @@ Sensors = {
 --									LockOn_Options.script_path.."avRadar/miscSystems/simple_electric_system.lua"
 --								}
 
-	creators[131]		= {	"avSimpleRadar"			,
-							LockOn_Options.script_path.."avRadar/Device/Radar_init.lua"}
+	--creators[131]		= {	"avSimpleRadar", LockOn_Options.script_path.."avRadar/Device/Radar_init.lua"}
 ------------------------------------------------------------------------------------------------------------								  
 -- INDICATORS ----------------------------------------------------------------------------------------------
 ----

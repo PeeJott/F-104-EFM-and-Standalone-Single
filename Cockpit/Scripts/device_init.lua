@@ -16,21 +16,23 @@ attributes = {
 MainPanel = {"ccMainPanel",LockOn_Options.script_path.."mainpanel_init.lua"}
 
 creators = {}
-creators[devices.ELECTRIC_SYSTEM]		={"avLuaDevice",LockOn_Options.script_path.."ElectricSystems/electric_system.lua"}
+creators[devices.ELECTRIC_SYSTEM]					={"avLuaDevice",LockOn_Options.script_path.."ElectricSystems/electric_system.lua"}
 creators[devices.ELECTRIC_SYSTEM_EMERGENCY_BUS]		={"avSimpleElectricSystem",LockOn_Options.script_path.."ElectricSystems/electric_system_emergency_dc_bus.lua"}
 creators[devices.ELECTRIC_SYSTEM_BATTERY_BUS]		={"avSimpleElectricSystem",LockOn_Options.script_path.."ElectricSystems/electric_system_battery_bus.lua"}
 
 creators[devices.RADIO]           		= {"avLuaDevice",LockOn_Options.script_path.."RadioSystems/radio.lua"}
-creators[devices.RADIO_ARC_522]     		= {"avUHF_ARC_164",LockOn_Options.script_path.."RadioSystems/uhf_radio.lua", {devices.ELECTRIC_SYSTEM_EMERGENCY_BUS}}
+creators[devices.RADIO_ARC_522]     	= {"avUHF_ARC_164",LockOn_Options.script_path.."RadioSystems/uhf_radio.lua", {devices.ELECTRIC_SYSTEM_EMERGENCY_BUS}}
 creators[devices.RADIO_TR_3]       		= {"avUHF_ARC_164",LockOn_Options.script_path.."RadioSystems/uhf_radio.lua", {devices.ELECTRIC_SYSTEM_BATTERY_BUS}}
-creators[devices.INTERCOM_AIC_18]        		= {"avIntercom",LockOn_Options.script_path.."RadioSystems/intercom.lua", {devices.VUHF1_RADIO, devices.ELECTRIC_SYSTEM_EMERGENCY_BUS}}
+creators[devices.INTERCOM_AIC_18]       = {"avIntercom",LockOn_Options.script_path.."RadioSystems/intercom.lua", {devices.VUHF1_RADIO, devices.ELECTRIC_SYSTEM_EMERGENCY_BUS}}
 
-creators[devices.HUD_SYSTEM] 			={"avLuaDevice", LockOn_Options.script_path.."HUD/HUD_System.lua"}
-creators[devices.AVIONIC_SYSTEM]		={"avLuaDevice", LockOn_Options.script_path.."Systems/Avionic_System.lua"}
+creators[devices.HUD_SYSTEM] 			= {"avLuaDevice", LockOn_Options.script_path.."HUD/HUD_System.lua"}
+creators[devices.AVIONIC_SYSTEM]		= {"avLuaDevice", LockOn_Options.script_path.."Systems/Avionic_System.lua"}
 
-creators[devices.WEAPON_SYSTEM]         ={"avSimpleWeaponSystem",LockOn_Options.script_path.."Systems/weapon_system.lua"}
+creators[devices.WEAPON_SYSTEM]         = {"avSimpleWeaponSystem",LockOn_Options.script_path.."Systems/weapon_system.lua"}
 
-creators[devices.CANOPY]          = {"avLuaDevice"           ,LockOn_Options.script_path.."Systems/canopy.lua"}
+creators[devices.CANOPY]				= {"avLuaDevice",LockOn_Options.script_path.."Systems/canopy.lua"}
+
+creators[devices.RADAR]					= {"avSimpleRadar", LockOn_Options.script_path.."avRadar/Device/Radar_init.lua"}
 
 indicators = {} --DAS HIER MUSS SEIN SONST CRASHT ES DCS
 

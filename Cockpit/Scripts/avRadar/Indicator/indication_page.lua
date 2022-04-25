@@ -6,7 +6,9 @@ RS = RADAR_SCALE * 0.40
 
 ud_scale 	= 0.00001 * 0.9		* RS	--0.00001
 lr_scale 	= 0.095	  * 0.9	*2	* RS	--0.2		--0.085
-life_time 	= 10			--1
+--life_time 	= 0.75 -- 0.5
+--life_time 	= 1.5 -- A/G
+life_time 	= 0.75 -- A/G
 life_time_low = 0
 
 
@@ -62,11 +64,54 @@ end
 ]]
 
 
+function create_textured_box(UL_X,UL_Y,DR_X,DR_Y)
+    local size_per_pixel = 1
+    local texture_size_x = DR_X-UL_X
+    local texture_size_y = DR_Y-UL_Y
+    local W = DR_X - UL_X
+    local H = DR_Y - UL_Y
+
+    local half_x = 0.5 * W * size_per_pixel
+    local half_y = 0.5 * H * size_per_pixel
+    local ux 	 = UL_X / texture_size_x
+    local uy 	 = UL_Y / texture_size_y
+    local w  	 = W / texture_size_x
+    local h 	 = H / texture_size_y
+
+    local object = CreateElement "ceTexPoly"
+    object.vertices =  {{-half_x, half_y},
+    				    { half_x, half_y},
+    				    { half_x,-half_y},
+    				    { -half_x,-half_y}}
+    object.indices	  = {0,1,2,2,3,0}
+    object.tex_coords = {{ux -w/2    ,uy-h/2},
+    					 {ux + w/2 ,uy-h/2},
+    					 {ux + w/2 ,uy + h/2},
+    				     {ux-w/2 	 ,uy + h/2}}
+
+    return object
+end
+
+
+
+
+
+
+
+
 local x_size = 0.01 *3 --0.01 *2
 local y_size = 0.01 *3 --0.01 *2
+local blob_scale = 0.03 --0.02 * 3 
+
+TEXT_ORANGE_COLOR		= {255, 130, 5, 255}
+TEXT_ORANGE_COLOR_LIGHT	= {255, 130, 5, 75}
+BLOB_TEXTURE = MakeMaterial(LockOn_Options.script_path .. "Textures/radar_blob.dds", TEXT_ORANGE_COLOR_LIGHT)
+GATE_TEXTURE = MakeMaterial(LockOn_Options.script_path .. "Textures/radar_blob.dds", TEXT_ORANGE_COLOR)
+
 
 --	for ia = 1,999 do
-	for ia = 1,900 do
+--	for ia = 1,900 do
+	for ia = 1,9999 do
 
 		if ia  < 10 then
 			i = "_0".. ia .."_"
@@ -74,38 +119,46 @@ local y_size = 0.01 *3 --0.01 *2
 			i = "_".. ia .."_"
 		end
 		
-		local	radar_contact			   		= CreateElement "ceMeshPoly"
+		--local	radar_contact			   		= CreateElement "ceMeshPoly"
+		local	radar_contact			   		= create_textured_box(-(4*blob_scale)/2,-blob_scale/2,(4*blob_scale)/2,blob_scale/2)								
+				radar_contact.material       	= BLOB_TEXTURE
 				radar_contact.name		   		= "radar_contact" .. i .. "name"
-				radar_contact.primitivetype		= "triangles"	--"lines"--
-				radar_contact.vertices	   		= {		
-													{-x_size , -y_size},
-													{-x_size , y_size},
-													{ x_size , y_size},
-													{ x_size ,-y_size},	
-											      }
-				radar_contact.indices	   		= { 0,1,2,	0,2,3}--{0, 1, 2, 0, 2, 3} 
+				--radar_contact.primitivetype		= "triangles"	--"lines"--
+				--radar_contact.vertices	   		= {		
+				--									{-x_size , -y_size},
+				--									{-x_size , y_size},
+				--									{ x_size , y_size},
+				--									{ x_size ,-y_size},	
+				--							      }
+				--radar_contact.indices	   		= { 0,1,2,	0,2,3}--{0, 1, 2, 0, 2, 3} 
 				radar_contact.init_pos	   		= {0, -1.80*RS, 0}--{0, 0.10*RS, 0}-- ALT {0, -0.90*RS, 0} das ist in der Mitte ganz unten auf dem Radar
-				radar_contact.material    	 	= MFCD_ORANGE
+				--radar_contact.material    	 	= MFCD_ORANGE
+				
+				radar_contact.use_mipfilter     = true
+				radar_contact.additive_alpha    = true
 				radar_contact.isdraw			= true
 				radar_contact.isvisible			= true
 				radar_contact.h_clip_relation 	= h_clip_relations.COMPARE
 				radar_contact.level 			= RADAR_DEFAULT_LEVEL
-				radar_contact.collimated		= true
+				radar_contact.collimated		= false
 				radar_contact.controllers     	= {
-													--{"move_up_down_using_parameter"		,0,1.0},
-													{"move_left_right_using_parameter"	,1,lr_scale},
+													{"rotate_using_parameter"	,1, -1.0},
 													{"move_up_down_using_parameter"		,2,ud_scale},
 													{"parameter_in_range",2,30,60000},
 													{"parameter_in_range",3,life_time_low,life_time},
-													{"change_color_when_parameter_equal_to_number", 4, 1, 1.0,1.0,0.0},
-													} 
+													--{"change_color_when_parameter_equal_to_number", 4, 1, 1.0,1.0,0.0}, -- IFF
+
+													--{"change_color_when_parameter_equal_to_number", 5, 1, 0.0,0.0,1.0}, -- different ground clutter types 
+													--{"change_color_when_parameter_equal_to_number", 5, 2, 0.0,1.0,0.0}, -- different ground clutter types													
+													--{"change_color_when_parameter_equal_to_number", 5, 3, 1.0,1.0,0.0}, -- different ground clutter types													
+												  } 
 				radar_contact.element_params  	= {	
-													"RADAR_CONTACT"..i.."ELEVATION",
-													"RADAR_CONTACT"..i.."AZIMUTH",
-													"RADAR_CONTACT"..i.."RANGE",
-													"RADAR_CONTACT"..i.."TIME",
-													"RADAR_CONTACT"..i.."FRIENDLY",
-													"RADAR_CONTACT"..i.."RCS",
+													"RADAR_CONTACT"..i.."ELEVATION", -- 0
+													"RADAR_CONTACT"..i.."AZIMUTH",	 -- 1
+													"RADAR_CONTACT"..i.."RANGE",	 -- 2
+													"RADAR_CONTACT"..i.."TIME",		 -- 3
+													"RADAR_CONTACT"..i.."FRIENDLY",	 -- 4
+													"RADAR_CONTACT"..i.."RCS",		 -- 5
 												  }
 			Add(radar_contact)
 
@@ -142,8 +195,8 @@ local	radar_cursor			   		= CreateElement "ceMeshPoly"
 		radar_cursor.level 				= RADAR_DEFAULT_LEVEL 
 		radar_cursor.collimated			= true
 		radar_cursor.controllers     	= {
-											{"move_up_down_using_parameter"		,0,ud_scale},
-											{"move_left_right_using_parameter"	,1,lr_scale},
+											{"rotate_using_parameter"	,1, -1.0},
+											{"move_up_down_using_parameter"		,0,ud_scale},																						
 											{"parameter_in_range",2,-0.1,2.1},	
 										  } 
 		radar_cursor.element_params  	= {	
@@ -151,9 +204,40 @@ local	radar_cursor			   		= CreateElement "ceMeshPoly"
 											"RADAR_TDC_AZIMUTH",
 											"RADAR_MODE",
 										  }
-	Add(radar_cursor)
+	--Add(radar_cursor)
 	
 	
+    -- 2 milliradian diameter center dot
+    local range_gate	   		= create_textured_box(-(4*blob_scale)/2,-blob_scale/2,(4*blob_scale)/2,blob_scale/2)								
+	range_gate.material       	= GATE_TEXTURE
+    range_gate.name				= create_guid_string()
+    range_gate.init_pos	        = {0, -2.0*RS, 0}
+	range_gate.isdraw				= true
+	range_gate.isvisible			= true
+	range_gate.use_mipfilter     = true
+	range_gate.additive_alpha    = true
+	range_gate.h_clip_relation 	= h_clip_relations.COMPARE
+	range_gate.level 				= RADAR_DEFAULT_LEVEL 
+	range_gate.collimated			= false
+	range_gate.controllers     	= {
+											{"rotate_using_parameter"	,1,-1.0},
+											{"move_up_down_using_parameter"		,0,ud_scale},										
+											{"parameter_in_range",2,-0.1,2.1},	
+										  } 
+	range_gate.element_params  	= {	
+											"RADAR_TDC_RANGE",
+											"ANTENNA_AZIMUTH",
+											"RADAR_MODE",
+										  }
+    Add(range_gate)
+
+
+
+
+
+------------------------------------ LOCK MODE ------------------------------------------
+
+
  x_size = 0.03
  y_size = 0.03
 
@@ -176,9 +260,8 @@ local	radar_STT			   		= CreateElement "ceMeshPoly"
 		radar_STT.level 			= RADAR_DEFAULT_LEVEL 
 		radar_STT.collimated		= true
 		radar_STT.controllers     	= {
-										{"move_up_down_using_parameter"		,0,ud_scale},
 										{"move_left_right_using_parameter"	,1,lr_scale},
-										--{"move_up_down_using_parameter"		,3,1.0},
+										{"move_up_down_using_parameter"		,0,ud_scale},										
 										{"parameter_in_range",3,2.9,3.1},	
 									  } 
 		radar_STT.element_params  	= {	
@@ -216,8 +299,8 @@ local	radar_STT_backview			   		= CreateElement "ceMeshPoly"
 		radar_STT_backview.level 			= RADAR_DEFAULT_LEVEL 
 		radar_STT_backview.collimated		= true
 		radar_STT_backview.controllers     	= {
-												{"move_up_down_using_parameter"		,2,lr_scale},
 												{"move_left_right_using_parameter"	,1,lr_scale},
+												{"move_up_down_using_parameter"		,2,lr_scale},
 												{"parameter_in_range",3,2.9,3.1},	
 											  } 
 		radar_STT_backview.element_params  	= {	
@@ -255,8 +338,7 @@ local	radar_STT_iff			   		= CreateElement "ceMeshPoly"
 		radar_STT_iff.element_params  	= {"RADAR_STT_FRIENDLY",}
 	Add(radar_STT_iff)	
 
-
-
+------------------------------------------- Cursor text ---------------------------------------------------------
 	
 	local 	radar_cursor_range	 				= CreateElement "ceStringPoly"
 			radar_cursor_range.name			  	= "radar_cursor_range"
@@ -273,7 +355,7 @@ local	radar_STT_iff			   		= CreateElement "ceMeshPoly"
 			radar_cursor_range.use_mipfilter 	= true
 			radar_cursor_range.h_clip_relation 	= h_clip_relations.COMPARE
 			radar_cursor_range.level 			= RADAR_DEFAULT_LEVEL
-		Add(radar_cursor_range)		
+		--Add(radar_cursor_range)		
 	
 	
 	local 	radar_cursor_upper_alt 					= Copy(radar_cursor_range)
@@ -282,17 +364,17 @@ local	radar_STT_iff			   		= CreateElement "ceMeshPoly"
 			radar_cursor_upper_alt.alignment    	= "RightCenter"--"LeftTop"	
 			radar_cursor_upper_alt.element_params  	= {"RADAR_TDC_ELEVATION_AT_RANGE_UPPER"}
 			radar_cursor_upper_alt.controllers     	= {{"text_using_parameter",0,0}}	
-		Add(radar_cursor_upper_alt)		
+		--Add(radar_cursor_upper_alt)		
 
 	local 	radar_cursor_lower_alt 					= Copy(radar_cursor_range)
 			radar_cursor_lower_alt.name				= "radar_cursor_lower_alt"
 			radar_cursor_lower_alt.init_pos			= {0.3,-0.15,0} 		--{0.15,-0.05,0} 		
 			radar_cursor_lower_alt.element_params  	= {"RADAR_TDC_ELEVATION_AT_RANGE_LOWER"}
 			radar_cursor_lower_alt.controllers     	= {{"text_using_parameter",0,0}}	
-		Add(radar_cursor_lower_alt)		
+		--Add(radar_cursor_lower_alt)		
 	
 	
-	
+------------------------------------- MARKINGS -----------------------------------------------------------
 	
 	local 	radar_bearing_L15	 				= CreateElement "ceStringPoly"
 			radar_bearing_L15.name			  	= "radar_bearing_L15"
