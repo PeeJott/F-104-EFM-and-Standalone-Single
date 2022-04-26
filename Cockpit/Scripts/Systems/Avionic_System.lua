@@ -25,7 +25,9 @@ local AOA_Meter_Param 		= get_param_handle("AOA_INDICATOR")
 local G_Meter_Param 		= get_param_handle("G_METER")
 local RadAltHunHand_Param 	= get_param_handle("RAD_ALT_HUN_HAND")
 local RadAltKHand_Param		= get_param_handle("RAD_ALT_K_HAND")
-
+local RPMPercHand_Param		= get_param_handle("RPM_PERCENT_HAND")
+local TempInCHand_Param		= get_param_handle("TEMP_IN_C_HAND")
+local HSIKompassDial_Param	= get_param_handle("HSI_DIAL")
 
 
 -----------------locale variablen für die Instrumente Initialisierung------------------
@@ -35,6 +37,9 @@ local Actual_G 		= 0
 local RadAltInFeet = 0
 local RadAltHun 	= 0
 local RadAltK 		= 0
+local EngineRPM		= 0
+local TempInCelsius = 0
+local HSI_Heading 	= 0
 
 
 
@@ -86,7 +91,19 @@ RadAltHunHand_Param:set(RadAltHun)
 --ThousandFeetHand--
 RadAltKHand_Param:set(RadAltInFeet)
 
+-----RPM Gauge------
+EngineRPM = sensor_data:getEngineLeftRPM()
+RPMPercHand_Param:set(EngineRPM)
+--print_message_to_user("Engine RPM" ..tostring(EngineRPM))
 
+-----Temp-Gauge------
+TempInCelsius = sensor_data:getEngineLeftTemperatureBeforeTurbine()
+--print_message_to_user("Engine Temperature " ..tostring(TempInCelsius))
+TempInCHand_Param:set(TempInCelsius)
+
+----HSI Dial--------
+HSI_Heading 	= sensor_data:getHeading()
+HSIKompassDial_Param:set(HSI_Heading)
 	
 end
 
