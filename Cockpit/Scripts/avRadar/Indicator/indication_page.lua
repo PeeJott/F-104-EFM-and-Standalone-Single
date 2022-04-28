@@ -4,11 +4,17 @@ dofile(LockOn_Options.script_path.."avRadar/Indicator/definitions.lua")
 -- RadarScale verändere ich mal von 1.1 auf geringer, damit das Radar auch mal ins Radar passt...
 RS = RADAR_SCALE * 0.40
 
-ud_scale 	= 0.00001 * 0.9		* RS	--0.00001
+ud_scale 	= 0.00001 * 0.45	* RS	--0.00001
 lr_scale 	= 0.095	  * 0.9	*2	* RS	--0.2		--0.085
+
+--ud_scale 	= 0.00001 * 0.45		* RS   *4 	 --0.00001
+--lr_scale 	= 0.095	  * 0.45	* RS	--0.2		--0.085
+
+
+
 --life_time 	= 0.75 -- 0.5
 --life_time 	= 1.5 -- A/G
-life_time 	= 0.75 -- A/G
+life_time 	= 5 -- A/G
 life_time_low = 0
 
 
@@ -101,17 +107,19 @@ end
 
 local x_size = 0.01 *3 --0.01 *2
 local y_size = 0.01 *3 --0.01 *2
-local blob_scale = 0.03 --0.02 * 3 
+local blob_scale = 0.02 --0.02 * 3 
+local blob_scale_x = (blob_scale*4)/2
+local blob_scale_y = (blob_scale)/2
 
 TEXT_ORANGE_COLOR		= {255, 130, 5, 255}
 TEXT_ORANGE_COLOR_LIGHT	= {255, 130, 5, 75}
-BLOB_TEXTURE = MakeMaterial(LockOn_Options.script_path .. "Textures/radar_blob.dds", TEXT_ORANGE_COLOR_LIGHT)
+--BLOB_TEXTURE = MakeMaterial(LockOn_Options.script_path .. "Textures/radar_blob.dds", TEXT_ORANGE_COLOR_LIGHT)
+BLOB_TEXTURE = MakeMaterial(LockOn_Options.script_path .. "Textures/radar_blob.dds", TEXT_ORANGE_COLOR)
 GATE_TEXTURE = MakeMaterial(LockOn_Options.script_path .. "Textures/radar_blob.dds", TEXT_ORANGE_COLOR)
 
 
---	for ia = 1,999 do
---	for ia = 1,900 do
-	for ia = 1,9999 do
+for s = 1,4 do
+	for ia = 1,BLOB_COUNT do
 
 		if ia  < 10 then
 			i = "_0".. ia .."_"
@@ -120,20 +128,10 @@ GATE_TEXTURE = MakeMaterial(LockOn_Options.script_path .. "Textures/radar_blob.d
 		end
 		
 		--local	radar_contact			   		= CreateElement "ceMeshPoly"
-		local	radar_contact			   		= create_textured_box(-(4*blob_scale)/2,-blob_scale/2,(4*blob_scale)/2,blob_scale/2)								
+		local	radar_contact			   		= create_textured_box(-blob_scale_x*s,-blob_scale_y*s,blob_scale_x*s,blob_scale_y*s)
 				radar_contact.material       	= BLOB_TEXTURE
-				radar_contact.name		   		= "radar_contact" .. i .. "name"
-				--radar_contact.primitivetype		= "triangles"	--"lines"--
-				--radar_contact.vertices	   		= {		
-				--									{-x_size , -y_size},
-				--									{-x_size , y_size},
-				--									{ x_size , y_size},
-				--									{ x_size ,-y_size},	
-				--							      }
-				--radar_contact.indices	   		= { 0,1,2,	0,2,3}--{0, 1, 2, 0, 2, 3} 
-				radar_contact.init_pos	   		= {0, -1.80*RS, 0}--{0, 0.10*RS, 0}-- ALT {0, -0.90*RS, 0} das ist in der Mitte ganz unten auf dem Radar
-				--radar_contact.material    	 	= MFCD_ORANGE
-				
+				radar_contact.name		   		= "radar_contact" .. i .. "name"				
+				radar_contact.init_pos	   		= {0, -1.80*RS, 0}				
 				radar_contact.use_mipfilter     = true
 				radar_contact.additive_alpha    = true
 				radar_contact.isdraw			= true
@@ -141,17 +139,26 @@ GATE_TEXTURE = MakeMaterial(LockOn_Options.script_path .. "Textures/radar_blob.d
 				radar_contact.h_clip_relation 	= h_clip_relations.COMPARE
 				radar_contact.level 			= RADAR_DEFAULT_LEVEL
 				radar_contact.collimated		= false
-				radar_contact.controllers     	= {
-													{"rotate_using_parameter"	,1, -1.0},
-													{"move_up_down_using_parameter"		,2,ud_scale},
-													{"parameter_in_range",2,30,60000},
-													{"parameter_in_range",3,life_time_low,life_time},
+				radar_contact.controllers     	= {													
+													--{"parameter_compare_with_number",8,s},
+													--{"rotate_using_parameter"	,1, -1.0},
+													--{"move_up_down_using_parameter"		,2,ud_scale},
+
+													--{"parameter_in_range",2,(s-1)*10000,s*10000},
+													--{"parameter_in_range",3,life_time_low,life_time},
+
 													--{"change_color_when_parameter_equal_to_number", 4, 1, 1.0,1.0,0.0}, -- IFF
 
-													--{"change_color_when_parameter_equal_to_number", 5, 1, 0.0,0.0,1.0}, -- different ground clutter types 
-													--{"change_color_when_parameter_equal_to_number", 5, 2, 0.0,1.0,0.0}, -- different ground clutter types													
-													--{"change_color_when_parameter_equal_to_number", 5, 3, 1.0,1.0,0.0}, -- different ground clutter types													
-												  } 
+													--{"change_color_when_parameter_equal_to_number", 5, 1, 0.0,0.0,1.0},	-- sea
+													--{"change_color_when_parameter_equal_to_number", 5, 2, 0.0,1.0,0.0},	-- land
+													--{"change_color_when_parameter_equal_to_number", 5, 3, 1.0,0.0,0.0},		-- artificial
+													
+													{"parameter_compare_with_number", 6, 1},
+													{"rotate_using_parameter", 10, -1.0},
+													{"move_up_down_using_parameter", 9, ud_scale},
+													{"parameter_in_range", 8, (s-1)*0.25, s*0.25},
+													{"opacity_using_parameter",7},
+													} 
 				radar_contact.element_params  	= {	
 													"RADAR_CONTACT"..i.."ELEVATION", -- 0
 													"RADAR_CONTACT"..i.."AZIMUTH",	 -- 1
@@ -159,11 +166,17 @@ GATE_TEXTURE = MakeMaterial(LockOn_Options.script_path .. "Textures/radar_blob.d
 													"RADAR_CONTACT"..i.."TIME",		 -- 3
 													"RADAR_CONTACT"..i.."FRIENDLY",	 -- 4
 													"RADAR_CONTACT"..i.."RCS",		 -- 5
-												  }
+
+													"BLOB"..i.."SHOW",		 -- 6
+													"BLOB"..i.."OPACITY",	 -- 7
+													"BLOB"..i.."SCALE",		 -- 8
+													"BLOB"..i.."RANGE",		 -- 9
+													"BLOB"..i.."AZIMUTH",	 -- 10
+													}
 			Add(radar_contact)
 
 	end
-
+end
 
 --------------------------------------------------------------------------
 

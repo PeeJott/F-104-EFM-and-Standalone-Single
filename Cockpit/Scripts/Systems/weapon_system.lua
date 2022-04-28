@@ -1,5 +1,5 @@
 dofile(LockOn_Options.script_path.."ElectricSystems/electric_system_api.lua")
-dofile(LockOn_Options.script_path.."avRadar/Device/Radar_init.lua")
+dofile(LockOn_Options.script_path.."avRadar/Device/radar_api.lua")
 dofile(LockOn_Options.script_path.."command_defs.lua")
 
 local dev = GetSelf()
@@ -34,8 +34,9 @@ local ir_missile_az_param = get_param_handle("WS_IR_MISSILE_TARGET_AZIMUTH")
 local ir_missile_el_param = get_param_handle("WS_IR_MISSILE_TARGET_ELEVATION")
 local ir_missile_des_az_param = get_param_handle("WS_IR_MISSILE_SEEKER_DESIRED_AZIMUTH")
 local ir_missile_des_el_param = get_param_handle("WS_IR_MISSILE_SEEKER_DESIRED_ELEVATION")
-local stt_azimuth_h 	= get_param_handle("RADAR_STT_AZIMUTH")
-local stt_elevation_h 	= get_param_handle("RADAR_STT_ELEVATION")
+
+--local stt_azimuth_h 	= get_param_handle("RADAR_STT_AZIMUTH")
+--local stt_elevation_h 	= get_param_handle("RADAR_STT_ELEVATION")
 
 local gunpipper_sideways_automatic_param = get_param_handle("WS_GUN_PIPER_AZIMUTH")
 local gunpipper_updown_automatic_param = get_param_handle("WS_GUN_PIPER_ELEVATION")
@@ -365,11 +366,11 @@ end
 
 function update()
 		
- 	local mode = Radar.mode_h:get()	
+ 	local mode = radar_api.mode_h:get()	
 	if mode == 3 then -- TRACKING
-		local target_range = Radar.stt_range_h:get()
-		local target_az = Radar.stt_azimuth_h:get()
-		local target_el = Radar.stt_elevation_h:get()
+		local target_range = radar_api.stt_range_h:get()
+		local target_az = radar_api.stt_azimuth_h:get()
+		local target_el = radar_api.stt_elevation_h:get()
 
 		-- Slew the seeker to the target
 		-- This feature is most likely not available in a real F-104G

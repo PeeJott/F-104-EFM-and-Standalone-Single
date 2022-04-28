@@ -3,7 +3,7 @@ dofile(LockOn_Options.script_path .. "devices.lua")
 dofile(LockOn_Options.script_path .. "Systems/weapon_system.lua")
 
 
-dofile(LockOn_Options.script_path .. "avRadar/Device/Radar_init.lua")
+dofile(LockOn_Options.script_path .. "avRadar/Device/radar_api.lua")
 dofile(LockOn_Options.script_path.."definitions.lua")
 dofile(LockOn_Options.script_path.."ElectricSystems/electric_system_api.lua")
 
@@ -140,7 +140,7 @@ function update()
 		hud_roll:set(sensor_data.getRoll())
 
 		-- set range
-		local radar_mode = Radar.mode_h:get()
+		local radar_mode = radar_api.mode_h:get()
 		if radar_mode == 3 and gunpipper_mode == 0 then -- TODO: verify that there is indeed no range bar in manual mode
 			local range = target_range_param:get()
 			set_range(range)
