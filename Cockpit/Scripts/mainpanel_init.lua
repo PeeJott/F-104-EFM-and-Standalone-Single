@@ -50,6 +50,27 @@ RadAltimeterKHand.input				= {0.0, 5000.0, 10000.0, 50000.0}
 RadAltimeterKHand.output			= {0.0, 0.5, 0.64, 0.80}
 RadAltimeterKHand.parameter_name	= "RAD_ALT_K_HAND"
 
+--------RPM-Gauge-----------------------------------------------------------------
+RPMPercentHand						= CreateGauge("parameter")
+RPMPercentHand.arg_number			= 16
+RPMPercentHand.input				= {0.0, 0.5, 1.0}
+RPMPercentHand.output				= {0.0, 0.5, 1.0}
+RPMPercentHand.parameter_name		= "RPM_PERCENT_HAND"
+
+-------Tempreatur-Gauge-----------------------------------------------------------
+TempInCelsiusHand					= CreateGauge("parameter")
+TempInCelsiusHand.arg_number		= 12
+TempInCelsiusHand.input				= {0.0, 200.0, 400.0, 600.0, 800.0, 1000.0, 1200.0}
+TempInCelsiusHand.output			= {0.0, 0.169, 0.338, 0.515, 0.662, 0.824, 1.0}
+TempInCelsiusHand.parameter_name	= "TEMP_IN_C_HAND"
+
+--------HSI-----------------------------------------------------------------------
+HSIKompassDial						= CreateGauge("parameter")
+HSIKompassDial.arg_number			= 32
+HSIKompassDial.input				= {0.0, 3.1412, 6.2832}
+HSIKompassDial.output				= {0.0, 0.5, 1.0}
+HSIKompassDial.parameter_name		= "HSI_DIAL"
+
 -----Pylon-Selectors and Light----------------------------------------------------
 Pylon1SelectorAndLight1						= CreateGauge("parameter")
 Pylon1SelectorAndLight1.arg_number			= 621

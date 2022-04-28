@@ -25,11 +25,12 @@ using std::chrono::seconds;
 using std::chrono::system_clock;
 //-----------------------------------------------------------------
 
-Airframe::Airframe(State& state, Input& input, Engine& engine,ElectricSystemAPI& electricSystemAPI) :
+Airframe::Airframe(State& state, Input& input, Engine& engine, ElectricSystemAPI& electricSystemAPI, RamAirTurbine& ramAirTurbine) :
 	m_state(state),
 	m_input(input),
 	m_engine(engine),
 	m_electricSystemAPI(electricSystemAPI),
+	m_ramAirTurbine(ramAirTurbine),
 	m_actuatorFlap(0.9),
 	m_actuatorAirbrk(1.2),
 	m_actuatorGearL(0.2),
@@ -92,17 +93,22 @@ void Airframe::zeroInit()
 	m_gearRPosition = 0.0;
 	m_gearNPosition = 0.0;
 
+	m_gear = 0.0;
+
 	m_gearFLamp = 0.0;
 	m_gearLLamp = 0.0;
 	m_gearRLamp = 0.0;
 
 	m_instLightOn = 0.0;
 
-	m_pylonIndLight = 0.0;
+	
 	m_gunSwitch = 0.0;
 
+	/*
 	m_pylonIndLightG = 0.0;
 	m_pylonIndLightA = 0.0;
+	m_pylonIndLight = 0.0;
+	*/
 
 	m_gearStart = 0.0;
 
@@ -115,11 +121,22 @@ void Airframe::zeroInit()
 	//------aerodynamic surfaces-------
 	m_flapsPosition = 0.0;
 	m_speedBrakePosition = 0.0;
+	m_airbrake = 0.0;
+	m_speedBrakeFunctional = 0.0;
+
+	m_aileronLeft = 0.0;
+	m_aileronRight = 0.0;
+	m_stabilizer = 0.0;
+	m_rudder = 0.0;
+
+	m_ailDef = 0.0;
+	m_rudDef = 0.0;
 
 	m_brakeLeft = 0.0;
 	m_brakeRight = 0.0;
 	m_brakeMoment = 0.0;
 
+	//----Speed-O-Meters--------------
 	m_vMetEAS = 0.0;
 	m_vKnotsEAS = 0.0;
 	m_vKnotsEASInd = 0.0;
@@ -134,6 +151,7 @@ void Airframe::zeroInit()
 	m_retAltIndTK = 0.0;
 	m_retAltIndK = 0.0;
 
+	//----------QNH-Variables-------------
 	m_qnhVar = 101320;//NEU statt 101325.0
 	m_indQnhThousand = 0.0;
 	m_indQnhHundred = 0.0;
@@ -141,13 +159,7 @@ void Airframe::zeroInit()
 	m_indQnhOne = 0.0;
 	m_retIndQnhHundred = 0.0;
 	
-	m_aileronLeft = 0.0;
-	m_aileronRight = 0.0;
-	m_stabilizer = 0.0;
-	m_rudder = 0.0;
-
-	m_ailDef = 0.0;
-	m_rudDef = 0.0;
+	
 	
 	m_hookPosition = 0.0;
 	m_hookInd = 0.0;
@@ -240,7 +252,12 @@ void Airframe::zeroInit()
 	m_hydroSystemStatus = 0.0;
 	m_hydroPower = 0.0;
 
+	m_hydroSysOneVALUE = 0.0;
+	m_hydroSysTwoVALUE = 0.0;
+
 	//-----------CrossHair Test Stuff------------
+	//-----komplett auskommentiert, da alles über CockpitScripts jetzt
+	/*
 	m_crossHairHori = 0.0;
 	m_crossHairVerti = 0.46;
 
@@ -276,7 +293,7 @@ void Airframe::zeroInit()
 
 	m_moveSightH = 0.0;
 	m_moveSightV = 0.0;
-
+	*/
 
 	m_actuatorFlap.revOverSpeedMalFunction();
 	m_actuatorGearL.revOverSpeedMalFunction();
@@ -292,6 +309,7 @@ void Airframe::coldInit()
 	m_actuatorGearL.groundInit(1.0, 1.0);
 	m_actuatorGearN.groundInit(1.0, 1.0);
 	m_actuatorGearR.groundInit(1.0, 1.0);
+	
 	//---Gear position--------
 	m_gearLPosition = 0.0;
 	m_gearRPosition = 0.0;
@@ -299,10 +317,12 @@ void Airframe::coldInit()
 
 	//-----gear position for ground start
 	m_gearStart = 0.0;
+	m_gear = 1.0;
 	//m_actuatorGearL = 0.0;
 	//m_actuatorGearN = 0.0;
 	//m_actuatorGearR = 0.0;
 	//m_input.m_gear_toggle = 1.0; auskommentiert weil nicht zeroable da jetzt funktion
+	
 	//------aerodynamic surfaces-------
 	m_flapsPosition = 0.0;
 	m_speedBrakePosition = 0.0;
@@ -340,6 +360,8 @@ void Airframe::hotInit()
 	m_gearLPosition = 0.0;
 	m_gearRPosition = 0.0;
 	m_gearNPosition = 0.0;
+
+	m_gear = 1.0;
 
 	//---Gear position for ground start----------
 	m_gearStart = 0.0;
@@ -387,6 +409,7 @@ void Airframe::airborneInit()
 	m_hydroSystemStatus = 1.0;
 }
 
+/*
 void Airframe::crossHairHori()
 {
 	if (m_input.getCrossHRight() > 0.0)
@@ -467,7 +490,7 @@ void Airframe::crossHairVerti()
 
 
 
-}*/
+}
 
 void Airframe::CHforceMovementV(double dt)
 {
@@ -495,7 +518,7 @@ void Airframe::CHforceMovementV(double dt)
 			m_CHforceVerticalDSmooth = 0.00;
 			//m_CHforceVerticalU = 0.25;
 		}
-	}*/
+	}
 	//else
 	//{
 		
@@ -597,6 +620,7 @@ void Airframe::moveSightVertical()
 	m_moveSightV = m_input.getSightVertical();
 }
 
+*/
 
 void Airframe::airframeUpdate(double dt)
 {
@@ -604,18 +628,18 @@ void Airframe::airframeUpdate(double dt)
 
 	m_scalarVelocity = magnitude(m_state.m_localAirspeed);
 
-	m_vertAccdotY = (m_state.m_localAcceleration.y - m_vertAccPrevY) / dt; //rate of change of G-Force//OLD
-	m_vertAccPrevY = m_state.m_localAcceleration.y;//previous G-Force//OLD
+	//m_vertAccdotY = (m_state.m_localAcceleration.y - m_vertAccPrevY) / dt; //rate of change of G-Force//OLD
+	//m_vertAccPrevY = m_state.m_localAcceleration.y;//previous G-Force//OLD
 
-	m_vertAccdotZ = (m_state.m_localAcceleration.z - m_vertAccPrevZ);//OLD aber noch gebraucht
-	m_vertAccPrevZ = m_state.m_localAcceleration.z;//OLD aber noch gebraucht
+	//m_vertAccdotZ = (m_state.m_localAcceleration.z - m_vertAccPrevZ);//OLD aber noch gebraucht
+	//m_vertAccPrevZ = m_state.m_localAcceleration.z;//OLD aber noch gebraucht
 
-	m_omegaV = m_state.m_omega.z;
-	m_thetaV = m_omegaV * m_targetDist / m_bulletSpeed;
+	//m_omegaV = m_state.m_omega.z;
+	//m_thetaV = m_omegaV * m_targetDist / m_bulletSpeed;
 	
-	m_centriPetalV = m_state.m_localAcceleration.y;
+	//m_centriPetalV = m_state.m_localAcceleration.y;
 
-	if ((m_centriPetalV < 1.0) && (m_centriPetalV > -1.0))
+	/*if ((m_centriPetalV < 1.0) && (m_centriPetalV > -1.0))
 	{
 		m_centriPetalV = 1.0;
 	}
@@ -631,7 +655,7 @@ void Airframe::airframeUpdate(double dt)
 		m_radiusV = 10000.0;
 	}
 
-
+	*/
 	/*if (m_input.m_hook())
 	{
 		m_hookPosition += dt / m_hookExtendTime;
@@ -739,7 +763,7 @@ void Airframe::airframeUpdate(double dt)
 	osGearDamage();
 	osFlapDamage();
 
-	pylonIndLights();
+	//pylonIndLights();
 
 	
 	//printf("AS_Knots_EAS_Indicator %f \n", airSpeedInKnotsEASInd());
@@ -749,20 +773,25 @@ void Airframe::airframeUpdate(double dt)
 	//printf("Altitude_in_Ft_Indicator %f \n", altitudeInd());
 	//printf("Current_Air_Pressure %f \n", m_state.m_pressure);
 
-	crossHairHori();
-	crossHairVerti();
-	CHforceMovementV(dt);
-	CHforceMovementH(dt);
+	//crossHairHori();
+	//crossHairVerti();
+	//CHforceMovementV(dt);
+	//CHforceMovementH(dt);
 
-	moveSightHorizontal();
-	moveSightVertical();
+	//moveSightHorizontal();
+	//moveSightVertical();
 
 
 	horizonPitchValue();
 	horizonRollValue();
 
 	hydraulicPump();
+	hydroGaugeSysONE();
+	hydroGaugeSysTWO();
 
+	updateAirBrake();
+	updateGear();
+	NWSstate();
 	
 	//printf("Horizon_Pitch_Angle %f\n", m_horizonPitchAngle);
 	//printf("Horizon_Pitch_Value %f\n", m_horizonPitchValue);
@@ -830,6 +859,7 @@ void Airframe::aeroSurfaceMulti(double dt)
 	}
 }
 
+//----------Wheel-Brakes-------------------------------------------------
 double Airframe::updateBrake()
 {
 	//m_brakeMoment = 0.0;//überflüssig weil in ZeroInit auf 0.0 gesetzt
@@ -881,6 +911,45 @@ double Airframe::updateBrakeRight()
 	}
 	return m_brakeRight;
 }
+//------------------------------------------------
+
+//----------Airbrake-----------------------------
+void Airframe::updateAirBrake()
+{
+	if (m_hydroPumpTwo == 1.0)
+	{
+		m_speedBrakeFunctional = 1.0;
+	}
+	else
+	{
+		m_speedBrakeFunctional = 0.0;
+	}
+
+	if ((m_input.getAirbrake() == 1.0) && (m_speedBrakeFunctional == 1.0))
+	{
+		m_airbrake = 1.0;
+	}
+	else if ((m_input.getAirbrake() == 0.0) && (m_speedBrakeFunctional == 1.0))
+	{
+		m_airbrake = 0.0;
+	}
+
+}
+
+//-----------Gear-------------------------------
+void Airframe::updateGear()
+{
+	if ((m_input.getGearToggle() == 1.0) && (m_hydroPumpTwo == 1.0))
+	{
+		m_gear = m_input.getGearToggle();
+	}
+	else if ((m_input.getGearToggle() == 0.0) && (m_hydroPumpTwo == 1.0))
+	{
+		m_gear = m_input.getGearToggle();
+	}
+}
+
+//---------------------------------------------
 
 double Airframe::setNozzlePosition(double dt) //Nozzle-Position 0-10% Thrust open, 11-84% Thrust closed, 85-100% Thrust open
 {
@@ -934,13 +1003,13 @@ double Airframe::getIntThrottlePosition()
 
 double Airframe::NWSstate()
 {
-	if (m_input.getNWS() == 1.0)
+	if ((m_input.getNWS() == 1.0) && (m_hydroPumpTwo == 1.0))
 	{
-		m_nwsEngage = 1.0;
+		m_nwsEngage = m_input.getNWS();
 	}
-	else if (m_input.getNWS() == 0.0)
+	else if ((m_input.getNWS() == 0.0) && (m_hydroPumpTwo == 1.0))
 	{
-		m_nwsEngage = 0.0;
+		m_nwsEngage = m_input.getNWS();
 	}
 	else
 	{
@@ -1477,7 +1546,7 @@ void Airframe::autoPilotAltH(double dt)
 		m_decend = false;
 	}
 	
-	if (m_input.getAutoPEng() == 1.0)
+	if ((m_input.getAutoPEng() == 1.0) && (getHydroPumpONE() == 1.0))
 	{
 		m_desiredAlt = m_state.m_airDensity;
 
@@ -1507,7 +1576,7 @@ void Airframe::autoPilotAltH(double dt)
 				}
 			}
 		}
-		
+
 		if ((m_input.getAutoPEng() == 1.0) && (m_altHold < m_state.m_airDensity) && ((m_state.m_airDensity < altHoldCorridorHigh) || (m_state.m_airDensity > altHoldCorridorLow)))
 		{
 			if ((m_acendHoldAngle == false) && (m_altHold != 0.0))
@@ -1534,7 +1603,7 @@ void Airframe::autoPilotAltH(double dt)
 				}
 			}
 		}
-		
+
 		if ((m_input.getAutoPEng() == 1.0) && ((m_state.m_airDensity >= altHoldCorridorHigh) && (m_state.m_airDensity <= altHoldCorridorLow)))
 		{
 			if ((m_state.m_angle.z == m_state.m_aoa) && (m_state.m_angle.z >= 0.0))
@@ -1553,10 +1622,10 @@ void Airframe::autoPilotAltH(double dt)
 			{
 				m_pitchAPadj = 0.01;
 			}
-			
+
 
 		}
-		
+
 		if ((m_previousAlt != m_desiredAlt) && (m_previousAlt != 0.0) && (m_input.getAutoPEng() == 1) && (m_altHold == 0.0))
 		{
 			m_altHold = m_state.m_airDensity;
@@ -1568,7 +1637,7 @@ void Airframe::autoPilotAltH(double dt)
 
 		m_previousAlt = m_desiredAlt;
 	}
-	else if (m_input.getAutoPEng() == 0.0)
+	else if ((m_input.getAutoPEng() == 0.0) || (getHydroPumpONE() == 0.0))
 	{
 		m_pitchAPadj = 0.0;
 		m_previousAlt = 0.0;
@@ -1801,47 +1870,139 @@ double Airframe::osFlapDamage()
 }
 
 //------------------Hydraulic-System functions-----------------------------
+//------------------Hydraulic-System ONE and TWO Gauges-------------------
+
 void Airframe::hydraulicPump()
 {
 
-	if((m_input.getElectricSystem() == 1.0) && (getTurbineDamage() > 0.35))
+	bool sufficientEnginePower = false;
+
+	//------both HydroPumps No1 and No2 are powered directly from the engine--
+	//------45% RPM is a good guess when there is enough RPM to power the pumps---
+	//------if there is less than 45% RPM but the RAT is extended, the RAT will power the Hydro-Systems
+	if ((m_engine.getRPMNorm() >= 0.45) || ((m_engine.getRPMNorm() < 0.45) && (m_ramAirHydroPump == 1.0)))
+	{
+		sufficientEnginePower = true;
+	}
+	else
+	{
+		sufficientEnginePower = false;
+	}
+	
+
+	if (m_ramAirTurbine.IsRamAirTurbineExteneded() == true)
+	{
+		if (m_state.m_mach >= 0.7)
+		{
+			m_ramAirHydroPump = 1.0;
+		}
+		else if ((m_state.m_mach >= 0.2) && (m_state.m_mach < 0.7))
+		{
+			m_ramAirHydroPump = 0.5 + (0.714 * m_state.m_mach); // 0.5 + max 0.4998
+		}
+		else
+		{
+			m_ramAirHydroPump = 0.0;
+		}
+	}
+	else
+	{
+		m_ramAirHydroPump = 0.0;
+	}
+	
+	if((sufficientEnginePower == true) && (getTurbineDamage() > 0.35))
 	{
 		m_hydroPumpOne = 1.0;
 		m_hydroPumpTwo = 1.0;
-		m_ramAirHydroPump = 0.0;
-		m_hydroSystemStatus = 1.0;
+		//m_ramAirHydroPump = 0.0; //wird unabhängig oben gesetzt
+		m_hydroSystemStatus = 1.0; 
 	}
-	else if((m_input.getElectricSystem() == 1.0) && ((getTurbineDamage() < 0.35) && (getTurbineDamage() > 0.15)))
+	else if((sufficientEnginePower == true) && ((getTurbineDamage() < 0.35) && (getTurbineDamage() > 0.15)))
 	{
 		m_hydroPumpOne = 0.0;
 		m_hydroPumpTwo = 1.0;
-		m_ramAirHydroPump = 0.0;
+		//m_ramAirHydroPump = 0.0;//wird unabhängig oben gesetzt
 		m_hydroSystemStatus = 0.75;
 	}
-	else if (((m_input.getElectricSystem() == 1.0) && (getTurbineDamage() < 0.15)) || (m_input.getElectricSystem() == 0.0))
+	else if ((sufficientEnginePower == true) && (getTurbineDamage() < 0.15))
 	{
 		m_hydroPumpOne = 0.0;
 		m_hydroPumpTwo = 0.0;
 		m_hydroSystemStatus = 0.5;
 
-		if (m_state.m_mach >= 1.0)
-		{
-			m_ramAirHydroPump = 1.0;
-		}
-		else
-		{
-			m_ramAirHydroPump = m_state.m_mach;
-		}
 	}
 	else
 	{
 		m_hydroPumpOne = 0.0;
 		m_hydroPumpTwo = 0.0;
-		m_ramAirHydroPump = 0.5;
+		//m_ramAirHydroPump = 0.5; //wird unabhängig oben gesetzt
 		m_hydroSystemStatus = 0.0;
 	}
 
-	m_hydroPower = m_hydroPumpOne + m_hydroPumpTwo + m_ramAirHydroPump;
+	m_hydroPower = m_hydroPumpOne + m_hydroPumpTwo + m_ramAirHydroPump; //aufpassen, Pump1 und Pump2 sind redundant bzgl. AeroSteuerflächen d.h. 0.66 reicht für volle Power...
+}
+
+void Airframe::hydroGaugeSysONE()
+{
+	//RAT fängt die PumpONE auf, wenn diese ausfällt
+
+	double hydroSysOneGaugePure = 0.0;
+	
+	if ((m_engine.getRPMNorm() < 0.67) && (m_hydroPumpOne == 1.0))
+	{
+		hydroSysOneGaugePure = m_engine.getRPMNorm() * 3731.0; // 0.67 * 3731 = 2499 psi Druck = Normaldruck Sys-1
+	}
+	else if ((m_engine.getRPMNorm() >= 0.67) && (m_hydroPumpOne == 1.0))
+	{
+		hydroSysOneGaugePure = 2500.0;
+	}
+	else if ((m_engine.getRPMNorm() < 0.67) && (m_ramAirHydroPump == 1.0) && (m_hydroPumpOne == 0.0) && (m_state.m_mach >= 0.25))
+	{
+		hydroSysOneGaugePure = 2125.0; //emergengy hydro-power due to RAT Extension
+	}
+	else if ((m_engine.getRPMNorm() < 0.67) && (m_ramAirHydroPump != 1.0) && (m_hydroPumpOne != 1.0) && (m_state.m_mach < 0.25))
+	{
+		hydroSysOneGaugePure = 0.0;
+	}
+
+	if ((hydroSysOneGaugePure >= 0.0) && (hydroSysOneGaugePure <= 1500.0))
+	{
+		m_hydroSysOneVALUE = hydroSysOneGaugePure * 0.0002; //erster Abschnitt der Anzeigeskala von 0 bis 1500.0 PSI
+	}
+	else
+	{
+		m_hydroSysOneVALUE = ((hydroSysOneGaugePure - 1500.0) * 0.00028) + 0.3;
+	}
+}
+
+void Airframe::hydroGaugeSysTWO()
+{
+	//RAT fängt die PumpTWO NICHT auf wenn diese ausfällt
+	//HydroSysTWO nur dann funktional, wenn Engine ausreichend RPM hat
+
+	double hydroSysTwoGaugePure = 0.0;
+
+	if ((m_engine.getRPMNorm() < 0.67) && (m_hydroPumpTwo == 1.0))
+	{
+		hydroSysTwoGaugePure = m_engine.getRPMNorm() * 3731.0; // 0.67 * 3731 = 2499 psi Druck = Normaldruck Sys-2
+	}
+	else if ((m_engine.getRPMNorm() >= 0.67) && (m_hydroPumpTwo == 1.0))
+	{
+		hydroSysTwoGaugePure = 2500.0;
+	}
+	else if ((m_engine.getRPMNorm() < 0.67) && (m_hydroPumpTwo != 1.0))
+	{
+		hydroSysTwoGaugePure = 0.0;
+	}
+
+	if ((hydroSysTwoGaugePure >= 0.0) && (hydroSysTwoGaugePure <= 1500.0))
+	{
+		m_hydroSysTwoVALUE = hydroSysTwoGaugePure * 0.0002; //erster Abschnitt der Anzeigeskala von 0 bis 1500.0 PSI
+	}
+	else
+	{
+		m_hydroSysTwoVALUE = ((hydroSysTwoGaugePure - 1500.0) * 0.00028) + 0.3; //zweiter Abschnitt der Anzeigeskala von 1500 - 4000 PSI
+	}
 }
 
 
@@ -1861,6 +2022,8 @@ void Airframe::resetOSdamage()
 }
 
 //--------------Pylon-Lights + GunSwitch Function-----------------------------------
+//PylonLights kann ich auskommentieren wenn fertig, da dann Steuerung über CockpitScripts
+/*
 void Airframe::pylonIndLights()
 {
 	if (m_input.getElectricSystem() == 1.0)
@@ -1894,6 +2057,7 @@ void Airframe::pylonIndLights()
 	}
 
 }
+*/
 
 //--------------------------3d-horizon functions--------------------------------------------
 
@@ -1903,7 +2067,7 @@ void Airframe::horizonRollValue()
 	{
 		m_horizonRollAngle = toDegrees(m_state.m_angle.x);
 		
-		m_horizonRollValue = m_horizonRollAngle * 0.005556;
+		m_horizonRollValue = -1.0 * (m_horizonRollAngle * 0.005556);
 	}
 	else
 	{
@@ -1919,7 +2083,7 @@ void Airframe::horizonPitchValue()
 	{
 		m_horizonPitchAngle = toDegrees(m_state.m_angle.z);
 
-		m_horizonPitchValue = m_horizonPitchAngle * 0.005556;
+		m_horizonPitchValue = m_horizonPitchAngle * 0.011111;
 	}
 	else
 	{
