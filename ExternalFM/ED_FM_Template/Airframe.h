@@ -714,14 +714,14 @@ private:
 
 double Airframe::setAileron(double dt)
 {
-	double input = m_input.getRoll() * m_ailDef; // +m_input.m_rollTrim(); // m_rollTrim kommt noch
+	double input = (m_input.getRoll() * m_ailDef) + (m_input.getTrimmAilR() - m_input.getTrimmAilL()); // +m_input.m_rollTrim(); // m_rollTrim kommt noch
 	return m_actuatorAil.inputUpdate(input, dt);
 }
 
 //Folgend Auskommentierungen zum Testen des Stabilizers, da Aileron und Rudder so funktionieren
 double Airframe::setStabilizer(double dt)
 {
-	double input = m_input.getPitch();//m_input.getPitch(); // +m_stabilizerZeroForceDeflection;
+	double input = (m_input.getPitch() + (m_input.getTrimmUp() - m_input.getTrimmDown()));//m_input.getPitch(); // +m_stabilizerZeroForceDeflection;
 	return m_actuatorStab.inputUpdate(input, dt);
 	
 }
