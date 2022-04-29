@@ -71,6 +71,29 @@ HSIKompassDial.input				= {0.0, 3.1412, 6.2832}
 HSIKompassDial.output				= {0.0, 0.5, 1.0}
 HSIKompassDial.parameter_name		= "HSI_DIAL"
 
+-------variometer--------------------------------------------------
+Variometer							= CreateGauge("parameter")
+Variometer.arg_number				= 24
+Variometer.input					= {-31.0, -20.32, -10.16, -5.0, 0.0, 5.0, 10,16. 20.32, 31.0}   
+Variometer.output					= {-1.0, -0.765, -0.5, -0.3, 0.0, 0.3, 0.5, 0.765, 1.0}
+Variometer.parameter_name			= "VARIO_PARAM"
+
+------SlipIndicator--------------------------------------------------------------
+
+SlipIndicator 						= CreateGauge("parameter")
+SlipIndicator.arg_number			= 29
+SlipIndicator.input					= {-9.0, -6.0, - 3.0, 0.0, 3.0, 6.0, 9.0}
+SlipIndicator.output				= {-1.0, -0.74, -0.35, 0.0, 0.35, 0.74, 1.0}
+SlipIndicator.parameter_name		= "SLIP_INDICATOR"
+
+------TurnIndicator---------------------------------------------------------------
+
+TurnIndicator						= CreateGauge("parameter")
+TurnIndicator.arg_number			= 31
+TurnIndicator.input					= {-9.0, -6.0, -3.0, 0.0, 3.0, 6.0, 9.0}
+TurnIndicator.output				= {-1.0, -0.6, -0.3, 0.0, 0.3, 0.6, 9.0}
+TurnIndicator.parameter_name		= "TURN_INDICATOR"
+
 -----Pylon-Selectors and Light----------------------------------------------------
 Pylon1SelectorAndLight1						= CreateGauge("parameter")
 Pylon1SelectorAndLight1.arg_number			= 621
