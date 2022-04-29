@@ -110,6 +110,10 @@ public:
 	inline void setWeightOnWheels(double x);
 	inline double getWeightOnWheels() const;
 
+	//---------AntiSkid-Functions---------------------------
+	inline double getAntiSkid();
+	void antiSkidSystem();
+
 
 	//------Getting and returning positions-------------------
 	inline double getGearLPosition() const; //returns gear pos
@@ -500,6 +504,10 @@ private:
 
 	double m_gearOversped = 0.0;
 
+	//------AntiSkid------
+	double m_antiSkid = 0.0;
+	bool m_antiSkidFunctional = false;
+
 	//modification variable for Ground-Start
 	double m_gearStart = 0.0;
 	double m_gearStartDown = 0.0;
@@ -836,6 +844,13 @@ double Airframe::getGearRPosition() const
 double Airframe::getGearNPosition() const
 {
 	return m_gearNPosition;
+}
+
+//--------------AntiSkid------------------
+
+double Airframe::getAntiSkid()
+{
+	return m_antiSkid;
 }
 
 // Neu eingefügt den Lampen-Kram zur directen Steuerung der FC-3 Cockpit-Args

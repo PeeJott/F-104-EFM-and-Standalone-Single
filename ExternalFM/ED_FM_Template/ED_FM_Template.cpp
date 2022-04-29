@@ -1126,7 +1126,7 @@ case ED_FM_SUSPENSION_2_RELATIVE_BRAKE_MOMENT:
 	return s_airframe->updateBrakeRight();//updateBrake();
 
 case ED_FM_ANTI_SKID_ENABLE:
-	return 1.0;
+	return s_airframe->getAntiSkid();
 
 //NWS-Stuff
 case ED_FM_SUSPENSION_0_WHEEL_SELF_ATTITUDE:

@@ -109,7 +109,7 @@ void Airframe::zeroInit()
 	m_pylonIndLightA = 0.0;
 	m_pylonIndLight = 0.0;
 	*/
-
+	//----------gear--------
 	m_gearStart = 0.0;
 
 	m_gearOversped = 0.0;
@@ -117,6 +117,10 @@ void Airframe::zeroInit()
 
 	m_flapOSind = 0.0;
 	m_gearOSind = 0.0;
+
+	//---------AntiSkid----------------
+	m_antiSkid = 0.0;
+	m_antiSkidFunctional = false;
 
 	//------aerodynamic surfaces-------
 	m_flapsPosition = 0.0;
@@ -409,263 +413,14 @@ void Airframe::airborneInit()
 	m_hydroSystemStatus = 1.0;
 }
 
-/*
-void Airframe::crossHairHori()
-{
-	if (m_input.getCrossHRight() > 0.0)
-	{
-		m_crossHairHori = m_input.getCrossHRight();
-	}
-	else if (m_input.getCrossHLeft() < 0.0)
-	{
-		m_crossHairHori = m_input.getCrossHLeft();
-	}
-	else
-	{
-		m_crossHairHori = 0.00 + m_CHforceHori;
-	}
-
-}
-
-void Airframe::crossHairVerti()
-{
-	if (m_input.getCrossHUp() > 0.0)
-	{
-		m_crossHairVerti = 0.50 + m_input.getCrossHUp();
-	}
-	else if (m_input.getCrossHDown() < 0.0)
-	{
-		m_crossHairVerti = 0.50 + m_input.getCrossHDown();
-	}
-	else
-	{
-		m_crossHairVerti = 0.50 + (m_CHforceVerticalDSmooth * 2.2);// -(m_state.m_angle.z * 0.012738);
-	}
-
-}
-// OLD vertical-movement-function
-/*void Airframe::CHforceMovementV(double dt)
-{
-	
-	if ((m_state.m_localAcceleration.y >= 0.00) && (m_vertAccdotY > 0.0))//es war (m_state.m_localAcceleration.y >= 9.81) 
-	{
-		m_CHforceVerticalD = -((m_state.m_localAcceleration.y) * 0.03); //0.02 jetzt 0.3 is just the factor for the output on the HUD (-1.0 - +1.0) // war -((m_state.m_localAcceleration.y - 9.81) * 0.02)
-	}
-
-	if ((m_state.m_localAcceleration.y >= 0.00) && (m_vertAccdotY < 0.0))
-	{
-		m_CHforceVerticalD = -((m_state.m_localAcceleration.y) * 0.03);
-	}
-
-	if ((m_state.m_localAcceleration.y <= 0.00) && (m_vertAccdotY < 0.0))
-	{
-		m_CHforceVerticalD = -((m_state.m_localAcceleration.y) * 0.03);
-	}
-	if ((m_state.m_localAcceleration.y <= 0.00) && (m_vertAccdotY > 0.0))
-	{
-		m_CHforceVerticalD = -((m_state.m_localAcceleration.y) * 0.03);
-	}
-	if ((m_state.m_localAcceleration.y == 0.00) && (m_vertAccdotY == 0.00))
-	{
-		m_CHforceVerticalD = 0.00;
-		//m_CHforceVerticalU = 0.25;
-	}
-}*/
-
-//------------ungeglättete crazy Gun-Pipper Funktion von JNelson 
-/*void Airframe::CHforceMovementV(double dt)
-{
-	m_defAngleVCNen = sqrt(pow(m_radiusV, 2.0) * pow((1.0 - cos(m_thetaV)), 2.0) + pow((m_targetDist - m_radiusV * sin(m_thetaV)), 2.0));
-
-	if (m_defAngleVCNen == 0.0)
-	{
-		m_defAngleVCNen = 0.1;
-	}
-
-	m_defAngleVCOS = (m_targetDist * cos(m_thetaV) - m_radiusV * sin(m_thetaV)) / m_defAngleVCNen;//sqrt(pow(m_radiusV, 2.0) * pow((1.0 - cos(m_thetaV)), 2.0) + pow((m_targetDist - m_radiusV * sin(m_thetaV)), 2.0));
-
-	m_defAngleV = toDegrees(acos(m_defAngleVCOS)); //in Degree
-
-	m_CHforceVerticalD = -(sin(m_defAngleV) / sin(90.0 - m_defAngleV));
-
-
-
-}
-
-void Airframe::CHforceMovementV(double dt)
-{
-	m_smoothingFactor = 0.2;
-
-	m_defAngleVCNen = sqrt(pow(m_radiusV, 2.0) * pow((1.0 - cos(m_thetaV)), 2.0) + pow((m_targetDist - m_radiusV * sin(m_thetaV)), 2.0));
-
-	if (m_defAngleVCNen == 0.0)
-	{
-		m_defAngleVCNen = 0.1;
-	}
-	
-	/*if (m_state.m_localAcceleration.y <= 10.0)
-	{
-		if ((m_state.m_localAcceleration.y <= 0.00) && (m_vertAccdotY < 0.0))
-		{
-			m_CHforceVerticalDSmooth = -((m_state.m_localAcceleration.y) * 0.03);
-		}
-		if ((m_state.m_localAcceleration.y <= 0.00) && (m_vertAccdotY > 0.0))
-		{
-			m_CHforceVerticalDSmooth = -((m_state.m_localAcceleration.y) * 0.03);
-		}
-		if ((m_state.m_localAcceleration.y == 0.00) && (m_vertAccdotY == 0.00))
-		{
-			m_CHforceVerticalDSmooth = 0.00;
-			//m_CHforceVerticalU = 0.25;
-		}
-	}
-	//else
-	//{
-		
-	if (m_state.m_localAcceleration.y >= 9.81)
-	{
-
-		m_defAngleVCOS = (m_targetDist * cos(m_thetaV) - m_radiusV * sin(m_thetaV)) / m_defAngleVCNen;//sqrt(pow(m_radiusV, 2.0) * pow((1.0 - cos(m_thetaV)), 2.0) + pow((m_targetDist - m_radiusV * sin(m_thetaV)), 2.0));
-
-		m_defAngleV = toDegrees(acos(m_defAngleVCOS)); //in Degree
-
-		m_angleIndNen = 90.0 - m_defAngleV;
-
-		m_CHforceVerticalDPure = -1.0 * ((sin(toRad(m_defAngleV))) / (sin(toRad(m_angleIndNen))));
-
-		if (m_firstCallV == true)
-		{
-
-			m_smoothingValue = m_CHforceVerticalDPure;
-
-			m_firstCallV = false;
-
-		}
-		else
-		{
-
-			m_smoothingValue2 = m_smoothingFactor * m_smoothingValue + (1 - m_smoothingFactor) * m_smoothingValue;
-
-			m_firstCallV = true;
-
-			m_CHforceVerticalDSmooth = m_smoothingValue2;
-			
-		}
-	}
-	else
-	{
-		m_defAngleVCOS = (m_targetDist * cos(m_thetaV) - m_radiusV * sin(m_thetaV)) / m_defAngleVCNen;//sqrt(pow(m_radiusV, 2.0) * pow((1.0 - cos(m_thetaV)), 2.0) + pow((m_targetDist - m_radiusV * sin(m_thetaV)), 2.0));
-
-		m_defAngleV = toDegrees(acos(m_defAngleVCOS)); //in Degree
-
-		m_angleIndNen = 90.0 - m_defAngleV;
-
-		m_CHforceVerticalDPure = ((sin(toRad(m_defAngleV))) / (sin(toRad(m_angleIndNen))));
-
-		if (m_firstCallV == true)
-		{
-
-			m_smoothingValue = m_CHforceVerticalDPure;
-
-			m_firstCallV = false;
-
-		}
-		else
-		{
-
-			m_smoothingValue2 = m_smoothingFactor * m_smoothingValue + (1 - m_smoothingFactor) * m_smoothingValue;
-
-			m_firstCallV = true;
-
-			m_CHforceVerticalDSmooth = m_smoothingValue2;
-
-		}
-	}
-}
-
-void Airframe::CHforceMovementH(double dt)
-{
-	if ((m_state.m_localAcceleration.z >= 0.00) && (m_vertAccdotZ > 0.0))//es war (m_state.m_localAcceleration.y >= 9.81) 
-	{
-		m_CHforceHori = -((m_state.m_localAcceleration.z) * 0.03); //0.02/ jetzt 0.3 is just the factor for the output on the HUD (-1.0 - +1.0) // war -((m_state.m_localAcceleration.y - 9.81) * 0.02)
-	}
-
-	if ((m_state.m_localAcceleration.z >= 0.00) && (m_vertAccdotZ < 0.0))
-	{
-		m_CHforceHori = -((m_state.m_localAcceleration.z) * 0.03);
-	}
-
-	if ((m_state.m_localAcceleration.z <= 0.00) && (m_vertAccdotZ < 0.0))
-	{
-		m_CHforceHori = -((m_state.m_localAcceleration.z) * 0.03);
-	}
-	if ((m_state.m_localAcceleration.z <= 0.00) && (m_vertAccdotZ > 0.0))
-	{
-		m_CHforceHori = -((m_state.m_localAcceleration.z) * 0.03);
-	}
-	if ((m_state.m_localAcceleration.z == 0.00) && (m_vertAccdotZ == 0.00))
-	{
-		m_CHforceHori = 0.00;
-		//m_CHforceVerticalU = 0.25;
-	}
-}
-
-void Airframe::moveSightHorizontal()
-{
-	m_moveSightH = 0.44 * (m_input.getSightHorizontal());
-}
-
-void Airframe::moveSightVertical()
-{
-	m_moveSightV = m_input.getSightVertical();
-}
-
-*/
 
 void Airframe::airframeUpdate(double dt)
 {
-	//printf( "I %lf, L %lf, C %lf, R %lf\n", m_fuel[0], m_fuel[1], m_fuel[2], m_fuel[3] );
+	
 
 	m_scalarVelocity = magnitude(m_state.m_localAirspeed);
 
-	//m_vertAccdotY = (m_state.m_localAcceleration.y - m_vertAccPrevY) / dt; //rate of change of G-Force//OLD
-	//m_vertAccPrevY = m_state.m_localAcceleration.y;//previous G-Force//OLD
-
-	//m_vertAccdotZ = (m_state.m_localAcceleration.z - m_vertAccPrevZ);//OLD aber noch gebraucht
-	//m_vertAccPrevZ = m_state.m_localAcceleration.z;//OLD aber noch gebraucht
-
-	//m_omegaV = m_state.m_omega.z;
-	//m_thetaV = m_omegaV * m_targetDist / m_bulletSpeed;
 	
-	//m_centriPetalV = m_state.m_localAcceleration.y;
-
-	/*if ((m_centriPetalV < 1.0) && (m_centriPetalV > -1.0))
-	{
-		m_centriPetalV = 1.0;
-	}
-	
-	m_radiusV = m_centriPetalV / pow(m_omegaV, 2.0);
-
-	if (m_radiusV <= -10000.0)
-	{
-		m_radiusV = -10000.0;
-	}
-	if (m_radiusV >= 10000.0)
-	{
-		m_radiusV = 10000.0;
-	}
-
-	*/
-	/*if (m_input.m_hook())
-	{
-		m_hookPosition += dt / m_hookExtendTime;
-		m_hookPosition = std::min(m_hookPosition, 1.0);
-	}
-	else
-	{
-		m_hookPosition -= dt / m_hookExtendTime;
-		m_hookPosition = std::max(m_hookPosition, 0.0);
-	}*/
 
 	//printf("LEFT: %lf, CENTRE: %lf, RIGHT: %lf, INTERNAL: %lf\n", m_fuel[Tank::LEFT_EXT], m_fuel[Tank::CENTRE_EXT], m_fuel[Tank::RIGHT_EXT], m_fuel[Tank::INTERNAL]);
 	//m_engine.setHasFuel(m_fuel[Tank::INTERNAL] > 20.0);
@@ -703,11 +458,7 @@ void Airframe::airframeUpdate(double dt)
 	
 	//printf("Flp-Down-Value %f \n", m_input.m_flapsdown);
 	//printf("Flp-Up-Value %f \n", m_input.m_flapsup);
-	//printf("YAW_Value %f \n", m_input.m_flapstgl);
-	//printf("Flp-Tgl-Value %f \n", m_input.m_flapstgl);
-	//printf("PylonIndicatorValueG %f \n", m_pylonIndLightG);
-	//printf("PylonIndicatorValueA %f \n", m_pylonIndLightA);
-	//printf("WeightOnWheels %f\n", m_weightOnWheels);
+	
 	
 	//---------Engine flame-out function------------------
 
@@ -729,12 +480,6 @@ void Airframe::airframeUpdate(double dt)
 	//------------------AutoPilot-Update------------------
 	autoPilotAltH(dt);
 
-//--------------------KeyCommand-Updates-----------------
-	//keyCommandElevator(dt);
-	//keyCommandAileron(dt);
-	//keyCommandRudder(dt);
-	//printf("FuelFlow_Indicator %f \n", fuelFlowIndGaugeUpdate());
-	//printf("FuelFlow in lbs/h %f \n", m_engine.FuelFlowUpdate());
 
 //------------------FuelFlow Indicator Update-----------(NEU ggf. überflüssig)
 	fuelFlowIndGaugeUpdate();
@@ -767,19 +512,7 @@ void Airframe::airframeUpdate(double dt)
 
 	
 	//printf("AS_Knots_EAS_Indicator %f \n", airSpeedInKnotsEASInd());
-	//printf("AS_Knots_CAS_Indicator %f \n", airSpeedInKnotsCASInd());
-	//printf("AirSpeed_Mach_Indicator %f \n", airSpeedInMachInd());
-	//printf("True_Mach %f \n", m_state.m_mach);
-	//printf("Altitude_in_Ft_Indicator %f \n", altitudeInd());
-	//printf("Current_Air_Pressure %f \n", m_state.m_pressure);
-
-	//crossHairHori();
-	//crossHairVerti();
-	//CHforceMovementV(dt);
-	//CHforceMovementH(dt);
-
-	//moveSightHorizontal();
-	//moveSightVertical();
+	
 
 
 	horizonPitchValue();
@@ -792,49 +525,14 @@ void Airframe::airframeUpdate(double dt)
 	updateAirBrake();
 	updateGear();
 	NWSstate();
+	antiSkidSystem();
 	
 	//printf("Horizon_Pitch_Angle %f\n", m_horizonPitchAngle);
 	//printf("Horizon_Pitch_Value %f\n", m_horizonPitchValue);
 	//printf("Horizon_Roll_Angle %f\n", m_horizonRollAngle);
 	//printf("Horizon_Roll_Value %f\n", m_horizonRollValue);
-
-
 	//printf("Input_CrossH_Down %f \n", m_input.getCrossHDown());
 	
-
-	//printf("Yaw-Force %f \n", m_state.m_localAcceleration.z);
-	//printf("Pitch and G-Force %f \n", m_state.m_localAcceleration.y);
-	//printf("Nenner_Crazy_Funktion %f \n", m_defAngleVCNen);
-	
-	//printf("Radius_V %f \n", m_radiusV);
-	//printf("OmegaV %f \n", m_omegaV);
-	
-	//printf("Deflection_Angel_Vertical_in_Degree %f \n", m_defAngleV);
-	//printf("Pure neg def Angle %f \n", m_CHforceVerticalDPure);
-	//printf("Smoothed neg def Angle %f \n", m_CHforceVerticalDSmooth);
-	
-	//printf("CrossH_Verti %f \n", m_crossHairVerti);
-
-
-	//---------PrintF's for Altitude and AltInd-----------
-	/*printf("Alt_In_10ks %i \n", m_altIndTenThousands);
-	printf("Alt_In_1ks %i \n", m_altIndThousands);
-	printf("Alt_In_100s %f \n", m_altIndHundreds);
-	printf("Alt_In_10s %f \n", m_altIndTens);
-	printf("Ret_Val_10ks %f \n", m_retAltIndTK);
-	printf("Ret_Val_1ks %f \n", m_retAltIndK);
-	printf("AltIn_Feet %i \n", m_altInFt);
-	printf("AltIn_Meter %i \n", m_altInM);
-	*/
-
-	//printf("Horizontal Sicht FLOAT %f \n", m_input.getSightHorizontal());
-	//printf("Vertikale Sicht FLOAT %f \n", m_input.getSightVertical());
-
-	//printf("Flap-Overspeed %f \n", m_flapOSind);
-	//printf("GearPosition %f \n", m_gearNPosition);
-
-	//printf("QNH_Value %f \n", m_input.getQnhValue());
-	//printf("QNH_Variable %f \n", m_qnhVar);
 }
 
 //-------------Neu eingefügt für multiplikator AERO-Surfaces--------------
@@ -950,6 +648,22 @@ void Airframe::updateGear()
 }
 
 //---------------------------------------------
+
+//-------------AntiSkid------------------------
+
+void Airframe::antiSkidSystem()
+{
+	
+	if (m_hydroPumpTwo == 1.0)
+	{
+		m_antiSkid = 1.0;
+	}
+	else
+	{
+		m_antiSkid = 0.0;
+	}
+
+}
 
 double Airframe::setNozzlePosition(double dt) //Nozzle-Position 0-10% Thrust open, 11-84% Thrust closed, 85-100% Thrust open
 {
@@ -1840,6 +1554,40 @@ double Airframe::getQNHinOne()
 	return m_indQnhOne / 10.0;
 }
 
+//--------------------------3d-horizon functions--------------------------------------------
+
+void Airframe::horizonRollValue()
+{
+	if (m_input.getElectricSystem() == 1.0)
+	{
+		m_horizonRollAngle = toDegrees(m_state.m_angle.x);
+
+		m_horizonRollValue = -1.0 * (m_horizonRollAngle * 0.005556);
+	}
+	else
+	{
+		m_horizonRollAngle = 0.0;
+
+		m_horizonRollValue = 0.0;
+	}
+}
+
+void Airframe::horizonPitchValue()
+{
+	if (m_input.getElectricSystem() == 1.0)
+	{
+		m_horizonPitchAngle = toDegrees(m_state.m_angle.z);
+
+		m_horizonPitchValue = m_horizonPitchAngle * 0.011111;
+	}
+	else
+	{
+		m_horizonPitchAngle = 0.0;
+
+		m_horizonPitchValue = 0.0;
+	}
+}
+
 //-------------------Gear and Flap overspeed Damage functions----------------
 double Airframe::osGearDamage()
 {
@@ -1941,6 +1689,9 @@ void Airframe::hydraulicPump()
 
 	m_hydroPower = m_hydroPumpOne + m_hydroPumpTwo + m_ramAirHydroPump; //aufpassen, Pump1 und Pump2 sind redundant bzgl. AeroSteuerflächen d.h. 0.66 reicht für volle Power...
 }
+
+
+//------------------Hydraulic-system gauges--------------------------
 
 void Airframe::hydroGaugeSysONE()
 {
@@ -2059,38 +1810,6 @@ void Airframe::pylonIndLights()
 }
 */
 
-//--------------------------3d-horizon functions--------------------------------------------
 
-void Airframe::horizonRollValue()
-{
-	if (m_input.getElectricSystem() == 1.0)
-	{
-		m_horizonRollAngle = toDegrees(m_state.m_angle.x);
-		
-		m_horizonRollValue = -1.0 * (m_horizonRollAngle * 0.005556);
-	}
-	else
-	{
-		m_horizonRollAngle = 0.0;
-
-		m_horizonRollValue = 0.0;
-	}
-}
-
-void Airframe::horizonPitchValue()
-{
-	if (m_input.getElectricSystem() == 1.0)
-	{
-		m_horizonPitchAngle = toDegrees(m_state.m_angle.z);
-
-		m_horizonPitchValue = m_horizonPitchAngle * 0.011111;
-	}
-	else
-	{
-		m_horizonPitchAngle = 0.0;
-
-		m_horizonPitchValue = 0.0;
-	}
-}
 
 
