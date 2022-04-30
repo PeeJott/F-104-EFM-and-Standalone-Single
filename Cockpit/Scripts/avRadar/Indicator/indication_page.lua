@@ -4,6 +4,9 @@ dofile(LockOn_Options.script_path.."avRadar/Indicator/definitions.lua")
 -- RadarScale verändere ich mal von 1.1 auf geringer, damit das Radar auch mal ins Radar passt...
 RS = RADAR_SCALE * 0.40
 
+BLOB_COUNT = 2500
+NOISE_COUNT = 100
+
 ud_scale 	= 0.00001 * 0.45	* RS	--0.00001
 lr_scale 	= 0.095	  * 0.9	*2	* RS	--0.2		--0.085
 
@@ -111,12 +114,17 @@ local blob_scale = 0.02 --0.02 * 3
 local blob_scale_x = (blob_scale*4)/2
 local blob_scale_y = (blob_scale)/2
 
+local beam_scale = 0.005 --0.02 * 3 
+local beam_scale_x = 150*beam_scale
+local beam_scale_y = 600*beam_scale
+
+
 TEXT_ORANGE_COLOR		= {255, 130, 5, 255}
 TEXT_ORANGE_COLOR_LIGHT	= {255, 130, 5, 75}
 --BLOB_TEXTURE = MakeMaterial(LockOn_Options.script_path .. "Textures/radar_blob.dds", TEXT_ORANGE_COLOR_LIGHT)
 BLOB_TEXTURE = MakeMaterial(LockOn_Options.script_path .. "Textures/radar_blob.dds", TEXT_ORANGE_COLOR)
 GATE_TEXTURE = MakeMaterial(LockOn_Options.script_path .. "Textures/radar_blob.dds", TEXT_ORANGE_COLOR)
-
+NOISE_TEXTURE = MakeMaterial(LockOn_Options.script_path .. "Textures/radar_noise.dds", TEXT_ORANGE_COLOR_LIGHT)
 
 for s = 1,4 do
 	for ia = 1,BLOB_COUNT do
@@ -181,6 +189,38 @@ end
 --------------------------------------------------------------------------
 
 
+for n = 0,NOISE_COUNT do
+	local	radar_noise					= create_textured_box(-blob_scale/2,-blob_scale/2,blob_scale_x/2,blob_scale_y/2)
+			radar_noise.material       	= NOISE_TEXTURE
+			radar_noise.name		   		= "noise_" .. n .. "_name"				
+			radar_noise.init_pos	   		= {0, -1.80*RS, 0}				
+			radar_noise.use_mipfilter     = true
+			radar_noise.additive_alpha    = true
+			radar_noise.isdraw			= true
+			radar_noise.isvisible			= true
+			radar_noise.h_clip_relation 	= h_clip_relations.COMPARE
+			radar_noise.level 			= RADAR_DEFAULT_LEVEL
+			radar_noise.collimated		= false
+			radar_noise.controllers     	= {													
+												{"parameter_compare_with_number", 0, 1},
+												{"rotate_using_parameter", 2, -1.0},
+												{"move_up_down_using_parameter", 1, ud_scale},
+												} 
+			radar_noise.element_params  	= {	
+												"NOISE_"..n.."_SHOW",		 -- 0
+												"NOISE_"..n.."_RANGE",		 -- 1
+												"NOISE_"..n.."_AZIMUTH",	 -- 2
+												}
+		Add(radar_noise)
+end
+
+
+------------------------------------------------------------------------------------
+
+
+
+
+
 local x_size = 0.01--ALT 0.005--0.006
 local y_size = 0.07--ALT 0.03--0.05
 
@@ -219,8 +259,6 @@ local	radar_cursor			   		= CreateElement "ceMeshPoly"
 										  }
 	--Add(radar_cursor)
 	
-	
-    -- 2 milliradian diameter center dot
     local range_gate	   		= create_textured_box(-(4*blob_scale)/2,-blob_scale/2,(4*blob_scale)/2,blob_scale/2)								
 	range_gate.material       	= GATE_TEXTURE
     range_gate.name				= create_guid_string()
@@ -243,9 +281,6 @@ local	radar_cursor			   		= CreateElement "ceMeshPoly"
 											"RADAR_MODE",
 										  }
     Add(range_gate)
-
-
-
 
 
 ------------------------------------ LOCK MODE ------------------------------------------

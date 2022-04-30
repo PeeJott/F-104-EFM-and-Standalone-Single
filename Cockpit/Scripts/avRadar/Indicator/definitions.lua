@@ -6,9 +6,6 @@ RADAR_DEFAULT_NOCLIP_LEVEL  = RADAR_DEFAULT_LEVEL - 1
 
 RADAR_SCALE = 1.1--1
 
-BLOB_COUNT = 2500
-
-
 function AddElement(object)
     object.use_mipfilter    = true
 	object.additive_alpha   = true
