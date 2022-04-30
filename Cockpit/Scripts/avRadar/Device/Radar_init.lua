@@ -13,9 +13,6 @@ TDC_range_carret_size 	= 5000
 
 
 local BLOB_COUNT = 2500
-local NOISE_COUNT = 100
-
-
 
 perfomance = 
 {
@@ -63,8 +60,8 @@ DEBUG_ACTIVE 	= true
 
 --update_time_step 	= 0.05
 --device_timer_dt		= 0.05
-update_time_step 	= 0.05
-device_timer_dt		= 0.05
+update_time_step 	= 0.1
+device_timer_dt		= 0.025
 
 make_default_activity(update_time_step) 
 
@@ -147,23 +144,7 @@ Radar = 	{
 				
 	iff_status_h			= get_param_handle("IFF_INTERROGATOR_STATUS"),
 	bit_h 					= get_param_handle("RADAR_BIT"),
-
-
-
-
-	antenna_azimuth_h 		= get_param_handle("ANTENNA_AZIMUTH"),
 }
-
-local noise_show = {}
-local noise_range = {}
-local noise_azimuth = {}
-
-for i = 0,NOISE_COUNT do	
-	noise_show[i] = get_param_handle("NOISE_"..i.."_SHOW")
-	noise_range[i] = get_param_handle("NOISE_"..i.."_RANGE")
-	noise_azimuth[i] = get_param_handle("NOISE_"..i.."_AZIMUTH")
-end
-
 
 local radar_contact_time = {}
 local radar_contact_rcs = {}
@@ -420,15 +401,6 @@ local current_noise_range = 0
 
 function update()
 	
-	local antenna_az = avImprovedRadar.get_antenna_azimuth()
-	local antenna_el = avImprovedRadar.get_antenna_elevation()
-	--print_message_to_user("antenna_azimuth: " .. math.deg(antenna_az) .. " antenna_elevation: " .. math.deg(antenna_el))
-
-	Radar.antenna_azimuth_h:set(-antenna_az)
-
-	--local value = avImprovedRadar.GetDouble()
-	--print_message_to_user("Offset: " .. offset .. " Value: " .. value)
-
 	Sensor_Data_Raw = get_base_data()
 		
 	Radar.tdc_ele_up_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() + (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))
@@ -490,33 +462,6 @@ function update()
 			blob_azimuth_handle:set(0.0)
 		end
 	end
-
-
-	-- Add some noise at the current antenna azimuth
-	local noise_amount = 25
-	if antenna_az > math.rad(35) or antenna_az < math.rad(-35) then
-		noise_amount = 50
-	else 
-		noise_amount = 5
-	end
-
-	if current_noise_range + noise_amount >= NOISE_COUNT then
-		current_noise_range = 0
-	end
-
-	for n = current_noise_range,current_noise_range+noise_amount do
-		local noise_show_handle = noise_show[n]
-		local noise_range_handle = noise_range[n]
-		local noise_azimuth_handle = noise_azimuth[n]
-
-		local base_range = 40000.0 * 1.852
-		local range = math.random(0, base_range)
-		noise_show_handle:set(1)
-		noise_range_handle:set(range)
-		noise_azimuth_handle:set(-antenna_az)
-
-		current_noise_range = n
-	end	
 end
 
 

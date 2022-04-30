@@ -190,7 +190,7 @@ end
 
 
 for n = 0,NOISE_COUNT do
-	local	radar_noise					= create_textured_box(-blob_scale/2,-blob_scale/2,blob_scale_x/2,blob_scale_y/2)
+	local	radar_noise					= create_textured_box(-blob_scale/2,-blob_scale/2,blob_scale/2,blob_scale/2)
 			radar_noise.material       	= NOISE_TEXTURE
 			radar_noise.name		   		= "noise_" .. n .. "_name"				
 			radar_noise.init_pos	   		= {0, -1.80*RS, 0}				

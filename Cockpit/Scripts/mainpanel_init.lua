@@ -74,7 +74,7 @@ HSIKompassDial.parameter_name		= "HSI_DIAL"
 -------variometer--------------------------------------------------
 Variometer							= CreateGauge("parameter")
 Variometer.arg_number				= 24
-Variometer.input					= {-31.0, -20.32, -10.16, -5.0, 0.0, 5.0, 10,16. 20.32, 31.0}   
+Variometer.input					= {-31.0, -20.32, -10.16, -5.0, 0.0, 5.0, 10.16, 20.32, 31.0}   
 Variometer.output					= {-1.0, -0.765, -0.5, -0.3, 0.0, 0.3, 0.5, 0.765, 1.0}
 Variometer.parameter_name			= "VARIO_PARAM"
 

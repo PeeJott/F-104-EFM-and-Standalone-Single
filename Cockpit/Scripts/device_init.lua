@@ -33,6 +33,7 @@ creators[devices.WEAPON_SYSTEM]         = {"avSimpleWeaponSystem",LockOn_Options
 creators[devices.CANOPY]				= {"avLuaDevice",LockOn_Options.script_path.."Systems/canopy.lua"}
 
 creators[devices.RADAR]					= {"avSimpleRadar", LockOn_Options.script_path.."avRadar/Device/Radar_init.lua"}
+creators[devices.RADAR_SCOPE]					= {"avLuaDevice", LockOn_Options.script_path.."avRadar/Device/Scope_init.lua"}
 
 indicators = {} --DAS HIER MUSS SEIN SONST CRASHT ES DCS
 
@@ -40,7 +41,7 @@ dofile(LockOn_Options.script_path.."avRadar/radarexample_device_init.lua")
 dofile(LockOn_Options.script_path.."avRWR/rwrexample_device_init.lua")
 
 -- remove this line to disable a2g radar
-dofile(LockOn_Options.script_path.."avTerrain/terrainexample_device_init.lua")
+--dofile(LockOn_Options.script_path.."avTerrain/terrainexample_device_init.lua")
 
 indicators[#indicators + 1] = {"ccIndicator", LockOn_Options.script_path.."HUD/init.lua",	--init script
  nil, 
