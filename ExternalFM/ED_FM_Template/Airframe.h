@@ -110,6 +110,10 @@ public:
 	inline void setWeightOnWheels(double x);
 	inline double getWeightOnWheels() const;
 
+	//---------AntiSkid-Functions---------------------------
+	inline double getAntiSkid();
+	void antiSkidSystem();
+
 
 	//------Getting and returning positions-------------------
 	inline double getGearLPosition() const; //returns gear pos
@@ -500,6 +504,10 @@ private:
 
 	double m_gearOversped = 0.0;
 
+	//------AntiSkid------
+	double m_antiSkid = 0.0;
+	bool m_antiSkidFunctional = false;
+
 	//modification variable for Ground-Start
 	double m_gearStart = 0.0;
 	double m_gearStartDown = 0.0;
@@ -706,14 +714,14 @@ private:
 
 double Airframe::setAileron(double dt)
 {
-	double input = m_input.getRoll() * m_ailDef; // +m_input.m_rollTrim(); // m_rollTrim kommt noch
+	double input = (m_input.getRoll() * m_ailDef) + (m_input.getTrimmAilR() - m_input.getTrimmAilL()); // +m_input.m_rollTrim(); // m_rollTrim kommt noch
 	return m_actuatorAil.inputUpdate(input, dt);
 }
 
 //Folgend Auskommentierungen zum Testen des Stabilizers, da Aileron und Rudder so funktionieren
 double Airframe::setStabilizer(double dt)
 {
-	double input = m_input.getPitch();//m_input.getPitch(); // +m_stabilizerZeroForceDeflection;
+	double input = (m_input.getPitch() + (m_input.getTrimmUp() - m_input.getTrimmDown()));//m_input.getPitch(); // +m_stabilizerZeroForceDeflection;
 	return m_actuatorStab.inputUpdate(input, dt);
 	
 }
@@ -836,6 +844,13 @@ double Airframe::getGearRPosition() const
 double Airframe::getGearNPosition() const
 {
 	return m_gearNPosition;
+}
+
+//--------------AntiSkid------------------
+
+double Airframe::getAntiSkid()
+{
+	return m_antiSkid;
 }
 
 // Neu eingefügt den Lampen-Kram zur directen Steuerung der FC-3 Cockpit-Args

@@ -28,18 +28,26 @@ local RadAltKHand_Param		= get_param_handle("RAD_ALT_K_HAND")
 local RPMPercHand_Param		= get_param_handle("RPM_PERCENT_HAND")
 local TempInCHand_Param		= get_param_handle("TEMP_IN_C_HAND")
 local HSIKompassDial_Param	= get_param_handle("HSI_DIAL")
+local VarioHand_Param		= get_param_handle("VARIO_PARAM")
+local SlipInd_Param			= get_param_handle("SLIP_INDICATOR")
+local TurnInd_Param			= get_param_handle("TURN_INDICATOR")
 
 
 -----------------locale variablen für die Instrumente Initialisierung------------------
 
 local Actual_AoA 	= 0 --Initialisierung auf NULL
 local Actual_G 		= 0
-local RadAltInFeet = 0
+local RadAltInFeet  = 0
 local RadAltHun 	= 0
 local RadAltK 		= 0
 local EngineRPM		= 0
 local TempInCelsius = 0
 local HSI_Heading 	= 0
+local VarioValue	= 0
+local TurnIndValue	= 0
+local TurnIndPre 	= 0
+local TurnIndActual	= 0
+local SlipIndValue  = 0
 
 
 
@@ -104,6 +112,20 @@ TempInCHand_Param:set(TempInCelsius)
 ----HSI Dial--------
 HSI_Heading 	= sensor_data:getHeading()
 HSIKompassDial_Param:set(HSI_Heading)
+
+----Variometer------
+VarioValue = sensor_data:getVerticalVelocity()
+VarioHand_Param:set(VarioValue)
+
+--SlipIndicator------
+SlipIndValue = ((sensor_data:getAngleOfSlide()) * rad_to_deg) * 20
+SlipInd_Param:set(SlipIndValue)
+
+---TurnIndicator-----
+TurnIndActual = sensor_data:getHeading()
+TurnInd_Param:set(TurnIndValue)
+TurnIndValue = ((TurnIndActual - TurnIndPre) * rad_to_deg) * 20.0 
+TurnIndPre = TurnIndActual
 	
 end
 
