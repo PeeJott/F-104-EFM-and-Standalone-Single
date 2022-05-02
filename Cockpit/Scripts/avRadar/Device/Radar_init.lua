@@ -13,31 +13,27 @@ TDC_range_carret_size 	= 5000
 
 
 local BLOB_COUNT = 2500
+local MAX_RANGE = 40000.0 * 1.852  
+local MAX_RANGE_GATE = 20000.0 * 1.852
+local NOISE_COUNT = 100
+local NOISE_STEPS = 5
+local NOISE_AMOUNT = NOISE_COUNT/NOISE_STEPS
 
 perfomance = 
 {
 	roll_compensation_limits	= {math.rad(-180.0), math.rad(180.0)},
 	pitch_compensation_limits	= {math.rad(-57.0), math.rad(20.0)}, -- according to T.O. 1F-104G-1 p. 4-89
-	
-	-- NASARR in "A/A Search" mode:
-	-- 90° azimuth
-	-- 2 lines of 5°
+
 	scan_volume_azimuth 	= math.rad(90),	-- according to T.O. 1F-104G-1 p. 4-89	
 	scan_volume_elevation	= math.rad(10),	-- according to T.O. 1F-104G-1 p. 4-89
 	scan_beam				= math.rad(5), -- A/A
-
-	-- NASARR in "Terrain Map" mode:
-	--scan_volume_elevation	= math.rad(55),	-- A/G	
-	--scan_beam				= math.rad(55),  -- A/G
-
-
 
 	scan_speed				= math.rad(3*60), -- is not working, confirmed in test
 	
 	tracking_azimuth   			= { -math.rad(45),math.rad(45)}, -- most likely 90°
 	tracking_elevation 			= { -math.rad(38),math.rad(20)}, -- most likely the antenna tilt limits
 
-	max_available_distance  = 40000.0 * 1.852, --/ 0.66, -- to nautical miles
+	max_available_distance  = MAX_RANGE / 0.66, -- to compensate range reduction for ground spots
 	dead_zone 				= 300.0, -- can't be set via config
 	
 	ground_clutter =
@@ -45,9 +41,9 @@ perfomance =
 		sea		   	   = {0,0,0}, -- no return from sea
 		land 	   	   = {2,0,0},
 		artificial 	   = {3,0,0},
-		rays_density   = 0.05, --0.05,
-		max_distance   = 40000 * 1.852, --/ 0.66, -- to nautical miles, devide by 0.6666 to compensate reduced range against ground
-	}	
+		rays_density   = 0.05,
+		max_distance   = MAX_RANGE / 0.66 -- to compensate range reduction for ground spots
+	}
 }
 
 
@@ -60,7 +56,7 @@ DEBUG_ACTIVE 	= true
 
 --update_time_step 	= 0.05
 --device_timer_dt		= 0.05
-update_time_step 	= 0.1
+update_time_step 	= 0.025
 device_timer_dt		= 0.025
 
 make_default_activity(update_time_step) 
@@ -178,6 +174,38 @@ for ia = 1,BLOB_COUNT do
 	blob_azimuth[i] = get_param_handle("BLOB"..i.."AZIMUTH")
 end
 
+local range_gate_show = {}
+local range_gate_range = {}
+local range_gate_azimuth = {}
+local range_gate_opacity = {}
+
+for i = 0,9 do
+	range_gate_show[i] = get_param_handle("RANGE_GATE_"..i.."_SHOW")
+	range_gate_range[i] = get_param_handle("RANGE_GATE_"..i.."_RANGE")
+	range_gate_azimuth[i] = get_param_handle("RANGE_GATE_"..i.."_AZIMUTH")
+	range_gate_opacity[i] = get_param_handle("RANGE_GATE_"..i.."_OPACITY")
+end
+
+--
+--local noise_show = {}
+--local noise_range = {}
+--local noise_azimuth = {}
+--local noise_opacity = {}
+--
+--for i = 0,NOISE_COUNT do	
+--	noise_show[i] = get_param_handle("NOISE_"..i.."_SHOW")
+--	noise_range[i] = get_param_handle("NOISE_"..i.."_RANGE")
+--	noise_azimuth[i] = get_param_handle("NOISE_"..i.."_AZIMUTH")
+--	noise_opacity[i] = get_param_handle("NOISE_"..i.."_OPACITY")
+--end
+--
+
+
+
+
+antenna_azimuth_h 		= get_param_handle("ANTENNA_AZIMUTH")
+
+
 
 function post_initialize()
 
@@ -252,30 +280,6 @@ function SetCommand(command,value)
 	--
 ----------------------------------------------------------------------	
 	
-	if Radar.tdc_range_h:get() > 20000 then
-		Radar.tdc_range_h:set(20000)
-	elseif Radar.tdc_range_h:get() < 0 then
-		Radar.tdc_range_h:set(0)
-	end
-		
-	if Radar.tdc_azi_h:get() > 0.5 then
-		Radar.tdc_azi_h:set(0.5)
-	elseif Radar.tdc_azi_h:get() < -0.5 then
-		Radar.tdc_azi_h:set(-0.5)
-	end
-	
--------------------------------------------------
-	
-	if command == 2032  then
-		Radar.tdc_range_h:set(Radar.tdc_range_h:get()- value*200000)
-		--print_message_to_user("RadarRangeUP/DOWN")		
-	end
-	
-	if command == 2031  then
-		Radar.tdc_azi_h:set(Radar.tdc_azi_h:get()+ value*10)
-		--print_message_to_user("RadarRangeLeftRight")		
-	end
-
 -------------------------------------------------	
 	
 	--[[ NUR EIN TEST
@@ -307,7 +311,8 @@ function SetCommand(command,value)
 		print_message_to_user("Antenna elevation: " .. math.deg(new_elevation))
 	end
 	
-	
+	local updateRangeGateScale = false
+
 	if command == Keys.GunPipper_Center then
 		if range_sweep_switch == 0 then
 			range_sweep_switch = range_sweep_switch + 1
@@ -320,7 +325,27 @@ function SetCommand(command,value)
 			print_message_to_user("Range: " .. ranges[range_sweep_switch])
 		end
 	end
+
+	------------------------------------- RANGE GATE -------------------------------	
+
+	if command == 2032  then
+		Radar.tdc_range_h:set(Radar.tdc_range_h:get()- value*200000)
+		--print_message_to_user("RadarRangeUP/DOWN")		
+	end
 	
+	if command == 2031  then
+		Radar.tdc_azi_h:set(Radar.tdc_azi_h:get()+ value*10)
+		--print_message_to_user("RadarRangeLeftRight")		
+	end
+		
+	-- limit the range gate
+	if Radar.tdc_range_h:get() > MAX_RANGE_GATE then
+		Radar.tdc_range_h:set(MAX_RANGE_GATE)
+	elseif Radar.tdc_range_h:get() < 0 then
+		Radar.tdc_range_h:set(0)
+	end
+
+	--------------------------------------- RADAR MODE --------------------------
 	if command == Keys.GunPipper_Automatic then
 		-- change mode:
 		if current_mode == 0 then
@@ -393,18 +418,84 @@ function SetCommand(command,value)
 			-- OFF
 		end
 	end
-
-
 end
 
-local current_noise_range = 0
-
 function update()
+	
+	local antenna_az = avImprovedRadar.get_antenna_azimuth()
+	local antenna_el = avImprovedRadar.get_antenna_elevation()	
+
+	antenna_azimuth_h:set(-antenna_az)
+
+	for r=9,1,-1 do
+		range_gate_show[r]:set(range_gate_show[r-1]:get())
+		range_gate_range[r]:set(range_gate_range[r-1]:get())
+		range_gate_azimuth[r]:set(range_gate_azimuth[r-1]:get())
+		range_gate_opacity[r]:set(1.0-(0.1*r))
+	end
+		
+	local range = Radar.tdc_range_h:get()
+	if range_sweep_switch == 0 then
+		range = range * 4
+	elseif range_sweep_switch == 1 then
+		range = range * 2
+	end
+
+	range_gate_show[0]:set(1)
+	range_gate_range[0]:set(range)
+	range_gate_azimuth[0]:set(-antenna_az)
+	range_gate_opacity[0]:set(1.0)
+
+
+
+	
+--	for s=1,NOISE_STEPS-1 do			
+--		for n = s*NOISE_AMOUNT+NOISE_AMOUNT,s*NOISE_AMOUNT,-1 do
+--			local previous_show_handle = noise_show[n-NOISE_AMOUNT]
+--			local previous_range_handle = noise_range[n-NOISE_AMOUNT]
+--			local previous_azimuth_handle = noise_azimuth[n-NOISE_AMOUNT]
+--			local previous_opacity_handle = noise_opacity[n-NOISE_AMOUNT]
+--
+--			local noise_show_handle = noise_show[n]
+--			local noise_range_handle = noise_range[n]
+--			local noise_azimuth_handle = noise_azimuth[n]
+--			local noise_opacity_handle = noise_opacity[n]
+--
+--			local base_range = 40000.0 * 1.852
+--			local range = math.random(0, base_range)
+--			noise_show_handle:set(previous_show_handle:get())
+--			noise_range_handle:set(previous_range_handle:get())
+--			noise_azimuth_handle:set(previous_azimuth_handle:get())
+--			noise_opacity_handle:set(1.0-(0.2*s))
+--		end
+--	end
+--		
+--	for n = 0,NOISE_AMOUNT do
+--		local noise_show_handle = noise_show[n]
+--		local noise_range_handle = noise_range[n]
+--		local noise_azimuth_handle = noise_azimuth[n]
+--		local noise_opacity_handle = noise_opacity[n]
+--
+--		local base_range = 40000.0 * 1.852
+--		local range = math.random(0, base_range)
+--		noise_show_handle:set(1)
+--		noise_range_handle:set(range)
+--		noise_azimuth_handle:set(-antenna_az)
+--		noise_opacity_handle:set(1.0)
+--	end
+
+
+
+
 	
 	Sensor_Data_Raw = get_base_data()
 		
 	Radar.tdc_ele_up_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() + (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))
 	Radar.tdc_ele_down_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() - (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))	
+
+
+
+
 
 	local contact_count = 0
 
@@ -435,17 +526,15 @@ function update()
 		local memory = 3
 		if time >= 0 and time <= memory then			
 
-			local base_opacity = ((255/3)*rcs)
+			local base_opacity = ((10/3)*rcs)
 			blob_opacity_handle:set(base_opacity-((base_opacity/memory)*time))
-			--blob_opacity_handle:set(255)
-
-			local base_range = 40000.0 * 1.852
+			
 			if range_sweep_switch == 0 then
 				range = range * 4
 			elseif range_sweep_switch == 1 then
 				range = range * 2
 			end
-			blob_scale_handle:set(range / base_range)
+			blob_scale_handle:set(range / MAX_RANGE)
 			blob_range_handle:set(range)
 
 			blob_azimuth_handle:set(azimuth)

@@ -33,7 +33,6 @@ creators[devices.WEAPON_SYSTEM]         = {"avSimpleWeaponSystem",LockOn_Options
 creators[devices.CANOPY]				= {"avLuaDevice",LockOn_Options.script_path.."Systems/canopy.lua"}
 
 creators[devices.RADAR]					= {"avSimpleRadar", LockOn_Options.script_path.."avRadar/Device/Radar_init.lua"}
-creators[devices.RADAR_SCOPE]					= {"avLuaDevice", LockOn_Options.script_path.."avRadar/Device/Scope_init.lua"}
 
 indicators = {} --DAS HIER MUSS SEIN SONST CRASHT ES DCS
 

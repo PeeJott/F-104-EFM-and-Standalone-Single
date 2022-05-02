@@ -188,32 +188,34 @@ end
 
 --------------------------------------------------------------------------
 
-
-for n = 0,NOISE_COUNT do
-	local	radar_noise					= create_textured_box(-blob_scale/2,-blob_scale/2,blob_scale/2,blob_scale/2)
-			radar_noise.material       	= NOISE_TEXTURE
-			radar_noise.name		   		= "noise_" .. n .. "_name"				
-			radar_noise.init_pos	   		= {0, -1.80*RS, 0}				
-			radar_noise.use_mipfilter     = true
-			radar_noise.additive_alpha    = true
-			radar_noise.isdraw			= true
-			radar_noise.isvisible			= true
-			radar_noise.h_clip_relation 	= h_clip_relations.COMPARE
-			radar_noise.level 			= RADAR_DEFAULT_LEVEL
-			radar_noise.collimated		= false
-			radar_noise.controllers     	= {													
-												{"parameter_compare_with_number", 0, 1},
-												{"rotate_using_parameter", 2, -1.0},
-												{"move_up_down_using_parameter", 1, ud_scale},
-												} 
-			radar_noise.element_params  	= {	
-												"NOISE_"..n.."_SHOW",		 -- 0
-												"NOISE_"..n.."_RANGE",		 -- 1
-												"NOISE_"..n.."_AZIMUTH",	 -- 2
-												}
-		Add(radar_noise)
-end
-
+--
+--for n = 0,NOISE_COUNT do
+--	local	radar_noise					= create_textured_box(-blob_scale/2,-blob_scale/2,blob_scale/2,blob_scale/2)
+--			radar_noise.material       	= NOISE_TEXTURE
+--			radar_noise.name		   		= "noise_" .. n .. "_name"				
+--			radar_noise.init_pos	   		= {0, -1.80*RS, 0}				
+--			radar_noise.use_mipfilter     = true
+--			radar_noise.additive_alpha    = true
+--			radar_noise.isdraw			= true
+--			radar_noise.isvisible			= true
+--			radar_noise.h_clip_relation 	= h_clip_relations.COMPARE
+--			radar_noise.level 			= RADAR_DEFAULT_LEVEL
+--			radar_noise.collimated		= false
+--			radar_noise.controllers     	= {													
+--												{"parameter_compare_with_number", 0, 1},
+--												{"rotate_using_parameter", 2, -1.0},
+--												{"move_up_down_using_parameter", 1, ud_scale},
+--												{"opacity_using_parameter",3},
+--												} 
+--			radar_noise.element_params  	= {	
+--												"NOISE_"..n.."_SHOW",		 -- 0
+--												"NOISE_"..n.."_RANGE",		 -- 1
+--												"NOISE_"..n.."_AZIMUTH",	 -- 2
+--												"NOISE_"..n.."_OPACITY",	 -- 7
+--												}
+--		Add(radar_noise)
+--end
+--
 
 ------------------------------------------------------------------------------------
 
@@ -259,6 +261,7 @@ local	radar_cursor			   		= CreateElement "ceMeshPoly"
 										  }
 	--Add(radar_cursor)
 	
+for r=0,9 do
     local range_gate	   		= create_textured_box(-(4*blob_scale)/2,-blob_scale/2,(4*blob_scale)/2,blob_scale/2)								
 	range_gate.material       	= GATE_TEXTURE
     range_gate.name				= create_guid_string()
@@ -274,14 +277,16 @@ local	radar_cursor			   		= CreateElement "ceMeshPoly"
 											{"rotate_using_parameter"	,1,-1.0},
 											{"move_up_down_using_parameter"		,0,ud_scale},										
 											{"parameter_in_range",2,-0.1,2.1},	
+											{"opacity_using_parameter",3},
 										  } 
 	range_gate.element_params  	= {	
-											"RADAR_TDC_RANGE",
-											"ANTENNA_AZIMUTH",
-											"RADAR_MODE",
+											"RANGE_GATE_"..r.."_RANGE",		-- 0											
+											"RANGE_GATE_"..r.."_AZIMUTH",	-- 1
+											"RANGE_GATE_"..r.."_SHOW",		-- 2
+											"RANGE_GATE_"..r.."_OPACITY",	-- 3
 										  }
     Add(range_gate)
-
+end
 
 ------------------------------------ LOCK MODE ------------------------------------------
 
