@@ -41,7 +41,7 @@ perfomance =
 		sea		   	   = {0,0,0}, -- no return from sea
 		land 	   	   = {2,0,0},
 		artificial 	   = {3,0,0},
-		rays_density   = 0.05,
+		rays_density   = 0.25,
 		max_distance   = MAX_RANGE / 0.66 -- to compensate range reduction for ground spots
 	}
 }
@@ -62,7 +62,7 @@ device_timer_dt		= 0.025
 make_default_activity(update_time_step) 
 
 
-local offset = 0;
+local offset = 200;
 
 local air_elevation = 10
 local air_beam = 5
@@ -70,7 +70,7 @@ local air_speed = 90
 
 local ground_elevation = 6.2
 local ground_beam = 6.2
-local ground_speed = 180 -- must be increase for some unknown reason, otherwise nothing is spotted
+local ground_speed = 90 -- must be increase for some unknown reason, otherwise nothing is spotted
 
 local spoiled_elevation = 55
 local spoiled_beam = 55
@@ -300,6 +300,17 @@ function SetCommand(command,value)
 		end
 		Radar.sz_elevation_h:set(new_elevation)
 		print_message_to_user("Antenna elevation: " .. math.deg(new_elevation))
+
+
+
+
+
+		--offset = offset - 1
+		--if offset < 0 then
+		--	offset = 0
+		--end
+		--avImprovedRadar.SetOffset(offset)
+
 	end
 	
 	if command == Keys.GunPipper_Down then
@@ -309,6 +320,12 @@ function SetCommand(command,value)
 		end
 		Radar.sz_elevation_h:set(new_elevation)
 		print_message_to_user("Antenna elevation: " .. math.deg(new_elevation))
+
+
+
+
+		--offset = offset + 1		
+		--avImprovedRadar.SetOffset(offset)
 	end
 	
 	local updateRangeGateScale = false
@@ -421,6 +438,12 @@ function SetCommand(command,value)
 end
 
 function update()
+
+	--local value = avImprovedRadar.GetDouble()
+	--
+	--print_message_to_user("Offset: " .. offset .. "Value: " .. value)
+
+
 	
 	local antenna_az = avImprovedRadar.get_antenna_azimuth()
 	local antenna_el = avImprovedRadar.get_antenna_elevation()	

@@ -134,9 +134,11 @@ for s = 1,4 do
 		else
 			i = "_".. ia .."_"
 		end
+
+		local scale_factor = s - ((s-1) * 0.5)
 		
 		--local	radar_contact			   		= CreateElement "ceMeshPoly"
-		local	radar_contact			   		= create_textured_box(-blob_scale_x*s,-blob_scale_y*s,blob_scale_x*s,blob_scale_y*s)
+		local	radar_contact			   		= create_textured_box(-blob_scale_x*scale_factor,-blob_scale_y*scale_factor,blob_scale_x*scale_factor,blob_scale_y*scale_factor)
 				radar_contact.material       	= BLOB_TEXTURE
 				radar_contact.name		   		= "radar_contact" .. i .. "name"				
 				radar_contact.init_pos	   		= {0, -1.80*RS, 0}				
