@@ -41,7 +41,7 @@ perfomance =
 		sea		   	   = {0,0,0}, -- no return from sea
 		land 	   	   = {2,0,0},
 		artificial 	   = {3,0,0},
-		rays_density   = 0.25,
+		rays_density   = 0.25,		-- 0.25 all modes except spoiled
 		max_distance   = MAX_RANGE / 0.66 -- to compensate range reduction for ground spots
 	}
 }
@@ -62,19 +62,22 @@ device_timer_dt		= 0.025
 make_default_activity(update_time_step) 
 
 
-local offset = 200;
+local offset = 622;
 
 local air_elevation = 10
 local air_beam = 5
 local air_speed = 90
+local air_density = 0.25
 
 local ground_elevation = 6.2
 local ground_beam = 6.2
 local ground_speed = 90 -- must be increase for some unknown reason, otherwise nothing is spotted
+local ground_density = 0.25
 
 local spoiled_elevation = 55
 local spoiled_beam = 55
 local spoiled_speed = 90
+local spoiled_density = 0.05
 
 
 -- 0 = A/A
@@ -301,16 +304,12 @@ function SetCommand(command,value)
 		Radar.sz_elevation_h:set(new_elevation)
 		print_message_to_user("Antenna elevation: " .. math.deg(new_elevation))
 
-
-
-
-
+		---- offset discovery
 		--offset = offset - 1
 		--if offset < 0 then
 		--	offset = 0
 		--end
 		--avImprovedRadar.SetOffset(offset)
-
 	end
 	
 	if command == Keys.GunPipper_Down then
@@ -321,9 +320,7 @@ function SetCommand(command,value)
 		Radar.sz_elevation_h:set(new_elevation)
 		print_message_to_user("Antenna elevation: " .. math.deg(new_elevation))
 
-
-
-
+		---- offset discovery
 		--offset = offset + 1		
 		--avImprovedRadar.SetOffset(offset)
 	end
@@ -380,6 +377,7 @@ function SetCommand(command,value)
 			Radar.sz_volume_elevation_h:set(math.rad(air_elevation))
 			Radar.opt_pb_stab_h:set(1)
 			avImprovedRadar.set_scan_speed(math.rad(air_speed))
+			avImprovedRadar.set_ray_density(air_density)
 
 
 		elseif current_mode == 2 then
@@ -391,6 +389,7 @@ function SetCommand(command,value)
 			Radar.sz_volume_elevation_h:set(math.rad(ground_elevation))
 			Radar.opt_pb_stab_h:set(1)
 			avImprovedRadar.set_scan_speed(math.rad(ground_speed))
+			avImprovedRadar.set_ray_density(ground_density)
 
 		elseif current_mode == 3 then
 			current_mode = current_mode + 1
@@ -401,6 +400,7 @@ function SetCommand(command,value)
 			Radar.sz_volume_elevation_h:set(math.rad(spoiled_elevation))
 			Radar.opt_pb_stab_h:set(1)
 			avImprovedRadar.set_scan_speed(math.rad(spoiled_speed))
+			avImprovedRadar.set_ray_density(spoiled_density)
 
 		elseif current_mode == 4 then
 			current_mode = current_mode + 1
@@ -411,6 +411,7 @@ function SetCommand(command,value)
 			Radar.sz_volume_elevation_h:set(math.rad(ground_elevation))
 			Radar.opt_pb_stab_h:set(1)
 			avImprovedRadar.set_scan_speed(math.rad(ground_speed))
+			avImprovedRadar.set_ray_density(ground_density)
 
 		elseif current_mode == 5 then
 			current_mode = current_mode + 1
@@ -421,6 +422,7 @@ function SetCommand(command,value)
 			Radar.sz_volume_elevation_h:set(math.rad(ground_elevation))
 			Radar.opt_pb_stab_h:set(0)
 			avImprovedRadar.set_scan_speed(math.rad(ground_speed))
+			avImprovedRadar.set_ray_density(ground_density)
 
 		elseif current_mode == 6 then
 			current_mode = current_mode + 1
@@ -439,139 +441,160 @@ end
 
 function update()
 
-	--local value = avImprovedRadar.GetDouble()
-	--
+	---- offset discovery
+	--local value = avImprovedRadar.GetFloat()	
 	--print_message_to_user("Offset: " .. offset .. "Value: " .. value)
-
-
 	
 	local antenna_az = avImprovedRadar.get_antenna_azimuth()
 	local antenna_el = avImprovedRadar.get_antenna_elevation()	
 
 	antenna_azimuth_h:set(-antenna_az)
 
-	for r=9,1,-1 do
-		range_gate_show[r]:set(range_gate_show[r-1]:get())
-		range_gate_range[r]:set(range_gate_range[r-1]:get())
-		range_gate_azimuth[r]:set(range_gate_azimuth[r-1]:get())
-		range_gate_opacity[r]:set(1.0-(0.1*r))
-	end
-		
-	local range = Radar.tdc_range_h:get()
-	if range_sweep_switch == 0 then
-		range = range * 4
-	elseif range_sweep_switch == 1 then
-		range = range * 2
-	end
-
-	range_gate_show[0]:set(1)
-	range_gate_range[0]:set(range)
-	range_gate_azimuth[0]:set(-antenna_az)
-	range_gate_opacity[0]:set(1.0)
-
-
-
 	
---	for s=1,NOISE_STEPS-1 do			
---		for n = s*NOISE_AMOUNT+NOISE_AMOUNT,s*NOISE_AMOUNT,-1 do
---			local previous_show_handle = noise_show[n-NOISE_AMOUNT]
---			local previous_range_handle = noise_range[n-NOISE_AMOUNT]
---			local previous_azimuth_handle = noise_azimuth[n-NOISE_AMOUNT]
---			local previous_opacity_handle = noise_opacity[n-NOISE_AMOUNT]
---
---			local noise_show_handle = noise_show[n]
---			local noise_range_handle = noise_range[n]
---			local noise_azimuth_handle = noise_azimuth[n]
---			local noise_opacity_handle = noise_opacity[n]
---
---			local base_range = 40000.0 * 1.852
---			local range = math.random(0, base_range)
---			noise_show_handle:set(previous_show_handle:get())
---			noise_range_handle:set(previous_range_handle:get())
---			noise_azimuth_handle:set(previous_azimuth_handle:get())
---			noise_opacity_handle:set(1.0-(0.2*s))
---		end
---	end
---		
---	for n = 0,NOISE_AMOUNT do
---		local noise_show_handle = noise_show[n]
---		local noise_range_handle = noise_range[n]
---		local noise_azimuth_handle = noise_azimuth[n]
---		local noise_opacity_handle = noise_opacity[n]
---
---		local base_range = 40000.0 * 1.852
---		local range = math.random(0, base_range)
---		noise_show_handle:set(1)
---		noise_range_handle:set(range)
---		noise_azimuth_handle:set(-antenna_az)
---		noise_opacity_handle:set(1.0)
---	end
 
+	if current_mode == 0 or current_mode == 1 or current_mode == 7 then
+		-- disable radar in OFF, SBY or A/G
 
-
-
-	
-	Sensor_Data_Raw = get_base_data()
-		
-	Radar.tdc_ele_up_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() + (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))
-	Radar.tdc_ele_down_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() - (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))	
-
-
-
-
-
-	local contact_count = 0
-
-	for ia = 1,BLOB_COUNT do
-
-		if ia  < 10 then
-		i = "_0".. ia .."_"
-		else
-			i = "_".. ia .."_"
+		for r=0,9 do
+			range_gate_show[r]:set(0)
 		end
 
-		local radar_contact_time_handle = radar_contact_time[i]
-		local radar_contact_rcs_handle = radar_contact_rcs[i]
-		local radar_contact_range_handle = radar_contact_range[i]
-		local radar_contact_azimuth_handle = radar_contact_azimuth[i]
-
-		local blob_show_handle = blob_show[i]
-		local blob_opacity_handle = blob_opacity[i]
-		local blob_scale_handle = blob_scale[i]
-		local blob_range_handle = blob_range[i]
-		local blob_azimuth_handle = blob_azimuth[i]
-
-		local time = radar_contact_time_handle:get()		
-		local rcs = radar_contact_rcs_handle:get()
-		local range = radar_contact_range_handle:get()
-		local azimuth = radar_contact_azimuth_handle:get()
-
-		local memory = 3
-		if time >= 0 and time <= memory then			
-
-			local base_opacity = ((10/3)*rcs)
-			blob_opacity_handle:set(base_opacity-((base_opacity/memory)*time))
-			
-			if range_sweep_switch == 0 then
-				range = range * 4
-			elseif range_sweep_switch == 1 then
-				range = range * 2
+		for ia = 1,BLOB_COUNT do
+			if ia  < 10 then
+			i = "_0".. ia .."_"
+			else
+				i = "_".. ia .."_"
 			end
-			blob_scale_handle:set(range / MAX_RANGE)
-			blob_range_handle:set(range)
-
-			blob_azimuth_handle:set(azimuth)
-
-			blob_show_handle:set(1)
-
-			contact_count = contact_count + 1
-		else
+			
+			local blob_show_handle = blob_show[i]			
 			blob_show_handle:set(0)
+		end
+	else
 
-			blob_opacity_handle:set(0.0)
+		for r=9,1,-1 do
+			range_gate_show[r]:set(range_gate_show[r-1]:get())
+			range_gate_range[r]:set(range_gate_range[r-1]:get())
+			range_gate_azimuth[r]:set(range_gate_azimuth[r-1]:get())
+			range_gate_opacity[r]:set(1.0-(0.1*r))
+		end
+		
+		local range = Radar.tdc_range_h:get()
+		if range_sweep_switch == 0 then
+			range = range * 4
+		elseif range_sweep_switch == 1 then
+			range = range * 2
+		end
 
-			blob_range_handle:set(0.0)
-			blob_azimuth_handle:set(0.0)
+		range_gate_show[0]:set(1)
+		range_gate_range[0]:set(range)
+		range_gate_azimuth[0]:set(-antenna_az)
+		range_gate_opacity[0]:set(1.0)
+	
+	
+
+
+
+	--	for s=1,NOISE_STEPS-1 do			
+	--		for n = s*NOISE_AMOUNT+NOISE_AMOUNT,s*NOISE_AMOUNT,-1 do
+	--			local previous_show_handle = noise_show[n-NOISE_AMOUNT]
+	--			local previous_range_handle = noise_range[n-NOISE_AMOUNT]
+	--			local previous_azimuth_handle = noise_azimuth[n-NOISE_AMOUNT]
+	--			local previous_opacity_handle = noise_opacity[n-NOISE_AMOUNT]
+	--
+	--			local noise_show_handle = noise_show[n]
+	--			local noise_range_handle = noise_range[n]
+	--			local noise_azimuth_handle = noise_azimuth[n]
+	--			local noise_opacity_handle = noise_opacity[n]
+	--
+	--			local base_range = 40000.0 * 1.852
+	--			local range = math.random(0, base_range)
+	--			noise_show_handle:set(previous_show_handle:get())
+	--			noise_range_handle:set(previous_range_handle:get())
+	--			noise_azimuth_handle:set(previous_azimuth_handle:get())
+	--			noise_opacity_handle:set(1.0-(0.2*s))
+	--		end
+	--	end
+	--		
+	--	for n = 0,NOISE_AMOUNT do
+	--		local noise_show_handle = noise_show[n]
+	--		local noise_range_handle = noise_range[n]
+	--		local noise_azimuth_handle = noise_azimuth[n]
+	--		local noise_opacity_handle = noise_opacity[n]
+	--
+	--		local base_range = 40000.0 * 1.852
+	--		local range = math.random(0, base_range)
+	--		noise_show_handle:set(1)
+	--		noise_range_handle:set(range)
+	--		noise_azimuth_handle:set(-antenna_az)
+	--		noise_opacity_handle:set(1.0)
+	--	end
+
+
+
+
+	
+		Sensor_Data_Raw = get_base_data()
+		
+		Radar.tdc_ele_up_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() + (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))
+		Radar.tdc_ele_down_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() - (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))	
+
+
+
+
+
+		local contact_count = 0
+
+		for ia = 1,BLOB_COUNT do
+
+			if ia  < 10 then
+			i = "_0".. ia .."_"
+			else
+				i = "_".. ia .."_"
+			end
+
+			local radar_contact_time_handle = radar_contact_time[i]
+			local radar_contact_rcs_handle = radar_contact_rcs[i]
+			local radar_contact_range_handle = radar_contact_range[i]
+			local radar_contact_azimuth_handle = radar_contact_azimuth[i]
+
+			local blob_show_handle = blob_show[i]
+			local blob_opacity_handle = blob_opacity[i]
+			local blob_scale_handle = blob_scale[i]
+			local blob_range_handle = blob_range[i]
+			local blob_azimuth_handle = blob_azimuth[i]
+
+			local time = radar_contact_time_handle:get()		
+			local rcs = radar_contact_rcs_handle:get()
+			local range = radar_contact_range_handle:get()
+			local azimuth = radar_contact_azimuth_handle:get()
+
+			local memory = 3
+			if time >= 0 and time <= memory then			
+
+				local base_opacity = ((10/3)*rcs)
+				blob_opacity_handle:set(base_opacity-((base_opacity/memory)*time))
+			
+				if range_sweep_switch == 0 then
+					range = range * 4
+				elseif range_sweep_switch == 1 then
+					range = range * 2
+				end
+				blob_scale_handle:set(range / MAX_RANGE)
+				blob_range_handle:set(range)
+
+				blob_azimuth_handle:set(azimuth)
+
+				blob_show_handle:set(1)
+
+				contact_count = contact_count + 1
+			else
+				blob_show_handle:set(0)
+
+				blob_opacity_handle:set(0.0)
+
+				blob_range_handle:set(0.0)
+				blob_azimuth_handle:set(0.0)
+			end
 		end
 	end
 end
