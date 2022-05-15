@@ -30,36 +30,38 @@ join(res.keyCommands,{
 {down = iCommandPlaneHook, name = _('Tail Hook'), category = _('Systems')},
 
 -- Modes
-{down = iCommandPlaneModeBVR, name = _('(2) Beyond Visual Range Mode'), category = _('Modes')},
-{down = iCommandPlaneModeVS, name = _('(3) Close Air Combat Vertical Scan Mode'), category = _('Modes')},
-{down = iCommandPlaneModeBore, name = _('(4) Close Air Combat Bore Mode'), category = _('Modes')},
-{down = iCommandPlaneModeFI0, name = _('(6) Longitudinal Missile Aiming Mode/FLOOD mode'), category = _('Modes')},
-{down = iCommandPlaneModeGround, name = _('(7) Air-To-Ground Mode'), category = _('Modes')},
+{down = iCommandPlaneModeBVR, 			name = _('(2) Beyond Visual Range Mode'), 						category = _('Modes')},
+{down = iCommandPlaneModeVS, 			name = _('(3) Close Air Combat Vertical Scan Mode'), 			category = _('Modes')},
+{down = iCommandPlaneModeBore, 			name = _('(4) Close Air Combat Bore Mode'), 					category = _('Modes')},
+{down = iCommandPlaneModeFI0, 			name = _('(6) Longitudinal Missile Aiming Mode/FLOOD mode'), 	category = _('Modes')},
+{down = iCommandPlaneModeGround, 		name = _('(7) Air-To-Ground Mode'), 							category = _('Modes')},
+{down = iCommandPlaneChangeTarget,		name = _('Next Waypoint, Airfield Or Target'),					category = _('Modes')},
+{down = iCommandPlaneUFC_STEER_DOWN,	name = _('Previous Waypoint, Airfield Or Target'),				category = _('Modes')},
+{down = iCommandPlaneModeNAV,			name = _('(1) Navigation Modes'),								category = _('Modes')},
 
 -- Sensors
---{combos = {{key = 'JOY_BTN3'}}, down = iCommandPlaneChangeLock, up = iCommandPlaneChangeLockUp, name = _('Target Lock'), category = _('Sensors')},
-{down = iCommandSensorReset, name = _('Radar - Return To Search/NDTWS'), category = _('Sensors')},
-{down = iCommandRefusalTWS, name = _('Unlock TWS Target'), category = _('Sensors')},
-{down = iCommandPlaneRadarOnOff, name = _('Radar On/Off'), category = _('Sensors')},
-{down = iCommandPlaneRadarChangeMode, name = _('Radar RWS/TWS Mode Select'), category = _('Sensors')},
-{down = iCommandPlaneRadarCenter, name = _('Target Designator To Center'), category = _('Sensors')},
-{down = iCommandPlaneChangeRadarPRF, name = _('Radar Pulse Repeat Frequency Select'), category = _('Sensors')},
-{pressed = iCommandPlaneRadarUp, up = iCommandPlaneRadarStop, name = _('Target Designator Up'), category = _('Sensors')},
-{pressed = iCommandPlaneRadarDown, up = iCommandPlaneRadarStop, name = _('Target Designator Down'), category = _('Sensors')},
-{pressed = iCommandPlaneRadarLeft, up = iCommandPlaneRadarStop, name = _('Target Designator Left'), category = _('Sensors')},
-{pressed = iCommandPlaneRadarRight, up = iCommandPlaneRadarStop, name = _('Target Designator Right'), category = _('Sensors')},
-{pressed = iCommandSelecterUp, up = iCommandSelecterStop, name = _('Scan Zone Up'), category = _('Sensors')},
-{pressed = iCommandSelecterDown, up = iCommandSelecterStop, name = _('Scan Zone Down'), category = _('Sensors')},
-{pressed = iCommandSelecterLeft, up = iCommandSelecterStop, name = _('Scan Zone Left'), category = _('Sensors')},
-{pressed = iCommandSelecterRight, up = iCommandSelecterStop, name = _('Scan Zone Right'), category = _('Sensors')},
-{down = iCommandPlaneZoomIn, name = _('Display Zoom In'), category = _('Sensors')},
-{down = iCommandPlaneZoomOut, name = _('Display Zoom Out'), category = _('Sensors')},
-{down = iCommandDecreaseRadarScanArea, name = _('Radar Scan Zone Decrease'), category = _('Sensors')},
-{down = iCommandIncreaseRadarScanArea, name = _('Radar Scan Zone Increase'), category = _('Sensors')},
-{down = iCommandChangeRWRMode, name = _('RWR/SPO Mode Select'), category = _('Sensors')},
-{down = iCommandPlaneThreatWarnSoundVolumeDown, name = _('RWR/SPO Sound Signals Volume Down'), category = _('Sensors')},
-{down = iCommandPlaneThreatWarnSoundVolumeUp, name = _('RWR/SPO Sound Signals Volume Up'), category = _('Sensors')},
-{down = iCommandPlane_LockOn_start, up = iCommandPlane_LockOn_finish, name = 'Target Lock', category = 'Sensors'},
+{down = iCommandSensorReset, 											name = _('Radar - Return To Search/NDTWS'), 	category = _('Sensors')},
+{down = iCommandRefusalTWS, 											name = _('Unlock TWS Target'), 					category = _('Sensors')},
+{down = iCommandPlaneRadarOnOff, 										name = _('Radar On/Off'), 						category = _('Sensors')},
+{down = iCommandPlaneRadarChangeMode, 									name = _('Radar RWS/TWS Mode Select'), 			category = _('Sensors')},
+{down = iCommandPlaneRadarCenter, 										name = _('Target Designator To Center'), 		category = _('Sensors')},
+{down = iCommandPlaneChangeRadarPRF, 									name = _('Radar Pulse Repeat Frequency Select'), category = _('Sensors')},
+{pressed = iCommandPlaneRadarUp, up = iCommandPlaneRadarStop, 			name = _('Target Designator Up'), 				category = _('Sensors')},
+{pressed = iCommandPlaneRadarDown, up = iCommandPlaneRadarStop, 		name = _('Target Designator Down'), 			category = _('Sensors')},
+{pressed = iCommandPlaneRadarLeft, up = iCommandPlaneRadarStop, 		name = _('Target Designator Left'), 			category = _('Sensors')},
+{pressed = iCommandPlaneRadarRight, up = iCommandPlaneRadarStop, 		name = _('Target Designator Right'), 			category = _('Sensors')},
+{pressed = iCommandSelecterUp, up = iCommandSelecterStop, 				name = _('Scan Zone Up'), 						category = _('Sensors')},
+{pressed = iCommandSelecterDown, up = iCommandSelecterStop, 			name = _('Scan Zone Down'), 					category = _('Sensors')},
+{pressed = iCommandSelecterLeft, up = iCommandSelecterStop, 			name = _('Scan Zone Left'), 					category = _('Sensors')},
+{pressed = iCommandSelecterRight, up = iCommandSelecterStop, 			name = _('Scan Zone Right'), 					category = _('Sensors')},
+{down = iCommandPlaneZoomIn, 											name = _('Display Zoom In'), 					category = _('Sensors')},
+{down = iCommandPlaneZoomOut, 											name = _('Display Zoom Out'), 					category = _('Sensors')},
+{down = iCommandDecreaseRadarScanArea, 									name = _('Radar Scan Zone Decrease'), 			category = _('Sensors')},
+{down = iCommandIncreaseRadarScanArea, 									name = _('Radar Scan Zone Increase'), 			category = _('Sensors')},
+{down = iCommandChangeRWRMode, 											name = _('RWR/SPO Mode Select'), 				category = _('Sensors')},
+{down = iCommandPlaneThreatWarnSoundVolumeDown, 						name = _('RWR/SPO Sound Signals Volume Down'), 	category = _('Sensors')},
+{down = iCommandPlaneThreatWarnSoundVolumeUp, 							name = _('RWR/SPO Sound Signals Volume Up'), 	category = _('Sensors')},
+{down = iCommandPlane_LockOn_start, up = iCommandPlane_LockOn_finish, 	name = _('Target Lock'), 						category = _('Sensors')},
 
 -- Electric System
 {down = iCommandPowerBattery1,              up = iCommandPowerBattery1,             value_down =  1.0,		value_up = 0.0,     name = _('No. 1 Generator - On Reset'),     category = _('Electric')},
@@ -105,6 +107,7 @@ join(res.keyCommands,{
 {combos = {{key = 'JOY_BTN4'}},	down = iCommandPlaneChangeWeapon,		name = _('Weapon Change'),		category = _('Weapons')},
 {combos = {{key = 'JOY_BTN5'}},	down = iCommandPlaneModeCannon,			name = _('Cannon'),				category = _('Weapons')},
 {down = iCommandPlaneLaunchPermissionOverride,	name = _('Launch Permission Override'), category = _('Weapons') , features = {"LaunchPermissionOverride"}},
+
 -- Gameplay
 {down = iCommandPlaneShipTakeOff,		name = _('Ship Take Off Position'), category = _('General') , features = {"shiptakeoff"}},
 {down = iCommandCockpitShowPilotOnOff,	name = _('Show Pilot Body'),		category = _('General')},
@@ -179,12 +182,6 @@ join(res.keyCommands,{
 {pressed = iCommandAltimeterPressureIncrease,	up = iCommandAltimeterPressureStop, name = _('Altimeter Pressure Increase'), category = _('Systems')},
 {pressed = iCommandAltimeterPressureDecrease, up = iCommandAltimeterPressureStop, name = _('Altimeter Pressure Decrease'), category = _('Systems')},
 
-
--- Modes
-{down = iCommandPlaneChangeTarget,		name = _('Next Waypoint, Airfield Or Target'),		category = _('Modes')},
-{down = iCommandPlaneUFC_STEER_DOWN,	name = _('Previous Waypoint, Airfield Or Target'),	category = _('Modes')},
-{down = iCommandPlaneModeNAV,			name = _('(1) Navigation Modes'),					category = _('Modes')},
-
 -- Weapons
 --{combos = defaultDeviceAssignmentFor("fire"),	down = iCommandPlaneFire, up = iCommandPlaneFireOff, name = _('Weapon Fire'),	category = _('Weapons')},
 
@@ -218,11 +215,21 @@ join(res.keyCommands,{
 --Custom Category
 {down = iCommandPlaneRightMFD_OSB5_Off,			name = _('Flood/Instrument lights toggle'),		category =_('Systems')},--CommandNr. 1011
 {down = iCommandPlaneLeftMFD_DSP_Increase,		name = _('Rocket-Motor engage'),				category = _('Special')},--iCommandPlaneLeftMFD_DSP_Increase	664
+
 --Gunpipper Commands
 {down = Keys.GunPipper_Up,			name = _('Crosshairs-Up'),			category = _('Gunpipper')},
 {down = Keys.GunPipper_Down,			name = _('Crosshairs-Down'),			category = _('Gunpipper')},
 {down = Keys.GunPipper_Center,			name = _('Crosshairs-Center'),			category = _('Gunpipper')},
 {down = Keys.GunPipper_Automatic,		name = _('Crosshairs-Automatic'),		category = _('Gunpipper')},
+
+--Improved Radar Commands
+{down = Keys.RadarModeToggle,			name = _('Radar Mode Toggle'),			category = _('Improved Radar')},
+{down = Keys.RadarRangeUp,				name = _('Radar Range Up'),				category = _('Improved Radar')},
+{down = Keys.RadarRangeDown,			name = _('Radar Range Down'),			category = _('Improved Radar')},
+{down = Keys.RadarRangeToggle,			name = _('Radar Range Toggle'),			category = _('Improved Radar')},
+{down = Keys.RadarElevUp,				name = _('Radar Elevation Up'),			category = _('Improved Radar')},
+{down = Keys.RadarElevDown,				name = _('Radar Elevation Down'),		category = _('Improved Radar')},
+
 })
 
 -- joystick axes

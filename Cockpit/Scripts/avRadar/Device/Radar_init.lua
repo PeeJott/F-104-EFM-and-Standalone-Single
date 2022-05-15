@@ -244,10 +244,12 @@ function post_initialize()
 
 
 
-	dev:listen_command(Keys.GunPipper_Up)
-	dev:listen_command(Keys.GunPipper_Down)
-	dev:listen_command(Keys.GunPipper_Center)
-	dev:listen_command(Keys.GunPipper_Automatic) 
+	dev:listen_command(Keys.RadarModeToggle)
+	dev:listen_command(Keys.RadarRangeUP)
+	dev:listen_command(Keys.RadarRangeDown)
+	dev:listen_command(Keys.RadarElevUp)
+	dev:listen_command(Keys.RadarElevDown)
+	dev:listen_command(Keys.RadarRangeToggle)
 		
 		
 	Radar.opt_pb_stab_h:set(1)
@@ -296,7 +298,7 @@ function SetCommand(command,value)
 
 
 
-	if command == Keys.GunPipper_Up then
+	if command == Keys.RadarElevUp then
 		local new_elevation = Radar.sz_elevation_h:get() + math.rad(2)
 		if new_elevation > math.rad(20) then
 			new_elevation = math.rad(20)
@@ -312,7 +314,7 @@ function SetCommand(command,value)
 		--avImprovedRadar.SetOffset(offset)
 	end
 	
-	if command == Keys.GunPipper_Down then
+	if command == Keys.RadarElevDown then
 		local new_elevation = Radar.sz_elevation_h:get() - math.rad(2)
 		if new_elevation < -(math.rad(38)) then
 			new_elevation = -(math.rad(38))
@@ -327,7 +329,7 @@ function SetCommand(command,value)
 	
 	local updateRangeGateScale = false
 
-	if command == Keys.GunPipper_Center then
+	if command == Keys.RadarRangeToggle then
 		if range_sweep_switch == 0 then
 			range_sweep_switch = range_sweep_switch + 1
 			print_message_to_user("Range: " .. ranges[range_sweep_switch])
@@ -360,7 +362,7 @@ function SetCommand(command,value)
 	end
 
 	--------------------------------------- RADAR MODE --------------------------
-	if command == Keys.GunPipper_Automatic then
+	if command == Keys.RadarModeToggle then
 		-- change mode:
 		if current_mode == 0 then
 			current_mode = current_mode + 1

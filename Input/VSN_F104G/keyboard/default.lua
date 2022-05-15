@@ -71,7 +71,7 @@ join(res.keyCommands,{
 --{combos = {{key = 'Space'}},					down = iCommandPlaneFire,	up = iCommandPlaneFireOff,	name = _('Weapon Fire'),		category = _('Weapons')},
 {combos = {{key = 'D'}},						down = iCommandPlaneChangeWeapon,						name = _('Weapon Change'),		category = _('Weapons')},
 {combos = {{key = 'C'}},						down = iCommandPlaneModeCannon,							name = _('Cannon'),				category = _('Weapons')},
-{combos = {{key = 'W', reformers = {'LAlt'}}},	down = iCommandPlaneLaunchPermissionOverride,			name = _('Launch Permission Override'), category = _('Weapons') , features = {"LaunchPermissionOverride"}},
+--{combos = {{key = 'W', reformers = {'LAlt'}}},	down = iCommandPlaneLaunchPermissionOverride,			name = _('Launch Permission Override'), category = _('Weapons') , features = {"LaunchPermissionOverride"}},
 
 --CUSTOM WEAPONs Keys :-)
 {combos = {{key = 'Space', reformers = {'RShift'}}}, down = Keys.pickle_on,	up = Keys.pickle_off, name = _('Weapon Release'), category = _('Weapons')},
@@ -239,7 +239,7 @@ join(res.keyCommands,{
 {combos = {{key = 'Enter'}}, down = iCommandPlane_LockOn_start, up = iCommandPlane_LockOn_finish, name = 'Target Lock', category = 'Sensors'},
 -- Weapons
 {combos = {{key = 'V', reformers = {'LCtrl'}}}, down = iCommandPlaneSalvoOnOff, name = _('Salvo Mode'), category = _('Weapons')},
-{combos = {{key = 'Space', reformers = {'RAlt'}}}, down = iCommandPlanePickleOn,	up = iCommandPlanePickleOff, name = _('Weapon Release'), category = _('Weapons')},
+--{combos = {{key = 'Space', reformers = {'RAlt'}}}, down = iCommandPlanePickleOn,	up = iCommandPlanePickleOff, name = _('Weapon Release'), category = _('Weapons')},
 
 --Special Category
 {combos = {{key = 's', reformers = {'RAlt'}}}, down = iCommandPlaneRightMFD_OSB5_Off, name = _('Flood/Instrument lights toggle'), category =_('Systems')},--CommandNr. 1011
@@ -249,7 +249,15 @@ join(res.keyCommands,{
 {combos = {{key = 'ü', reformers = {'RAlt'}}},	down = Keys.GunPipper_Up,				name = _('Crosshairs-Up'),		category = _('Gunpipper')},
 {combos = {{key = 'ä', reformers = {'RAlt'}}},	down = Keys.GunPipper_Down,				name = _('Crosshairs-Down'),	category = _('Gunpipper')},
 {combos = {{key = '-', reformers = {'RAlt'}}},	down = Keys.GunPipper_Center,			name = _('Crosshairs-Center'),	category = _('Gunpipper')},
-{combos = {{key = '.', reformers = {'RAlt'}}},	down = Keys.GunPipper_Automatic,			name = _('Crosshairs-Automatic'),	category = _('Gunpipper')},
+{combos = {{key = '.', reformers = {'RAlt'}}},	down = Keys.GunPipper_Automatic,		name = _('Crosshairs-Automatic'),	category = _('Gunpipper')},
+
+--Improved Radar Commands
+{down = Keys.RadarModeToggle,			name = _('Radar Mode Toggle'),			category = _('Improved Radar')},
+{down = Keys.RadarRangeUp,				name = _('Radar Range Up'),				category = _('Improved Radar')},
+{down = Keys.RadarRangeDown,			name = _('Radar Range Down'),			category = _('Improved Radar')},
+{down = Keys.RadarRangeToggle,			name = _('Radar Range Toggle'),			category = _('Improved Radar')},
+{down = Keys.RadarElevUp,				name = _('Radar Elevation Up'),			category = _('Improved Radar')},
+{down = Keys.RadarElevDown,				name = _('Radar Elevation Down'),		category = _('Improved Radar')},
 
 })
 return res

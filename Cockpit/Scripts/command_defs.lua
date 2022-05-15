@@ -94,6 +94,14 @@ Keys =
 	GunPipper_Center							= __custom_counter(),
 	GunPipper_Automatic							= __custom_counter(),
 	-----------------------------------------------------------------
+	--------------------------RADAR COMMANDS GENERAL-----------------
+	RadarModeToggle								= __custom_counter(),
+	RadarRangeUP								= __custom_counter(),
+	RadarRangeDown								= __custom_counter(),
+	RadarRangeToggle							= __custom_counter(),
+	RadarElevUp									= __custom_counter(),
+	RadarElevDown								= __custom_counter(),
+	
 }
 
 start_command   = 3000
