@@ -96,11 +96,22 @@ Keys =
 	-----------------------------------------------------------------
 	--------------------------RADAR COMMANDS GENERAL-----------------
 	RadarModeToggle								= __custom_counter(),
-	RadarRangeUP								= __custom_counter(),
-	RadarRangeDown								= __custom_counter(),
-	RadarRangeToggle							= __custom_counter(),
+	
+	RadarRangeModeUp							= __custom_counter(),
+	RadarRangeModeDown							= __custom_counter(),
+	RadarRangeModeToggle						= __custom_counter(),
+
+	RadarRangeGateUp							= __custom_counter(),
+	RadarRangeGateDown							= __custom_counter(),
+
 	RadarElevUp									= __custom_counter(),
 	RadarElevDown								= __custom_counter(),
+
+	RadarClearanceUp							= __custom_counter(),
+	RadarClearanceDown							= __custom_counter(),
+
+	RadarMemoryUp								= __custom_counter(),
+	RadarMemoryDown								= __custom_counter(),
 	
 }
 

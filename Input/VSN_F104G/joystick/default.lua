@@ -224,11 +224,22 @@ join(res.keyCommands,{
 
 --Improved Radar Commands
 {down = Keys.RadarModeToggle,			name = _('Radar Mode Toggle'),			category = _('Improved Radar')},
-{down = Keys.RadarRangeUp,				name = _('Radar Range Up'),				category = _('Improved Radar')},
-{down = Keys.RadarRangeDown,			name = _('Radar Range Down'),			category = _('Improved Radar')},
-{down = Keys.RadarRangeToggle,			name = _('Radar Range Toggle'),			category = _('Improved Radar')},
+
+{down = Keys.RadarRangeModeUp,				name = _('Radar Range Mode Up'),				category = _('Improved Radar')},
+{down = Keys.RadarRangeModeDown,			name = _('Radar Range Mode Down'),			category = _('Improved Radar')},
+{down = Keys.RadarRangeModeToggle,			name = _('Radar Range Mode Toggle'),			category = _('Improved Radar')},
+
+{down = Keys.RadarRangeGateUp,				name = _('Radar Range Gate Up'),				category = _('Improved Radar')},
+{down = Keys.RadarRangeGateDown,			name = _('Radar Range Gate Down'),			category = _('Improved Radar')},
+
 {down = Keys.RadarElevUp,				name = _('Radar Elevation Up'),			category = _('Improved Radar')},
 {down = Keys.RadarElevDown,				name = _('Radar Elevation Down'),		category = _('Improved Radar')},
+
+{down = Keys.RadarClearanceUp,	    	name = _('Radar Clearance Plane Up'),	category = _('Improved Radar')},
+{down = Keys.RadarClearanceDown,		name = _('Radar Clearance Plane Down'),	category = _('Improved Radar')},
+
+{down = Keys.RadarMemoryUp,	        	name = _('Radar Memory Up'),	category = _('Improved Radar')},
+{down = Keys.RadarMemoryDown,		name = _('Radar Memory Down'),	category = _('Improved Radar')},
 
 })
 

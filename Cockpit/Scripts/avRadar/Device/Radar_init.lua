@@ -21,11 +21,11 @@ local NOISE_AMOUNT = NOISE_COUNT/NOISE_STEPS
 
 perfomance = 
 {
-	roll_compensation_limits	= {math.rad(-180.0), math.rad(180.0)},
-	pitch_compensation_limits	= {math.rad(-57.0), math.rad(20.0)}, -- according to T.O. 1F-104G-1 p. 4-89
+	roll_compensation_limits	= {math.rad(-30.0), math.rad(30.0)}, -- according to T.O. 1F-104G-1 p. 4-143 it's fully stabilized for 15° and then narrows down.
+	pitch_compensation_limits	= {math.rad(-57.0), math.rad(25.0)}, -- according to T.O. 1F-104G-1 p. 4-123
 
-	scan_volume_azimuth 	= math.rad(90),	-- according to T.O. 1F-104G-1 p. 4-89	
-	scan_volume_elevation	= math.rad(10),	-- according to T.O. 1F-104G-1 p. 4-89
+	scan_volume_azimuth 	= math.rad(90),	-- according to T.O. 1F-104G-1 p. 4-123	
+	scan_volume_elevation	= math.rad(10),	-- according to T.O. 1F-104G-1 p. 4-123
 	scan_beam				= math.rad(5), -- A/A
 
 	scan_speed				= math.rad(3*60), -- is not working, confirmed in test
@@ -102,6 +102,10 @@ ranges[1] = "20"
 ranges[2] = "40"
 
 
+local clearance_plane = 0
+local memory = 1.0
+
+
 Radar = 	{
 	-- NONE = 0
 	-- SCAN = 1
@@ -149,6 +153,7 @@ local radar_contact_time = {}
 local radar_contact_rcs = {}
 local radar_contact_range = {}
 local radar_contact_azimuth = {}
+local radar_contact_elevation = {}
 
 local blob_show = {}
 local blob_opacity = {}
@@ -169,6 +174,7 @@ for ia = 1,BLOB_COUNT do
 	radar_contact_rcs[i] = get_param_handle("RADAR_CONTACT"..i.."RCS")
 	radar_contact_range[i] = get_param_handle("RADAR_CONTACT"..i.."RANGE")
 	radar_contact_azimuth[i] = get_param_handle("RADAR_CONTACT"..i.."AZIMUTH")
+	radar_contact_elevation[i] = get_param_handle("RADAR_CONTACT"..i.."ELEVATION")
 
 	blob_show[i] = get_param_handle("BLOB"..i.."SHOW")
 	blob_opacity[i] = get_param_handle("BLOB"..i.."OPACITY")
@@ -203,11 +209,7 @@ end
 --end
 --
 
-
-
-
 antenna_azimuth_h 		= get_param_handle("ANTENNA_AZIMUTH")
-
 
 
 function post_initialize()
@@ -245,11 +247,19 @@ function post_initialize()
 
 
 	dev:listen_command(Keys.RadarModeToggle)
-	dev:listen_command(Keys.RadarRangeUP)
-	dev:listen_command(Keys.RadarRangeDown)
+	
+	dev:listen_command(Keys.RadarRangeModeToggle)	
+	dev:listen_command(Keys.RadarRangeModeUp)
+	dev:listen_command(Keys.RadarRangeModeDown)
+
 	dev:listen_command(Keys.RadarElevUp)
 	dev:listen_command(Keys.RadarElevDown)
-	dev:listen_command(Keys.RadarRangeToggle)
+
+	dev:listen_command(Keys.RadarClearanceUp)
+	dev:listen_command(Keys.RadarClearanceDown)
+		
+	dev:listen_command(Keys.RadarMemoryUp)
+	dev:listen_command(Keys.RadarMemoryDown)
 		
 		
 	Radar.opt_pb_stab_h:set(1)
@@ -329,17 +339,80 @@ function SetCommand(command,value)
 	
 	local updateRangeGateScale = false
 
-	if command == Keys.RadarRangeToggle then
+	if command == Keys.RadarRangeModeToggle then
 		if range_sweep_switch == 0 then
-			range_sweep_switch = range_sweep_switch + 1
-			print_message_to_user("Range: " .. ranges[range_sweep_switch])
+			range_sweep_switch = range_sweep_switch + 1			
 		elseif range_sweep_switch == 1 then
 			range_sweep_switch = range_sweep_switch + 1
-			print_message_to_user("Range: " .. ranges[range_sweep_switch])
 		elseif range_sweep_switch == 2 then
 			range_sweep_switch = 0
-			print_message_to_user("Range: " .. ranges[range_sweep_switch])
 		end
+
+		print_message_to_user("Range: " .. ranges[range_sweep_switch])
+	end
+
+	if command == Keys.RadarRangeModeDown then		
+		if range_sweep_switch > 0 then
+			range_sweep_switch = range_sweep_switch - 1
+		end
+		print_message_to_user("Range: " .. ranges[range_sweep_switch])		
+	end
+
+	if command == Keys.RadarRangeModeUp then		
+		if range_sweep_switch < 2 then
+			range_sweep_switch = range_sweep_switch + 1			
+		end
+		print_message_to_user("Range: " .. ranges[range_sweep_switch])
+	end
+
+
+	------------------------------------- CLEARANCE PLANE-------------------------------	
+	
+	if command == Keys.RadarClearanceDown then		
+		if clearance_plane > -6000 then
+			clearance_plane = clearance_plane - 100
+		end
+		print_message_to_user("Clearance Plane: " .. clearance_plane)
+
+		local atan = clearance_plane / 10000
+		local new_elevation = math.atan(atan)
+		Radar.sz_elevation_h:set(new_elevation)
+		print_message_to_user("Antenna elevation: " .. math.deg(new_elevation))
+
+	end
+
+	if command == Keys.RadarClearanceUp then		
+		if clearance_plane < 0 then
+			clearance_plane = clearance_plane + 100			
+		end
+		print_message_to_user("Clearance Plane: " .. clearance_plane)
+
+		local atan = clearance_plane / 10000
+		local new_elevation = math.atan(atan)
+		Radar.sz_elevation_h:set(new_elevation)
+		print_message_to_user("Antenna elevation: " .. math.deg(new_elevation))
+	end
+
+	------------------------------------- MEMORY -------------------------------	
+		
+	if command == Keys.RadarMemoryDown then		
+		if memory > 0.1 then
+			memory = memory - 0.1
+			if memory < 0.1 then
+				memory = 0.1
+			end
+		end
+		print_message_to_user("Memory: " .. memory)
+	end
+
+	if command == Keys.RadarMemoryUp then		
+		if memory < 10.0 then
+			memory = memory + 0.1
+			if memory > 10.0 then
+				memory = 10.0
+			end
+		end
+		print_message_to_user("Memory: " .. memory)
 	end
 
 	------------------------------------- RANGE GATE -------------------------------	
@@ -366,14 +439,13 @@ function SetCommand(command,value)
 		-- change mode:
 		if current_mode == 0 then
 			current_mode = current_mode + 1
-			print_message_to_user("Radar: " .. modes[current_mode])
-						
+
 			-- SBY
+			-- Nothing
 
 		elseif current_mode == 1 then
 			current_mode = current_mode + 1
-			print_message_to_user("Radar: " .. modes[current_mode])
-						
+				
 			-- A/A			
 			avImprovedRadar.set_scan_beam(math.rad(air_beam))
 			Radar.sz_volume_elevation_h:set(math.rad(air_elevation))
@@ -381,10 +453,8 @@ function SetCommand(command,value)
 			avImprovedRadar.set_scan_speed(math.rad(air_speed))
 			avImprovedRadar.set_ray_density(air_density)
 
-
 		elseif current_mode == 2 then
 			current_mode = current_mode + 1
-			print_message_to_user("Radar: " .. modes[current_mode])
 
 			-- GMP
 			avImprovedRadar.set_scan_beam(math.rad(ground_beam))
@@ -395,7 +465,6 @@ function SetCommand(command,value)
 
 		elseif current_mode == 3 then
 			current_mode = current_mode + 1
-			print_message_to_user("Radar: " .. modes[current_mode])
 
 			-- GMS
 			avImprovedRadar.set_scan_beam(math.rad(spoiled_beam))
@@ -406,7 +475,6 @@ function SetCommand(command,value)
 
 		elseif current_mode == 4 then
 			current_mode = current_mode + 1
-			print_message_to_user("Radar: " .. modes[current_mode])
 
 			-- CM
 			avImprovedRadar.set_scan_beam(math.rad(ground_beam))
@@ -417,7 +485,6 @@ function SetCommand(command,value)
 
 		elseif current_mode == 5 then
 			current_mode = current_mode + 1
-			print_message_to_user("Radar: " .. modes[current_mode])
 
 			-- TA
 			avImprovedRadar.set_scan_beam(math.rad(ground_beam))
@@ -428,16 +495,19 @@ function SetCommand(command,value)
 
 		elseif current_mode == 6 then
 			current_mode = current_mode + 1
-			print_message_to_user("Radar: " .. modes[current_mode])
 
 			-- A/G
+			-- Nothing for CEP 2015
 
 		elseif current_mode == 7 then
 			current_mode = 0
-			print_message_to_user("Radar: " .. modes[current_mode])
 
 			-- OFF
+			-- Nothing
+
 		end
+
+		print_message_to_user("Radar: " .. modes[current_mode])
 	end
 end
 
@@ -450,9 +520,7 @@ function update()
 	local antenna_az = avImprovedRadar.get_antenna_azimuth()
 	local antenna_el = avImprovedRadar.get_antenna_elevation()	
 
-	antenna_azimuth_h:set(-antenna_az)
-
-	
+	antenna_azimuth_h:set(-antenna_az)	
 
 	if current_mode == 0 or current_mode == 1 or current_mode == 7 then
 		-- disable radar in OFF, SBY or A/G
@@ -491,9 +559,6 @@ function update()
 		range_gate_range[0]:set(range)
 		range_gate_azimuth[0]:set(-antenna_az)
 		range_gate_opacity[0]:set(1.0)
-	
-	
-
 
 
 	--	for s=1,NOISE_STEPS-1 do			
@@ -531,9 +596,6 @@ function update()
 	--		noise_opacity_handle:set(1.0)
 	--	end
 
-
-
-
 	
 		Sensor_Data_Raw = get_base_data()
 		
@@ -542,9 +604,12 @@ function update()
 
 
 
-
-
 		local contact_count = 0
+		local skip_count = 0
+		local skipped_distances = ""
+
+		local aircraft_pitch = Sensor_Data_Raw.getPitch()
+		local clearance_plane_metric = (clearance_plane / 3.28084)
 
 		for ia = 1,BLOB_COUNT do
 
@@ -558,6 +623,7 @@ function update()
 			local radar_contact_rcs_handle = radar_contact_rcs[i]
 			local radar_contact_range_handle = radar_contact_range[i]
 			local radar_contact_azimuth_handle = radar_contact_azimuth[i]
+			local radar_contact_elevation_handle = radar_contact_elevation[i]
 
 			local blob_show_handle = blob_show[i]
 			local blob_opacity_handle = blob_opacity[i]
@@ -569,24 +635,43 @@ function update()
 			local rcs = radar_contact_rcs_handle:get()
 			local range = radar_contact_range_handle:get()
 			local azimuth = radar_contact_azimuth_handle:get()
+			local elevation = radar_contact_elevation_handle:get()
 
-			local memory = 3
-			if time >= 0 and time <= memory then			
+			if time >= 0 and time <= memory then
 
-				local base_opacity = ((10/3)*rcs)
-				blob_opacity_handle:set(base_opacity-((base_opacity/memory)*time))
+				local base_opacity = rcs/3 -- means 0...1
+				local opacity = base_opacity - (base_opacity * (time/memory))
+				blob_opacity_handle:set(opacity)
 			
+				local scaled_range = range
 				if range_sweep_switch == 0 then
-					range = range * 4
+					scaled_range = range * 4
 				elseif range_sweep_switch == 1 then
-					range = range * 2
+					scaled_range = range * 2
 				end
-				blob_scale_handle:set(range / MAX_RANGE)
-				blob_range_handle:set(range)
+				blob_scale_handle:set(scaled_range / MAX_RANGE)
+				blob_range_handle:set(scaled_range)
 
 				blob_azimuth_handle:set(azimuth)
 
-				blob_show_handle:set(1)
+				if current_mode == 5 or current_mode == 6 then -- CM or TA
+					-- check clearance plane
+					local blob_elevation = elevation
+					--if current_mode == 5 then
+					--	-- TODO: use air data computer instead
+					--	blob_elevation = blob_elevation - aircraft_pitch
+					--end
+					local vertical_distance = math.sin(blob_elevation) * range
+					if vertical_distance < clearance_plane_metric then
+						blob_show_handle:set(0)
+						--skip_count = skip_count + 1
+						--skipped_distances = skipped_distances .. ", " .. (vertical_distance *  3.28084)
+					else
+						blob_show_handle:set(1)
+					end
+				else
+					blob_show_handle:set(1)
+				end
 
 				contact_count = contact_count + 1
 			else
@@ -598,6 +683,8 @@ function update()
 				blob_azimuth_handle:set(0.0)
 			end
 		end
+
+		--print_message_to_user("Below clearance: " .. skip_count .. ": " .. skipped_distances )
 	end
 end
 
