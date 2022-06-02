@@ -188,39 +188,36 @@ for s = 1,4 do
 	end
 end
 
---------------------------------------------------------------------------
+----------------- NOISE START -------------
 
---
---for n = 0,NOISE_COUNT do
---	local	radar_noise					= create_textured_box(-blob_scale/2,-blob_scale/2,blob_scale/2,blob_scale/2)
---			radar_noise.material       	= NOISE_TEXTURE
---			radar_noise.name		   		= "noise_" .. n .. "_name"				
---			radar_noise.init_pos	   		= {0, -1.80*RS, 0}				
---			radar_noise.use_mipfilter     = true
---			radar_noise.additive_alpha    = true
---			radar_noise.isdraw			= true
---			radar_noise.isvisible			= true
---			radar_noise.h_clip_relation 	= h_clip_relations.COMPARE
---			radar_noise.level 			= RADAR_DEFAULT_LEVEL
---			radar_noise.collimated		= false
---			radar_noise.controllers     	= {													
---												{"parameter_compare_with_number", 0, 1},
---												{"rotate_using_parameter", 2, -1.0},
---												{"move_up_down_using_parameter", 1, ud_scale},
---												{"opacity_using_parameter",3},
---												} 
---			radar_noise.element_params  	= {	
---												"NOISE_"..n.."_SHOW",		 -- 0
---												"NOISE_"..n.."_RANGE",		 -- 1
---												"NOISE_"..n.."_AZIMUTH",	 -- 2
---												"NOISE_"..n.."_OPACITY",	 -- 7
---												}
---		Add(radar_noise)
---end
---
+for n = 0,NOISE_COUNT do
+	local	radar_noise					= create_textured_box(-blob_scale/2,-blob_scale/2,blob_scale/2,blob_scale/2)
+			radar_noise.material       	= NOISE_TEXTURE
+			radar_noise.name		   		= "noise_" .. n .. "_name"				
+			radar_noise.init_pos	   		= {0, -1.80*RS, 0}				
+			radar_noise.use_mipfilter     = true
+			radar_noise.additive_alpha    = true
+			radar_noise.isdraw			= true
+			radar_noise.isvisible			= true
+			radar_noise.h_clip_relation 	= h_clip_relations.COMPARE
+			radar_noise.level 			= RADAR_DEFAULT_LEVEL
+			radar_noise.collimated		= false
+			radar_noise.controllers     	= {													
+												{"parameter_compare_with_number", 0, 1},
+												{"rotate_using_parameter", 2, -1.0},
+												{"move_up_down_using_parameter", 1, ud_scale},
+												{"opacity_using_parameter",3},
+												} 
+			radar_noise.element_params  	= {	
+												"NOISE_"..n.."_SHOW",		 -- 0
+												"NOISE_"..n.."_RANGE",		 -- 1
+												"NOISE_"..n.."_AZIMUTH",	 -- 2
+												"NOISE_"..n.."_OPACITY",	 -- 7
+												}
+		Add(radar_noise)
+end
 
-------------------------------------------------------------------------------------
-
+------------------- NOISE END -------------
 
 
 

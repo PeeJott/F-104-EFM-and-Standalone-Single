@@ -16,7 +16,7 @@ local BLOB_COUNT = 2500
 local MAX_RANGE = 40000.0 * 1.852  
 local MAX_RANGE_GATE = 20000.0 * 1.852
 local NOISE_COUNT = 100
-local NOISE_STEPS = 5
+local NOISE_STEPS = 20
 local NOISE_AMOUNT = NOISE_COUNT/NOISE_STEPS
 
 perfomance = 
@@ -190,19 +190,19 @@ for i = 0,9 do
 	range_gate_opacity[i] = get_param_handle("RANGE_GATE_"..i.."_OPACITY")
 end
 
---
---local noise_show = {}
---local noise_range = {}
---local noise_azimuth = {}
---local noise_opacity = {}
---
---for i = 0,NOISE_COUNT do	
---	noise_show[i] = get_param_handle("NOISE_"..i.."_SHOW")
---	noise_range[i] = get_param_handle("NOISE_"..i.."_RANGE")
---	noise_azimuth[i] = get_param_handle("NOISE_"..i.."_AZIMUTH")
---	noise_opacity[i] = get_param_handle("NOISE_"..i.."_OPACITY")
---end
---
+
+local noise_show = {}
+local noise_range = {}
+local noise_azimuth = {}
+local noise_opacity = {}
+
+for i = 0,NOISE_COUNT do	
+	noise_show[i] = get_param_handle("NOISE_"..i.."_SHOW")
+	noise_range[i] = get_param_handle("NOISE_"..i.."_RANGE")
+	noise_azimuth[i] = get_param_handle("NOISE_"..i.."_AZIMUTH")
+	noise_opacity[i] = get_param_handle("NOISE_"..i.."_OPACITY")
+end
+
 
 antenna_azimuth_h 		= get_param_handle("ANTENNA_AZIMUTH")
 
@@ -554,41 +554,33 @@ function update()
 		range_gate_opacity[0]:set(1.0)
 
 
-	--	for s=1,NOISE_STEPS-1 do			
-	--		for n = s*NOISE_AMOUNT+NOISE_AMOUNT,s*NOISE_AMOUNT,-1 do
-	--			local previous_show_handle = noise_show[n-NOISE_AMOUNT]
-	--			local previous_range_handle = noise_range[n-NOISE_AMOUNT]
-	--			local previous_azimuth_handle = noise_azimuth[n-NOISE_AMOUNT]
-	--			local previous_opacity_handle = noise_opacity[n-NOISE_AMOUNT]
-	--
-	--			local noise_show_handle = noise_show[n]
-	--			local noise_range_handle = noise_range[n]
-	--			local noise_azimuth_handle = noise_azimuth[n]
-	--			local noise_opacity_handle = noise_opacity[n]
-	--
-	--			local base_range = 40000.0 * 1.852
-	--			local range = math.random(0, base_range)
-	--			noise_show_handle:set(previous_show_handle:get())
-	--			noise_range_handle:set(previous_range_handle:get())
-	--			noise_azimuth_handle:set(previous_azimuth_handle:get())
-	--			noise_opacity_handle:set(1.0-(0.2*s))
-	--		end
-	--	end
-	--		
-	--	for n = 0,NOISE_AMOUNT do
-	--		local noise_show_handle = noise_show[n]
-	--		local noise_range_handle = noise_range[n]
-	--		local noise_azimuth_handle = noise_azimuth[n]
-	--		local noise_opacity_handle = noise_opacity[n]
-	--
-	--		local base_range = 40000.0 * 1.852
-	--		local range = math.random(0, base_range)
-	--		noise_show_handle:set(1)
-	--		noise_range_handle:set(range)
-	--		noise_azimuth_handle:set(-antenna_az)
-	--		noise_opacity_handle:set(1.0)
-	--	end
+		----------------- NOISE START -------------
 
+		for s=NOISE_STEPS-1,1,-1 do			
+			for n = s*NOISE_AMOUNT,s*NOISE_AMOUNT+NOISE_AMOUNT do
+
+				noise_show[n]:set(noise_show[n-NOISE_AMOUNT]:get())
+				noise_range[n]:set(noise_range[n-NOISE_AMOUNT]:get())
+				noise_azimuth[n]:set(noise_azimuth[n-NOISE_AMOUNT]:get())
+				noise_opacity[n]:set(1.0-((1.0/NOISE_STEPS)*s))
+			end
+		end
+			
+		for n = 0,NOISE_AMOUNT do
+			local noise_show_handle = noise_show[n]
+			local noise_range_handle = noise_range[n]
+			local noise_azimuth_handle = noise_azimuth[n]
+			local noise_opacity_handle = noise_opacity[n]
+	
+			local base_range = 40000.0 * 1.852
+			local range = math.random(0, base_range)
+			noise_show_handle:set(1)
+			noise_range_handle:set(range)
+			noise_azimuth_handle:set(-antenna_az)
+			noise_opacity_handle:set(1.0)
+		end
+
+		----------------- NOISE END -------------
 	
 		Sensor_Data_Raw = get_base_data()
 		
