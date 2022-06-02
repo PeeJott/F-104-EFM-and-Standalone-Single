@@ -46,10 +46,10 @@ join(res.keyCommands,{
 {down = iCommandPlaneRadarChangeMode, 									name = _('Radar RWS/TWS Mode Select'), 			category = _('Sensors')},
 {down = iCommandPlaneRadarCenter, 										name = _('Target Designator To Center'), 		category = _('Sensors')},
 {down = iCommandPlaneChangeRadarPRF, 									name = _('Radar Pulse Repeat Frequency Select'), category = _('Sensors')},
-{pressed = iCommandPlaneRadarUp, up = iCommandPlaneRadarStop, 			name = _('Target Designator Up'), 				category = _('Sensors')},
-{pressed = iCommandPlaneRadarDown, up = iCommandPlaneRadarStop, 		name = _('Target Designator Down'), 			category = _('Sensors')},
-{pressed = iCommandPlaneRadarLeft, up = iCommandPlaneRadarStop, 		name = _('Target Designator Left'), 			category = _('Sensors')},
-{pressed = iCommandPlaneRadarRight, up = iCommandPlaneRadarStop, 		name = _('Target Designator Right'), 			category = _('Sensors')},
+--{pressed = iCommandPlaneRadarUp, up = iCommandPlaneRadarStop, 			name = _('Target Designator Up'), 				category = _('Sensors')},
+--{pressed = iCommandPlaneRadarDown, up = iCommandPlaneRadarStop, 		name = _('Target Designator Down'), 			category = _('Sensors')},
+--{pressed = iCommandPlaneRadarLeft, up = iCommandPlaneRadarStop, 		name = _('Target Designator Left'), 			category = _('Sensors')},
+--{pressed = iCommandPlaneRadarRight, up = iCommandPlaneRadarStop, 		name = _('Target Designator Right'), 			category = _('Sensors')},
 {pressed = iCommandSelecterUp, up = iCommandSelecterStop, 				name = _('Scan Zone Up'), 						category = _('Sensors')},
 {pressed = iCommandSelecterDown, up = iCommandSelecterStop, 			name = _('Scan Zone Down'), 					category = _('Sensors')},
 {pressed = iCommandSelecterLeft, up = iCommandSelecterStop, 			name = _('Scan Zone Left'), 					category = _('Sensors')},
@@ -61,7 +61,7 @@ join(res.keyCommands,{
 {down = iCommandChangeRWRMode, 											name = _('RWR/SPO Mode Select'), 				category = _('Sensors')},
 {down = iCommandPlaneThreatWarnSoundVolumeDown, 						name = _('RWR/SPO Sound Signals Volume Down'), 	category = _('Sensors')},
 {down = iCommandPlaneThreatWarnSoundVolumeUp, 							name = _('RWR/SPO Sound Signals Volume Up'), 	category = _('Sensors')},
-{down = iCommandPlane_LockOn_start, up = iCommandPlane_LockOn_finish, 	name = _('Target Lock'), 						category = _('Sensors')},
+--{down = iCommandPlane_LockOn_start, up = iCommandPlane_LockOn_finish, 	name = _('Target Lock'), 						category = _('Sensors')},
 
 -- Electric System
 {down = iCommandPowerBattery1,              up = iCommandPowerBattery1,             value_down =  1.0,		value_up = 0.0,     name = _('No. 1 Generator - On Reset'),     category = _('Electric')},
@@ -229,8 +229,8 @@ join(res.keyCommands,{
 {down = Keys.RadarRangeModeDown,			name = _('Radar Range Mode Down'),			category = _('Improved Radar')},
 {down = Keys.RadarRangeModeToggle,			name = _('Radar Range Mode Toggle'),			category = _('Improved Radar')},
 
-{down = Keys.RadarRangeGateUp,				name = _('Radar Range Gate Up'),				category = _('Improved Radar')},
-{down = Keys.RadarRangeGateDown,			name = _('Radar Range Gate Down'),			category = _('Improved Radar')},
+--{down = Keys.RadarRangeGateUp,				name = _('Radar Range Gate Up'),				category = _('Improved Radar')},
+--{down = Keys.RadarRangeGateDown,			name = _('Radar Range Gate Down'),			category = _('Improved Radar')},
 
 {down = Keys.RadarElevUp,				name = _('Radar Elevation Up'),			category = _('Improved Radar')},
 {down = Keys.RadarElevDown,				name = _('Radar Elevation Down'),		category = _('Improved Radar')},
@@ -240,6 +240,13 @@ join(res.keyCommands,{
 
 {down = Keys.RadarMemoryUp,	        	name = _('Radar Memory Up'),	category = _('Improved Radar')},
 {down = Keys.RadarMemoryDown,		name = _('Radar Memory Down'),	category = _('Improved Radar')},
+
+{down = iCommandPlane_LockOn_start, name = 'Lock On Start', category = 'Improved Radar'},
+{down = iCommandPlane_LockOn_finish, name = 'Lock On Off', category = 'Improved Radar'},
+{pressed = iCommandPlaneRadarUp, up = iCommandPlaneRadarStop, name = _('Target Designator Up'), category = _('Improved Radar')},
+{pressed = iCommandPlaneRadarDown, up = iCommandPlaneRadarStop, name = _('Target Designator Down'), category = _('Improved Radar')},
+--{pressed = iCommandPlaneRadarLeft, up = iCommandPlaneRadarStop, name = _('Target Designator Left'), category = _('Improved Radar')},
+--{pressed = iCommandPlaneRadarRight, up = iCommandPlaneRadarStop, name = _('Target Designator Right'), category = _('Improved Radar')},
 
 })
 

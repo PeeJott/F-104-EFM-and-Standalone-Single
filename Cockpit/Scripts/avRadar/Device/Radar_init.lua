@@ -79,11 +79,6 @@ local spoiled_beam = 55
 local spoiled_speed = 90
 local spoiled_density = 0.05
 
-
--- 0 = A/A
--- 1 = Ground Map
--- 2 = Ground Pencil
--- 3 = Terrain Avoidance
 local current_mode = 0
 local modes = {}
 modes[0] = "OFF"
@@ -216,32 +211,26 @@ function post_initialize()
 
 	print_message_to_user("Radar - INIT")
 		
-	-- most likely not used
-	dev:listen_command(100)		--iCommandPlaneChangeLock
-		
-	dev:listen_command(139)		--scanzone left // iCommandSelecterLeft
-	dev:listen_command(140)		--scanzone right // iCommandSelecterRight
-		
-	dev:listen_command(141)		--scanzone up//iCommandSelecterUp
-	dev:listen_command(142)		--scanzone down//iCommandSelecterDown
-		
-	-- most likely not used
-	dev:listen_command(394)		--change PRF (radar puls freqency)//iCommandPlaneChangeRadarPRF
-	
-	dev:listen_command(509)		--lock start//iCommandPlane_LockOn_start
-	dev:listen_command(510)		--lock finish//iCommandPlane_LockOn_finish
-	
-	-- most likely not used
-	dev:listen_command(285)		--Change radar mode RWS/TWS //iCommandPlaneRadarChangeMode
-		
-
-	-- not used!
-	dev:listen_command(2025)	--iCommandPlaneRadarHorizontal
-	dev:listen_command(2026)	--iCommandPlaneRadarVertical
-
-	-- used!
-	dev:listen_command(2031)	--iCommandPlaneSelecterHorizontal
-	dev:listen_command(2032)	--iCommandPlaneSelecterVertical
+--	-- most likely not used
+--	dev:listen_command(100)		--iCommandPlaneChangeLock
+--		
+--	-- most likely not used
+--	dev:listen_command(394)		--change PRF (radar puls freqency)//iCommandPlaneChangeRadarPRF
+--	
+--	dev:listen_command(509)		--lock start//iCommandPlane_LockOn_start
+--	dev:listen_command(510)		--lock finish//iCommandPlane_LockOn_finish
+--	
+--	-- most likely not used
+--	dev:listen_command(285)		--Change radar mode RWS/TWS //iCommandPlaneRadarChangeMode
+--		
+--
+--	-- not used!
+--	dev:listen_command(2025)	--iCommandPlaneRadarHorizontal
+--	dev:listen_command(2026)	--iCommandPlaneRadarVertical
+--
+--	-- used!
+--	dev:listen_command(2031)	--iCommandPlaneSelecterHorizontal
+--	dev:listen_command(2032)	--iCommandPlaneSelecterVertical
 
 
 
@@ -260,12 +249,19 @@ function post_initialize()
 		
 	dev:listen_command(Keys.RadarMemoryUp)
 	dev:listen_command(Keys.RadarMemoryDown)
-		
+
+	dev:listen_command(90) -- iCommandPlaneRadarUp     
+	dev:listen_command(91) -- iCommandPlaneRadarDown
+	dev:listen_command(509) -- iCommandPlane_LockOn_start
+	dev:listen_command(510) -- iCommandPlane_LockOn_stop
+	
+	
 		
 	Radar.opt_pb_stab_h:set(1)
 	--Radar.opt_pitch_stab_h:set(1) -- doesn't work
 	--Radar.opt_bank_stab_h:set(1) -- doesn't work
 	Radar.sz_elevation_h:set(math.rad(0))
+	Radar.tdc_acqzone_h:set(math.rad(10))
 		
 	if avImprovedRadar.Setup(dev) == true then
 		print_message_to_user("ImprovedRadar setup: succesful")
@@ -277,37 +273,10 @@ function post_initialize()
 end
 
 function SetCommand(command,value)
-	--print_message_to_user(string.format("Radar SetCom: C %i   V%.8f",command,value))
 	
----------------------------------------------------------------------
-	--
-	--if command == 141 and value == 0.0 then
-	--	Radar.sz_elevation_h:set(Radar.sz_elevation_h:get() + 0.003)
-	--elseif command == 142 and value == 0.0 then
-	--	Radar.sz_elevation_h:set(Radar.sz_elevation_h:get() - 0.003)
-	--end
-	--
-	--if command == 139 and value == 0.0 then
-	--	Radar.sz_azimuth_h:set(Radar.sz_azimuth_h:get() + 0.003)
-	--elseif command == 140 and value == 0.0 then
-	--	Radar.sz_azimuth_h:set(Radar.sz_azimuth_h:get() - 0.003)
-	--end
-	--
-----------------------------------------------------------------------	
+
+	------------------------------------- ANTENNA ELEVATION -------------------------------	
 	
--------------------------------------------------	
-	
-	--[[ NUR EIN TEST
-	
-	if command == 285 then
-		Radar.mode_h:set(Radar.mode_h:get()+ 1)
-		print_message_to_user("RadarModeChanged")
-	end
-	]]
-
-
-
-
 	if command == Keys.RadarElevUp then
 		local new_elevation = Radar.sz_elevation_h:get() + math.rad(2)
 		if new_elevation > math.rad(20) then
@@ -337,8 +306,8 @@ function SetCommand(command,value)
 		--avImprovedRadar.SetOffset(offset)
 	end
 	
+	------------------------------------- RANGE MODE -------------------------------	
 	local updateRangeGateScale = false
-
 	if command == Keys.RadarRangeModeToggle then
 		if range_sweep_switch == 0 then
 			range_sweep_switch = range_sweep_switch + 1			
@@ -417,21 +386,35 @@ function SetCommand(command,value)
 
 	------------------------------------- RANGE GATE -------------------------------	
 
-	if command == 2032  then
-		Radar.tdc_range_h:set(Radar.tdc_range_h:get()- value*200000)
-		--print_message_to_user("RadarRangeUP/DOWN")		
-	end
-	
-	if command == 2031  then
-		Radar.tdc_azi_h:set(Radar.tdc_azi_h:get()+ value*10)
-		--print_message_to_user("RadarRangeLeftRight")		
-	end
+	--if command == 2032  then
+	--	Radar.tdc_range_h:set(Radar.tdc_range_h:get()- value*200000)
+	--	--print_message_to_user("RadarRangeUP/DOWN")		
+	--end
+	--
+	--if command == 2031  then
+	--	Radar.tdc_azi_h:set(Radar.tdc_azi_h:get()+ value*10)
+	--	--print_message_to_user("RadarRangeLeftRight")		
+	--end
 		
+	if command == 90 or command == 91 then
 	-- limit the range gate
-	if Radar.tdc_range_h:get() > MAX_RANGE_GATE then
-		Radar.tdc_range_h:set(MAX_RANGE_GATE)
-	elseif Radar.tdc_range_h:get() < 0 then
-		Radar.tdc_range_h:set(0)
+		if Radar.tdc_range_h:get() > MAX_RANGE_GATE then
+			Radar.tdc_range_h:set(MAX_RANGE_GATE)
+		elseif Radar.tdc_range_h:get() < 0 then
+			Radar.tdc_range_h:set(0)
+		end
+	end
+
+	------------------------------------- SECTOR SCAN -------------------------------	
+
+	if command == 509 then
+		local antenna_az = avImprovedRadar.get_antenna_azimuth()
+		Radar.tdc_azi_h:set(-antenna_az)
+	end
+
+	if command == 510 then
+		local antenna_az = avImprovedRadar.get_antenna_azimuth()
+		Radar.tdc_azi_h:set(-antenna_az)
 	end
 
 	--------------------------------------- RADAR MODE --------------------------
@@ -521,6 +504,16 @@ function update()
 	local antenna_el = avImprovedRadar.get_antenna_elevation()	
 
 	antenna_azimuth_h:set(-antenna_az)	
+	
+	
+	if current_mode == 2 then -- A/A		
+		if Radar.mode_h:get() == 2 then
+			-- scan speed is reduced during ACQUISITION
+			avImprovedRadar.set_scan_speed(math.rad(air_speed * 0.25))
+		else
+			avImprovedRadar.set_scan_speed(math.rad(air_speed))
+		end
+	end
 
 	if current_mode == 0 or current_mode == 1 or current_mode == 7 then
 		-- disable radar in OFF, SBY or A/G
