@@ -5,7 +5,7 @@ dofile(LockOn_Options.script_path.."avRadar/Indicator/definitions.lua")
 RS = RADAR_SCALE * 0.40
 
 BLOB_COUNT = 2500
-NOISE_COUNT = 100
+NOISE_COUNT = 200
 
 ud_scale 	= 0.00001 * 0.45	* RS	--0.00001
 lr_scale 	= 0.095	  * 0.9	*2	* RS	--0.2		--0.085
