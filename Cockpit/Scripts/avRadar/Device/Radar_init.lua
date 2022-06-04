@@ -11,8 +11,8 @@ power_bus_handle = ELECTRIC_SYSTEM.NO_2_AC_BUS
 range_scale 		  	= 60000.0
 TDC_range_carret_size 	= 5000
 
-
-local BLOB_COUNT = 2500
+local BLOB_FACTOR = 1
+local BLOB_COUNT = 2500 * BLOB_FACTOR
 local MAX_RANGE = 40000.0 * 1.852  
 local MAX_RANGE_GATE = 20000.0 * 1.852
 local NOISE_COUNT = 200
@@ -41,7 +41,7 @@ perfomance =
 		sea		   	   = {0,0,0}, -- no return from sea
 		land 	   	   = {50,0,0},
 		artificial 	   = {100,0,0},
-		rays_density   = 0.25,		-- 0.25 all modes except spoiled
+		rays_density   = 0.25 * BLOB_FACTOR,		-- 0.25 all modes except spoiled
 		max_distance   = MAX_RANGE / 0.66 -- to compensate range reduction for ground spots
 	}
 }
@@ -67,17 +67,17 @@ local offset = 622;
 local air_elevation = 10
 local air_beam = 5
 local air_speed = 90
-local air_density = 0.25
+local air_density = 0.25 * BLOB_FACTOR
 
 local ground_elevation = 6.2
 local ground_beam = 6.2
 local ground_speed = 90 -- must be increase for some unknown reason, otherwise nothing is spotted
-local ground_density = 0.25
+local ground_density = 0.25 * BLOB_FACTOR
 
 local spoiled_elevation = 55
 local spoiled_beam = 55
 local spoiled_speed = 90
-local spoiled_density = 0.05
+local spoiled_density = 0.05 * BLOB_FACTOR
 
 local current_mode = 0
 local modes = {}

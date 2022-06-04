@@ -4,8 +4,9 @@ dofile(LockOn_Options.script_path.."avRadar/Indicator/definitions.lua")
 -- RadarScale verändere ich mal von 1.1 auf geringer, damit das Radar auch mal ins Radar passt...
 RS = RADAR_SCALE * 0.40
 
-BLOB_COUNT = 2500
-NOISE_COUNT = 200
+local BLOB_FACTOR = 1
+local BLOB_COUNT = 2500 * BLOB_FACTOR
+local NOISE_COUNT = 200
 
 ud_scale 	= 0.00001 * 0.45	* RS	--0.00001
 lr_scale 	= 0.095	  * 0.9	*2	* RS	--0.2		--0.085
