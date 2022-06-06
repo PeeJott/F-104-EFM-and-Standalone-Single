@@ -215,7 +215,7 @@ join(res.keyCommands,{
 
 
 --{combos = {{key = 'Enter'}}, down = iCommandPlaneChangeLock, up = iCommandPlaneChangeLockUp, name = _('Target Lock'), category = _('Sensors')},
-{combos = {{key = 'Back'}}, down = iCommandSensorReset, name = _('Radar - Return To Search/NDTWS'), category = _('Sensors')},
+--{combos = {{key = 'Back'}}, down = iCommandSensorReset, name = _('Radar - Return To Search/NDTWS'), category = _('Sensors')},
 {down = iCommandRefusalTWS, name = _('Unlock TWS Target'), category = _('Sensors')},
 {combos = {{key = 'I'}}, down = iCommandPlaneRadarOnOff, name = _('Radar On/Off'), category = _('Sensors')},
 {combos = {{key = 'I', reformers = {'RAlt'}}}, down = iCommandPlaneRadarChangeMode, name = _('Radar RWS/TWS Mode Select'), category = _('Sensors')},
@@ -236,7 +236,7 @@ join(res.keyCommands,{
 {combos = {{key = 'R', reformers = {'RShift'}}}, down = iCommandChangeRWRMode, name = _('RWR/SPO Mode Select'), category = _('Sensors')},
 {combos = {{key = ',', reformers = {'RAlt'}}}, down = iCommandPlaneThreatWarnSoundVolumeDown, name = _('RWR/SPO Sound Signals Volume Down'), category = _('Sensors')},
 {combos = {{key = '.', reformers = {'RAlt'}}}, down = iCommandPlaneThreatWarnSoundVolumeUp, name = _('RWR/SPO Sound Signals Volume Up'), category = _('Sensors')},
-{combos = {{key = 'Enter'}}, down = iCommandPlane_LockOn_start, up = iCommandPlane_LockOn_finish, name = 'Target Lock', category = 'Sensors'},
+--{combos = {{key = 'Enter'}}, down = iCommandPlane_LockOn_start, up = iCommandPlane_LockOn_finish, name = 'Target Lock', category = 'Sensors'},
 -- Weapons
 {combos = {{key = 'V', reformers = {'LCtrl'}}}, down = iCommandPlaneSalvoOnOff, name = _('Salvo Mode'), category = _('Weapons')},
 --{combos = {{key = 'Space', reformers = {'RAlt'}}}, down = iCommandPlanePickleOn,	up = iCommandPlanePickleOff, name = _('Weapon Release'), category = _('Weapons')},
@@ -258,8 +258,8 @@ join(res.keyCommands,{
 {down = Keys.RadarRangeModeDown,			name = _('Radar Range Mode Down'),			category = _('Improved Radar')},
 {down = Keys.RadarRangeModeToggle,			name = _('Radar Range Mode Toggle'),			category = _('Improved Radar')},
 
-{down = Keys.RadarRangeGateUp,				name = _('Radar Range Gate Up'),				category = _('Improved Radar')},
-{down = Keys.RadarRangeGateDown,			name = _('Radar Range Gate Down'),			category = _('Improved Radar')},
+--{down = Keys.RadarRangeGateUp,				name = _('Radar Range Gate Up'),				category = _('Improved Radar')},
+--{down = Keys.RadarRangeGateDown,			name = _('Radar Range Gate Down'),			category = _('Improved Radar')},
 
 {down = Keys.RadarElevUp,				name = _('Radar Elevation Up'),			category = _('Improved Radar')},
 {down = Keys.RadarElevDown,				name = _('Radar Elevation Down'),		category = _('Improved Radar')},
@@ -269,6 +269,24 @@ join(res.keyCommands,{
 
 {down = Keys.RadarMemoryUp,	        	name = _('Radar Memory Up'),	category = _('Improved Radar')},
 {down = Keys.RadarMemoryDown,		name = _('Radar Memory Down'),	category = _('Improved Radar')},
+
+-- iCommandPlaneRadarOnOff        86    -- power on/off
+-- iCommandPlane_LockOn_start     509   -- to ACQUISITION 
+-- iCommandPlane_LockOn_finish    510   -- to SCAN
+-- iCommandPlaneRadarUp           90    -- increase TDC 
+-- iCommandPlaneRadarDown         91    -- decrease TDC
+-- iCommandPlaneRadarLeft         88    -- slew TDC left
+-- iCommandPlaneRadarRight        89    -- slew TDC right
+
+{down = iCommandPlane_LockOn_start, name = 'Lock On Start', category = 'Improved Radar'},
+{down = iCommandPlane_LockOn_finish, name = 'Lock On Off', category = 'Improved Radar'},
+{pressed = iCommandPlaneRadarUp, up = iCommandPlaneRadarStop, name = _('Target Designator Up'), category = _('Improved Radar')},
+{pressed = iCommandPlaneRadarDown, up = iCommandPlaneRadarStop, name = _('Target Designator Down'), category = _('Improved Radar')},
+--{pressed = iCommandPlaneRadarLeft, up = iCommandPlaneRadarStop, name = _('Target Designator Left'), category = _('Improved Radar')},
+--{pressed = iCommandPlaneRadarRight, up = iCommandPlaneRadarStop, name = _('Target Designator Right'), category = _('Improved Radar')},
+
+
+
 
 })
 return res

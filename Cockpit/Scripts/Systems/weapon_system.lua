@@ -98,6 +98,7 @@ function keys_station_one(value)
 	end
 		
 	current_station = GetNextStation()
+	dev:select_station(current_station)
 end
 
 function keys_station_two(value)
@@ -112,6 +113,7 @@ function keys_station_two(value)
 	end
 	
 	current_station = GetNextStation()
+	dev:select_station(current_station)
 end
 
 function keys_station_three(value)
@@ -126,6 +128,7 @@ function keys_station_three(value)
 	end
 	
 	current_station = GetNextStation()
+	dev:select_station(current_station)
 end
 
 function keys_station_four(value)
@@ -142,6 +145,7 @@ function keys_station_four(value)
 	end
 
 	current_station = GetNextStation()
+	dev:select_station(current_station)
 end
 
 function keys_station_five(value)
@@ -156,6 +160,7 @@ function keys_station_five(value)
 	end
 	
 	current_station = GetNextStation()
+	dev:select_station(current_station)
 end
 
 function keys_station_six(value)
@@ -170,6 +175,7 @@ function keys_station_six(value)
 	end
 	
 	current_station = GetNextStation()
+	dev:select_station(current_station)
 end
 
 function keys_station_seven(value)
@@ -184,6 +190,7 @@ function keys_station_seven(value)
 	end
 	
 	current_station = GetNextStation()
+	dev:select_station(current_station)
 end
 
 function keys_change_station(value)
@@ -197,6 +204,8 @@ function keys_pickle_on(value)
 	UpdateSelectorButtons()
 	
 	current_station = GetNextStation()
+	dev:select_station(current_station)
+
 
     --dev:drop_flare(1, 1)
 end
@@ -374,8 +383,8 @@ function update()
 
 		-- Slew the seeker to the target
 		-- This feature is most likely not available in a real F-104G
-		ir_missile_des_az_param:set(target_az)		
-		ir_missile_des_el_param:set(target_el)
+		--ir_missile_des_az_param:set(target_az)		
+		--ir_missile_des_el_param:set(target_el)
 
 
 		--gunpipper_sideways_automatic_param:set(ir_missile_des_az_param)

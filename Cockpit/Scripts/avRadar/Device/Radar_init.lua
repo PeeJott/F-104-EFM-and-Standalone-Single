@@ -11,12 +11,12 @@ power_bus_handle = ELECTRIC_SYSTEM.NO_2_AC_BUS
 range_scale 		  	= 60000.0
 TDC_range_carret_size 	= 5000
 
-
-local BLOB_COUNT = 2500
+local BLOB_FACTOR = 1
+local BLOB_COUNT = 2500 * BLOB_FACTOR
 local MAX_RANGE = 40000.0 * 1.852  
 local MAX_RANGE_GATE = 20000.0 * 1.852
-local NOISE_COUNT = 100
-local NOISE_STEPS = 5
+local NOISE_COUNT = 200
+local NOISE_STEPS = 25
 local NOISE_AMOUNT = NOISE_COUNT/NOISE_STEPS
 
 perfomance = 
@@ -39,9 +39,9 @@ perfomance =
 	ground_clutter =
 	{-- spot RCS = A + B * random + C * random 
 		sea		   	   = {0,0,0}, -- no return from sea
-		land 	   	   = {2,0,0},
-		artificial 	   = {3,0,0},
-		rays_density   = 0.25,		-- 0.25 all modes except spoiled
+		land 	   	   = {50,0,0},
+		artificial 	   = {100,0,0},
+		rays_density   = 0.25 * BLOB_FACTOR,		-- 0.25 all modes except spoiled
 		max_distance   = MAX_RANGE / 0.66 -- to compensate range reduction for ground spots
 	}
 }
@@ -67,23 +67,18 @@ local offset = 622;
 local air_elevation = 10
 local air_beam = 5
 local air_speed = 90
-local air_density = 0.25
+local air_density = 0.25 * BLOB_FACTOR
 
 local ground_elevation = 6.2
 local ground_beam = 6.2
 local ground_speed = 90 -- must be increase for some unknown reason, otherwise nothing is spotted
-local ground_density = 0.25
+local ground_density = 0.25 * BLOB_FACTOR
 
 local spoiled_elevation = 55
 local spoiled_beam = 55
 local spoiled_speed = 90
-local spoiled_density = 0.05
+local spoiled_density = 0.05 * BLOB_FACTOR
 
-
--- 0 = A/A
--- 1 = Ground Map
--- 2 = Ground Pencil
--- 3 = Terrain Avoidance
 local current_mode = 0
 local modes = {}
 modes[0] = "OFF"
@@ -104,6 +99,7 @@ ranges[2] = "40"
 
 local clearance_plane = 0
 local memory = 1.0
+local remove_ground_clutter = 0
 
 
 Radar = 	{
@@ -147,6 +143,10 @@ Radar = 	{
 				
 	iff_status_h			= get_param_handle("IFF_INTERROGATOR_STATUS"),
 	bit_h 					= get_param_handle("RADAR_BIT"),
+
+
+	roll = get_param_handle("RADAR_ROLL"),
+	pitch = get_param_handle("RADAR_PITCH"),
 }
 
 local radar_contact_time = {}
@@ -195,19 +195,19 @@ for i = 0,9 do
 	range_gate_opacity[i] = get_param_handle("RANGE_GATE_"..i.."_OPACITY")
 end
 
---
---local noise_show = {}
---local noise_range = {}
---local noise_azimuth = {}
---local noise_opacity = {}
---
---for i = 0,NOISE_COUNT do	
---	noise_show[i] = get_param_handle("NOISE_"..i.."_SHOW")
---	noise_range[i] = get_param_handle("NOISE_"..i.."_RANGE")
---	noise_azimuth[i] = get_param_handle("NOISE_"..i.."_AZIMUTH")
---	noise_opacity[i] = get_param_handle("NOISE_"..i.."_OPACITY")
---end
---
+
+local noise_show = {}
+local noise_range = {}
+local noise_azimuth = {}
+local noise_opacity = {}
+
+for i = 0,NOISE_COUNT do	
+	noise_show[i] = get_param_handle("NOISE_"..i.."_SHOW")
+	noise_range[i] = get_param_handle("NOISE_"..i.."_RANGE")
+	noise_azimuth[i] = get_param_handle("NOISE_"..i.."_AZIMUTH")
+	noise_opacity[i] = get_param_handle("NOISE_"..i.."_OPACITY")
+end
+
 
 antenna_azimuth_h 		= get_param_handle("ANTENNA_AZIMUTH")
 
@@ -216,32 +216,26 @@ function post_initialize()
 
 	print_message_to_user("Radar - INIT")
 		
-	-- most likely not used
-	dev:listen_command(100)		--iCommandPlaneChangeLock
-		
-	dev:listen_command(139)		--scanzone left // iCommandSelecterLeft
-	dev:listen_command(140)		--scanzone right // iCommandSelecterRight
-		
-	dev:listen_command(141)		--scanzone up//iCommandSelecterUp
-	dev:listen_command(142)		--scanzone down//iCommandSelecterDown
-		
-	-- most likely not used
-	dev:listen_command(394)		--change PRF (radar puls freqency)//iCommandPlaneChangeRadarPRF
-	
-	dev:listen_command(509)		--lock start//iCommandPlane_LockOn_start
-	dev:listen_command(510)		--lock finish//iCommandPlane_LockOn_finish
-	
-	-- most likely not used
-	dev:listen_command(285)		--Change radar mode RWS/TWS //iCommandPlaneRadarChangeMode
-		
-
-	-- not used!
-	dev:listen_command(2025)	--iCommandPlaneRadarHorizontal
-	dev:listen_command(2026)	--iCommandPlaneRadarVertical
-
-	-- used!
-	dev:listen_command(2031)	--iCommandPlaneSelecterHorizontal
-	dev:listen_command(2032)	--iCommandPlaneSelecterVertical
+--	-- most likely not used
+--	dev:listen_command(100)		--iCommandPlaneChangeLock
+--		
+--	-- most likely not used
+--	dev:listen_command(394)		--change PRF (radar puls freqency)//iCommandPlaneChangeRadarPRF
+--	
+--	dev:listen_command(509)		--lock start//iCommandPlane_LockOn_start
+--	dev:listen_command(510)		--lock finish//iCommandPlane_LockOn_finish
+--	
+--	-- most likely not used
+--	dev:listen_command(285)		--Change radar mode RWS/TWS //iCommandPlaneRadarChangeMode
+--		
+--
+--	-- not used!
+--	dev:listen_command(2025)	--iCommandPlaneRadarHorizontal
+--	dev:listen_command(2026)	--iCommandPlaneRadarVertical
+--
+--	-- used!
+--	dev:listen_command(2031)	--iCommandPlaneSelecterHorizontal
+--	dev:listen_command(2032)	--iCommandPlaneSelecterVertical
 
 
 
@@ -260,12 +254,20 @@ function post_initialize()
 		
 	dev:listen_command(Keys.RadarMemoryUp)
 	dev:listen_command(Keys.RadarMemoryDown)
-		
+
+	dev:listen_command(90) -- iCommandPlaneRadarUp     
+	dev:listen_command(91) -- iCommandPlaneRadarDown
+	dev:listen_command(509) -- iCommandPlane_LockOn_start
+	dev:listen_command(510) -- iCommandPlane_LockOn_stop
+	
+	
 		
 	Radar.opt_pb_stab_h:set(1)
 	--Radar.opt_pitch_stab_h:set(1) -- doesn't work
 	--Radar.opt_bank_stab_h:set(1) -- doesn't work
 	Radar.sz_elevation_h:set(math.rad(0))
+	Radar.sz_azimuth_h:set(math.rad(0))
+	Radar.tdc_acqzone_h:set(math.rad(10))
 		
 	if avImprovedRadar.Setup(dev) == true then
 		print_message_to_user("ImprovedRadar setup: succesful")
@@ -277,37 +279,10 @@ function post_initialize()
 end
 
 function SetCommand(command,value)
-	--print_message_to_user(string.format("Radar SetCom: C %i   V%.8f",command,value))
 	
----------------------------------------------------------------------
-	--
-	--if command == 141 and value == 0.0 then
-	--	Radar.sz_elevation_h:set(Radar.sz_elevation_h:get() + 0.003)
-	--elseif command == 142 and value == 0.0 then
-	--	Radar.sz_elevation_h:set(Radar.sz_elevation_h:get() - 0.003)
-	--end
-	--
-	--if command == 139 and value == 0.0 then
-	--	Radar.sz_azimuth_h:set(Radar.sz_azimuth_h:get() + 0.003)
-	--elseif command == 140 and value == 0.0 then
-	--	Radar.sz_azimuth_h:set(Radar.sz_azimuth_h:get() - 0.003)
-	--end
-	--
-----------------------------------------------------------------------	
+
+	------------------------------------- ANTENNA ELEVATION -------------------------------	
 	
--------------------------------------------------	
-	
-	--[[ NUR EIN TEST
-	
-	if command == 285 then
-		Radar.mode_h:set(Radar.mode_h:get()+ 1)
-		print_message_to_user("RadarModeChanged")
-	end
-	]]
-
-
-
-
 	if command == Keys.RadarElevUp then
 		local new_elevation = Radar.sz_elevation_h:get() + math.rad(2)
 		if new_elevation > math.rad(20) then
@@ -337,8 +312,8 @@ function SetCommand(command,value)
 		--avImprovedRadar.SetOffset(offset)
 	end
 	
+	------------------------------------- RANGE MODE -------------------------------	
 	local updateRangeGateScale = false
-
 	if command == Keys.RadarRangeModeToggle then
 		if range_sweep_switch == 0 then
 			range_sweep_switch = range_sweep_switch + 1			
@@ -417,21 +392,35 @@ function SetCommand(command,value)
 
 	------------------------------------- RANGE GATE -------------------------------	
 
-	if command == 2032  then
-		Radar.tdc_range_h:set(Radar.tdc_range_h:get()- value*200000)
-		--print_message_to_user("RadarRangeUP/DOWN")		
-	end
-	
-	if command == 2031  then
-		Radar.tdc_azi_h:set(Radar.tdc_azi_h:get()+ value*10)
-		--print_message_to_user("RadarRangeLeftRight")		
-	end
+	--if command == 2032  then
+	--	Radar.tdc_range_h:set(Radar.tdc_range_h:get()- value*200000)
+	--	--print_message_to_user("RadarRangeUP/DOWN")		
+	--end
+	--
+	--if command == 2031  then
+	--	Radar.tdc_azi_h:set(Radar.tdc_azi_h:get()+ value*10)
+	--	--print_message_to_user("RadarRangeLeftRight")		
+	--end
 		
+	if command == 90 or command == 91 then
 	-- limit the range gate
-	if Radar.tdc_range_h:get() > MAX_RANGE_GATE then
-		Radar.tdc_range_h:set(MAX_RANGE_GATE)
-	elseif Radar.tdc_range_h:get() < 0 then
-		Radar.tdc_range_h:set(0)
+		if Radar.tdc_range_h:get() > MAX_RANGE_GATE then
+			Radar.tdc_range_h:set(MAX_RANGE_GATE)
+		elseif Radar.tdc_range_h:get() < 0 then
+			Radar.tdc_range_h:set(0)
+		end
+	end
+
+	------------------------------------- SECTOR SCAN -------------------------------	
+
+	if command == 509 then
+		local antenna_az = avImprovedRadar.get_antenna_azimuth()
+		Radar.tdc_azi_h:set(-antenna_az)
+	end
+
+	if command == 510 then
+		local antenna_az = avImprovedRadar.get_antenna_azimuth()
+		Radar.tdc_azi_h:set(-antenna_az)
 	end
 
 	--------------------------------------- RADAR MODE --------------------------
@@ -452,6 +441,7 @@ function SetCommand(command,value)
 			Radar.opt_pb_stab_h:set(1)
 			avImprovedRadar.set_scan_speed(math.rad(air_speed))
 			avImprovedRadar.set_ray_density(air_density)
+			remove_ground_clutter = 1
 
 		elseif current_mode == 2 then
 			current_mode = current_mode + 1
@@ -462,6 +452,7 @@ function SetCommand(command,value)
 			Radar.opt_pb_stab_h:set(1)
 			avImprovedRadar.set_scan_speed(math.rad(ground_speed))
 			avImprovedRadar.set_ray_density(ground_density)
+			remove_ground_clutter = 0
 
 		elseif current_mode == 3 then
 			current_mode = current_mode + 1
@@ -472,6 +463,7 @@ function SetCommand(command,value)
 			Radar.opt_pb_stab_h:set(1)
 			avImprovedRadar.set_scan_speed(math.rad(spoiled_speed))
 			avImprovedRadar.set_ray_density(spoiled_density)
+			remove_ground_clutter = 0
 
 		elseif current_mode == 4 then
 			current_mode = current_mode + 1
@@ -482,6 +474,7 @@ function SetCommand(command,value)
 			Radar.opt_pb_stab_h:set(1)
 			avImprovedRadar.set_scan_speed(math.rad(ground_speed))
 			avImprovedRadar.set_ray_density(ground_density)
+			remove_ground_clutter = 0
 
 		elseif current_mode == 5 then
 			current_mode = current_mode + 1
@@ -492,6 +485,7 @@ function SetCommand(command,value)
 			Radar.opt_pb_stab_h:set(0)
 			avImprovedRadar.set_scan_speed(math.rad(ground_speed))
 			avImprovedRadar.set_ray_density(ground_density)
+			remove_ground_clutter = 0
 
 		elseif current_mode == 6 then
 			current_mode = current_mode + 1
@@ -521,6 +515,16 @@ function update()
 	local antenna_el = avImprovedRadar.get_antenna_elevation()	
 
 	antenna_azimuth_h:set(-antenna_az)	
+	
+	
+	if current_mode == 2 then -- A/A		
+		if Radar.mode_h:get() == 2 then
+			-- scan speed is reduced during ACQUISITION
+			avImprovedRadar.set_scan_speed(math.rad(air_speed * 0.25))
+		else
+			avImprovedRadar.set_scan_speed(math.rad(air_speed))
+		end
+	end
 
 	if current_mode == 0 or current_mode == 1 or current_mode == 7 then
 		-- disable radar in OFF, SBY or A/G
@@ -561,47 +565,71 @@ function update()
 		range_gate_opacity[0]:set(1.0)
 
 
-	--	for s=1,NOISE_STEPS-1 do			
-	--		for n = s*NOISE_AMOUNT+NOISE_AMOUNT,s*NOISE_AMOUNT,-1 do
-	--			local previous_show_handle = noise_show[n-NOISE_AMOUNT]
-	--			local previous_range_handle = noise_range[n-NOISE_AMOUNT]
-	--			local previous_azimuth_handle = noise_azimuth[n-NOISE_AMOUNT]
-	--			local previous_opacity_handle = noise_opacity[n-NOISE_AMOUNT]
-	--
-	--			local noise_show_handle = noise_show[n]
-	--			local noise_range_handle = noise_range[n]
-	--			local noise_azimuth_handle = noise_azimuth[n]
-	--			local noise_opacity_handle = noise_opacity[n]
-	--
-	--			local base_range = 40000.0 * 1.852
-	--			local range = math.random(0, base_range)
-	--			noise_show_handle:set(previous_show_handle:get())
-	--			noise_range_handle:set(previous_range_handle:get())
-	--			noise_azimuth_handle:set(previous_azimuth_handle:get())
-	--			noise_opacity_handle:set(1.0-(0.2*s))
-	--		end
-	--	end
-	--		
-	--	for n = 0,NOISE_AMOUNT do
-	--		local noise_show_handle = noise_show[n]
-	--		local noise_range_handle = noise_range[n]
-	--		local noise_azimuth_handle = noise_azimuth[n]
-	--		local noise_opacity_handle = noise_opacity[n]
-	--
-	--		local base_range = 40000.0 * 1.852
-	--		local range = math.random(0, base_range)
-	--		noise_show_handle:set(1)
-	--		noise_range_handle:set(range)
-	--		noise_azimuth_handle:set(-antenna_az)
-	--		noise_opacity_handle:set(1.0)
-	--	end
+		----------------- NOISE START -------------
 
+		for s=NOISE_STEPS-1,1,-1 do			
+			for n = s*NOISE_AMOUNT,s*NOISE_AMOUNT+NOISE_AMOUNT do
+				noise_show[n]:set(noise_show[n-NOISE_AMOUNT]:get())
+				noise_range[n]:set(noise_range[n-NOISE_AMOUNT]:get())
+				noise_azimuth[n]:set(noise_azimuth[n-NOISE_AMOUNT]:get())
+				noise_opacity[n]:set(1.0-((1.0/NOISE_STEPS)*s))
+			end
+		end
+		
+		if current_mode == 2 and Radar.mode_h:get() == 2 then -- A/A		
+			if math.deg(-antenna_az) < (math.deg(Radar.tdc_azi_h:get())-1) or math.deg(-antenna_az) > (math.deg(Radar.tdc_azi_h:get())+1) then
+				for n = 0,NOISE_AMOUNT do
+					local noise_show_handle = noise_show[n]
+					local noise_range_handle = noise_range[n]
+					local noise_azimuth_handle = noise_azimuth[n]
+					local noise_opacity_handle = noise_opacity[n]
+	
+					local base_range = 40000.0 * 1.852
+					local range = math.random(0, base_range)
+					noise_show_handle:set(1)
+					noise_range_handle:set(range)
+					noise_azimuth_handle:set(-antenna_az)
+					noise_opacity_handle:set(1.0)
+				end
+			else
+				for n = 0,NOISE_AMOUNT do
+					local noise_show_handle = noise_show[n]
+					noise_show_handle:set(0)
+				end
+			end
+		else
+			if math.deg(-antenna_az) < (math.deg(Radar.sz_azimuth_h:get())-40) or math.deg(-antenna_az) > (math.deg(Radar.sz_azimuth_h:get())+40) then
+				for n = 0,NOISE_AMOUNT do
+					local noise_show_handle = noise_show[n]
+					local noise_range_handle = noise_range[n]
+					local noise_azimuth_handle = noise_azimuth[n]
+					local noise_opacity_handle = noise_opacity[n]
+	
+					local base_range = 40000.0 * 1.852
+					local range = math.random(0, base_range)
+					noise_show_handle:set(1)
+					noise_range_handle:set(range)
+					noise_azimuth_handle:set(-antenna_az)
+					noise_opacity_handle:set(1.0)
+				end
+			else
+				for n = 0,NOISE_AMOUNT do
+					local noise_show_handle = noise_show[n]
+					noise_show_handle:set(0)
+				end
+			end
+		end
+
+		----------------- NOISE END -------------
 	
 		Sensor_Data_Raw = get_base_data()
 		
 		Radar.tdc_ele_up_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() + (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))
 		Radar.tdc_ele_down_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() - (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))	
 
+		Radar.roll:set(Sensor_Data_Raw.getRoll())
+		-- I don't think pitch is displayed in radar scope
+		--Radar.pitch:set(Sensor_Data_Raw.getPitch())
 
 
 		local contact_count = 0
@@ -639,41 +667,46 @@ function update()
 
 			if time >= 0 and time <= memory then
 
-				local base_opacity = rcs/3 -- means 0...1
-				local opacity = base_opacity - (base_opacity * (time/memory))
-				blob_opacity_handle:set(opacity)
+				if remove_ground_clutter == 1 and rcs > 49.0 then
+					blob_show_handle:set(0)
+				else
+					--local base_opacity = rcs/3 -- means 0...1
+					local base_opacity = 1.0
+					local opacity = base_opacity - (base_opacity * (time/memory))
+					blob_opacity_handle:set(opacity)
 			
-				local scaled_range = range
-				if range_sweep_switch == 0 then
-					scaled_range = range * 4
-				elseif range_sweep_switch == 1 then
-					scaled_range = range * 2
-				end
-				blob_scale_handle:set(scaled_range / MAX_RANGE)
-				blob_range_handle:set(scaled_range)
+					local scaled_range = range
+					if range_sweep_switch == 0 then
+						scaled_range = range * 4
+					elseif range_sweep_switch == 1 then
+						scaled_range = range * 2
+					end
+					blob_scale_handle:set(scaled_range / MAX_RANGE)
+					blob_range_handle:set(scaled_range)
 
-				blob_azimuth_handle:set(azimuth)
+					blob_azimuth_handle:set(azimuth)
 
-				if current_mode == 5 or current_mode == 6 then -- CM or TA
-					-- check clearance plane
-					local blob_elevation = elevation
-					--if current_mode == 5 then
-					--	-- TODO: use air data computer instead
-					--	blob_elevation = blob_elevation - aircraft_pitch
-					--end
-					local vertical_distance = math.sin(blob_elevation) * range
-					if vertical_distance < clearance_plane_metric then
-						blob_show_handle:set(0)
-						--skip_count = skip_count + 1
-						--skipped_distances = skipped_distances .. ", " .. (vertical_distance *  3.28084)
+					if current_mode == 5 or current_mode == 6 then -- CM or TA
+						-- check clearance plane
+						local blob_elevation = elevation
+						--if current_mode == 5 then
+						--	-- TODO: use air data computer instead
+						--	blob_elevation = blob_elevation - aircraft_pitch
+						--end
+						local vertical_distance = math.sin(blob_elevation) * range
+						if vertical_distance < clearance_plane_metric then
+							blob_show_handle:set(0)
+							--skip_count = skip_count + 1
+							--skipped_distances = skipped_distances .. ", " .. (vertical_distance *  3.28084)
+						else
+							blob_show_handle:set(1)
+						end
 					else
 						blob_show_handle:set(1)
 					end
-				else
-					blob_show_handle:set(1)
-				end
 
-				contact_count = contact_count + 1
+					contact_count = contact_count + 1
+				end
 			else
 				blob_show_handle:set(0)
 

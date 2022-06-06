@@ -9,4 +9,7 @@ radar_api = 	{
 	stt_range_h 	= get_param_handle("RADAR_STT_RANGE"),
 	stt_azimuth_h 	= get_param_handle("RADAR_STT_AZIMUTH"),
 	stt_elevation_h = get_param_handle("RADAR_STT_ELEVATION"),
+
+	roll = get_param_handle("RADAR_ROLL"),
+	pitch = get_param_handle("RADAR_PITCH"),
 }

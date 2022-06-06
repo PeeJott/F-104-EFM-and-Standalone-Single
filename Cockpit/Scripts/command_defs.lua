@@ -101,8 +101,8 @@ Keys =
 	RadarRangeModeDown							= __custom_counter(),
 	RadarRangeModeToggle						= __custom_counter(),
 
-	RadarRangeGateUp							= __custom_counter(),
-	RadarRangeGateDown							= __custom_counter(),
+--	RadarRangeGateUp							= __custom_counter(),
+--	RadarRangeGateDown							= __custom_counter(),
 
 	RadarElevUp									= __custom_counter(),
 	RadarElevDown								= __custom_counter(),
