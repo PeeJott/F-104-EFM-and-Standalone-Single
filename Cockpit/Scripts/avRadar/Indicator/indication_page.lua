@@ -1,4 +1,5 @@
 dofile(LockOn_Options.script_path.."avRadar/Indicator/definitions.lua")
+dofile(LockOn_Options.script_path.."definitions.lua")
 
 --local MARK_MATERIAL   = MakeMaterial(nil,{255,120,0,255})
 -- RadarScale verändere ich mal von 1.1 auf geringer, damit das Radar auch mal ins Radar passt...
@@ -462,6 +463,8 @@ local	radar_STT_iff			   		= CreateElement "ceMeshPoly"
 	
 	
 	
+
+
 	x_size = 0.02 --0.01
 	y_size = 0.25  --0.15	
 local	radar_SZ_AZIMUTH			   		= CreateElement "ceMeshPoly"
@@ -488,5 +491,66 @@ local	radar_SZ_AZIMUTH			   		= CreateElement "ceMeshPoly"
 											--{"change_color_when_parameter_equal_to_number", 0, 1, 1.0,1.0,0.0},
 											} 
 		radar_SZ_AZIMUTH.element_params  	= {"SCAN_ZONE_ORIGIN_AZIMUTH",}
-	Add(radar_SZ_AZIMUTH)	
+--	Add(radar_SZ_AZIMUTH)	
 	
+
+
+
+
+
+
+
+	
+local radar_horizon		= CreateElement "ceSimple"
+radar_horizon.name  					= "radar_horizon"
+radar_horizon.init_pos				= {0.0, 0.0, 0.0}
+radar_horizon.element_params 		= { "RADAR_ROLL", "RADAR_PITCH" }
+radar_horizon.controllers    		= {{"rotate_using_parameter", 0, 1.0}, {"move_up_down_using_parameter", 1, -0.2}}
+radar_horizon.isdraw				= true
+radar_horizon.isvisible			= true
+radar_horizon.h_clip_relation 	= h_clip_relations.COMPARE
+radar_horizon.level 				= RADAR_DEFAULT_LEVEL 
+radar_horizon.collimated			= true
+Add(radar_horizon)
+
+x_size = 0.2
+y_size = 0.01
+local	radar_roll_left			   		= CreateElement "ceMeshPoly"
+		radar_roll_left.name		   		= "radar_roll_left" 
+		radar_roll_left.primitivetype		= "triangles"	--"lines"--
+		radar_roll_left.vertices	   		= {	
+										{-x_size ,0},
+										{-x_size , y_size},
+										{ x_size , y_size},
+										{ x_size ,0},	
+									  }
+		radar_roll_left.indices	   		= { 0,1,2,	0,2,3}
+		radar_roll_left.init_pos	   		= {-0.75, 0, 0}
+		radar_roll_left.material    	 	= MFCD_ORANGE--MakeMaterial(nil,{10,10,255,150})
+		radar_roll_left.isdraw				= true
+		radar_roll_left.isvisible			= true
+		radar_roll_left.h_clip_relation 	= h_clip_relations.COMPARE
+		radar_roll_left.level 				= RADAR_DEFAULT_LEVEL 
+		radar_roll_left.collimated			= true
+		radar_roll_left.parent_element		= "radar_horizon"		
+Add(radar_roll_left)	
+	
+local	radar_roll_right			   		= CreateElement "ceMeshPoly"
+		radar_roll_right.name		   		= "radar_roll_left" 
+		radar_roll_right.primitivetype		= "triangles"	--"lines"--
+		radar_roll_right.vertices	   		= {	
+										{-x_size ,0},
+										{-x_size , y_size},
+										{ x_size , y_size},
+										{ x_size ,0},	
+									  }
+		radar_roll_right.indices	   		= { 0,1,2,	0,2,3}
+		radar_roll_right.init_pos	   		= {0.75, 0, 0}
+		radar_roll_right.material    	 	= MFCD_ORANGE--MakeMaterial(nil,{10,10,255,150})
+		radar_roll_right.isdraw				= true
+		radar_roll_right.isvisible			= true
+		radar_roll_right.h_clip_relation 	= h_clip_relations.COMPARE
+		radar_roll_right.level 				= RADAR_DEFAULT_LEVEL 
+		radar_roll_right.collimated			= true
+		radar_roll_right.parent_element	= "radar_horizon"		
+Add(radar_roll_right)	

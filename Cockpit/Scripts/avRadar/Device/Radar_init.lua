@@ -143,6 +143,10 @@ Radar = 	{
 				
 	iff_status_h			= get_param_handle("IFF_INTERROGATOR_STATUS"),
 	bit_h 					= get_param_handle("RADAR_BIT"),
+
+
+	roll = get_param_handle("RADAR_ROLL"),
+	pitch = get_param_handle("RADAR_PITCH"),
 }
 
 local radar_contact_time = {}
@@ -623,6 +627,9 @@ function update()
 		Radar.tdc_ele_up_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() + (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))
 		Radar.tdc_ele_down_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() - (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))	
 
+		Radar.roll:set(Sensor_Data_Raw.getRoll())
+		-- I don't think pitch is displayed in radar scope
+		--Radar.pitch:set(Sensor_Data_Raw.getPitch())
 
 
 		local contact_count = 0
