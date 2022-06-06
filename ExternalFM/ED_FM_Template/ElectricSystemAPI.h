@@ -34,6 +34,7 @@ private:
 	void* no_1_battery_bus;
 	void* no_2_emergency_dc_bus;
 	void* no_2_battery_bus;
+ 
 
 public:
 	ElectricSystemAPI();

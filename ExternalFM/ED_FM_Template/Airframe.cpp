@@ -259,6 +259,9 @@ void Airframe::zeroInit()
 	m_hydroSysOneVALUE = 0.0;
 	m_hydroSysTwoVALUE = 0.0;
 
+	//------------electric Stuff-----------------
+	m_flapsHaveElectricPower = false;
+
 	//-----------CrossHair Test Stuff------------
 	//-----komplett auskommentiert, da alles über CockpitScripts jetzt
 	/*
@@ -614,7 +617,18 @@ double Airframe::updateBrakeRight()
 //----------Airbrake-----------------------------
 void Airframe::updateAirBrake()
 {
-	if (m_hydroPumpTwo == 1.0)
+	bool hasElectricPower = false;
+
+	if ((m_electricSystemAPI.GetPrimaryDcBus() == 1.0) || (m_electricSystemAPI.GetNo1EmergencyDcBus() == 1.0))
+	{
+		hasElectricPower = true; 
+	}
+	else
+	{
+		hasElectricPower = false;
+	}
+
+	if ((m_hydroPumpTwo == 1.0) && (hasElectricPower == true))
 	{
 		m_speedBrakeFunctional = 1.0;
 	}
@@ -637,14 +651,27 @@ void Airframe::updateAirBrake()
 //-----------Gear-------------------------------
 void Airframe::updateGear()
 {
-	if ((m_input.getGearToggle() == 1.0) && (m_hydroPumpTwo == 1.0))
+	bool hasElectricPower = false;
+
+	if ((m_electricSystemAPI.GetPrimaryDcBus() == 1.0) || (m_electricSystemAPI.GetNo1EmergencyDcBus() == 1.0))
+	{
+		hasElectricPower = true;
+	}
+	else
+	{
+		hasElectricPower = false;
+	}
+	
+	if ((m_input.getGearToggle() == 1.0) && (m_hydroPumpTwo == 1.0) && (hasElectricPower == true))
 	{
 		m_gear = m_input.getGearToggle();
 	}
-	else if ((m_input.getGearToggle() == 0.0) && (m_hydroPumpTwo == 1.0))
+	else if ((m_input.getGearToggle() == 0.0) && (m_hydroPumpTwo == 1.0) && (hasElectricPower == true))
 	{
 		m_gear = m_input.getGearToggle();
 	}
+
+
 }
 
 //---------------------------------------------
@@ -653,8 +680,18 @@ void Airframe::updateGear()
 
 void Airframe::antiSkidSystem()
 {
+	bool hasElctricPower = false;
+
+	if (m_electricSystemAPI.GetPrimaryDcBus() == 1.0)
+	{
+		hasElctricPower = true;
+	}
+	else
+	{
+		hasElctricPower = false;
+	}
 	
-	if (m_hydroPumpTwo == 1.0)
+	if ((m_hydroPumpTwo == 1.0) && (hasElctricPower == true))
 	{
 		m_antiSkid = 1.0;
 	}
@@ -717,7 +754,19 @@ double Airframe::getIntThrottlePosition()
 
 double Airframe::NWSstate()
 {
-	if ((m_input.getNWS() == 1.0) && (m_hydroPumpTwo == 1.0))
+	
+	bool hasElectricPower = false;
+	
+	if (m_electricSystemAPI.GetPrimaryDcBus() == 1.0)
+	{
+		hasElectricPower = true;
+	}
+	else
+	{
+		hasElectricPower = false;
+	}
+
+	if ((m_input.getNWS() == 1.0) && (m_hydroPumpTwo == 1.0) && (hasElectricPower == true))
 	{
 		m_nwsEngage = m_input.getNWS();
 	}
@@ -1209,12 +1258,24 @@ double Airframe::getEngineDamageMult()
 void Airframe::autoPilotAltH(double dt)
 {
 	
+	bool hasElectricPower = false;
+
 	m_ascHA = 0.1309; // = 7,5° in Radians
 	m_decHA = -0.1309;
 
 	double altHoldCorridorLow = m_altHold * 1.02;
 	double altHoldCorridorHigh = m_altHold * 0.98;
 	
+	if (m_electricSystemAPI.GetPrimaryDcBus() == 1.0)
+	{
+		hasElectricPower = true;
+	}
+	else
+	{
+		hasElectricPower = false;
+	}
+
+
 	if (m_state.m_angle.z > m_ascHA)
 	{
 		m_acendHoldAngle = true;
@@ -1260,7 +1321,7 @@ void Airframe::autoPilotAltH(double dt)
 		m_decend = false;
 	}
 	
-	if ((m_input.getAutoPEng() == 1.0) && (getHydroPumpONE() == 1.0))
+	if ((m_input.getAutoPEng() == 1.0) && (getHydroPumpONE() == 1.0) && (hasElectricPower == true))
 	{
 		m_desiredAlt = m_state.m_airDensity;
 
@@ -1351,7 +1412,7 @@ void Airframe::autoPilotAltH(double dt)
 
 		m_previousAlt = m_desiredAlt;
 	}
-	else if ((m_input.getAutoPEng() == 0.0) || (getHydroPumpONE() == 0.0))
+	else if ((m_input.getAutoPEng() == 0.0) || (getHydroPumpONE() == 0.0) || (hasElectricPower == false))
 	{
 		m_pitchAPadj = 0.0;
 		m_previousAlt = 0.0;
@@ -1371,8 +1432,18 @@ void Airframe::autoPilotAltH(double dt)
 double Airframe::fuelFlowIndGaugeUpdate()
 {
 	//direct fuelFlowGauge has 1-100 with 12.000 = 100 and 0 = 0; 0-70 = 0 - 6.000 lbs/h; 72,5 = 7.000 lbs/h; 75 = 8.000 lbs/h; 81,25 = 9; 87,5 = 10; 93,75 = 11; 100 = 12
+	bool hasElectricPower = false;
 
-	if (m_input.getElectricSystem() == 1.0)
+	if (m_electricSystemAPI.GetEngineInstrumentAndIndicatorPower() == 1.0)
+	{
+		hasElectricPower = true;
+	}
+	else
+	{
+		hasElectricPower = false;
+	}
+
+	if (hasElectricPower == true)
 	{
 		if (m_engine.FuelFlowUpdate() <= 6000.0)
 		{
@@ -1438,7 +1509,7 @@ double Airframe::airSpeedInKnotsCASInd()
 double Airframe::airSpeedInMachInd()
 {
 	
-	if (m_input.getElectricSystem() == 1.0)
+	if ((m_electricSystemAPI.GetSecondaryFixesFrequencyAcBus() == 1.0) || (m_electricSystemAPI.GetPrimaryDcBus() == 1.0))
 	{
 		if (m_state.m_mach <= 1.0)
 		{
@@ -1463,7 +1534,16 @@ double Airframe::airSpeedInMachInd()
 
 void Airframe::altitudeInd()
 {
-	
+	bool hasElectricPower = false;
+
+	if ((m_electricSystemAPI.GetSecondaryFixesFrequencyAcBus() == 1.0) || (m_electricSystemAPI.GetPrimaryDcBus() == 1.0))
+	{
+		hasElectricPower = true;
+	}
+	else
+	{
+		hasElectricPower = false;
+	}
 	//--------------Hier ist die alte starre Höhenformel, die auf der std.day Atmosphäre bei 0m Höhe aufbaut. In einer variablen barometrischen Messung muss 101325.0 ersetzt werden durch die QNH-Variable
 	/*
 	if (m_input.getElectricSystem() == 1.0)
@@ -1478,7 +1558,7 @@ void Airframe::altitudeInd()
 	//-----------------Neue Formel mit Variablen
 	m_qnhVar = m_input.getQnhValue();
 	//-----------Altitude Formel--------------------------------------------------------------------
-	if (m_input.getElectricSystem() == 1.0)
+	if (hasElectricPower == true)
 	{
 		m_altInM = ((288.15 / 0.0065) * (1.0 - pow((m_state.m_pressure / m_qnhVar), (1.0 / 5.255))));
 	}
@@ -1558,7 +1638,7 @@ double Airframe::getQNHinOne()
 
 void Airframe::horizonRollValue()
 {
-	if (m_input.getElectricSystem() == 1.0)
+	if (m_electricSystemAPI.GetPrimaryFixesFrequencyAcBus() == 1.0)
 	{
 		m_horizonRollAngle = toDegrees(m_state.m_angle.x);
 
@@ -1574,7 +1654,7 @@ void Airframe::horizonRollValue()
 
 void Airframe::horizonPitchValue()
 {
-	if (m_input.getElectricSystem() == 1.0)
+	if (m_electricSystemAPI.GetPrimaryFixesFrequencyAcBus() == 1.0)
 	{
 		m_horizonPitchAngle = toDegrees(m_state.m_angle.z);
 
@@ -1754,6 +1834,22 @@ void Airframe::hydroGaugeSysTWO()
 	{
 		m_hydroSysTwoVALUE = ((hydroSysTwoGaugePure - 1500.0) * 0.00028) + 0.3; //zweiter Abschnitt der Anzeigeskala von 1500 - 4000 PSI
 	}
+}
+
+void Airframe::aeroSurfaceElectrics()
+{
+	if ((m_electricSystemAPI.GetEmergencyAcBus() == 1.0) || (m_electricSystemAPI.GetPrimaryDcBus() == 1.0) || (m_electricSystemAPI.GetNo2EmergencyDcBus() == 1.0))
+	{
+		m_flapsHaveElectricPower = true;
+	}
+	else
+	{
+		m_flapsHaveElectricPower = false;
+	}
+
+
+
+
 }
 
 

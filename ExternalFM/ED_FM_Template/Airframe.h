@@ -251,6 +251,9 @@ public:
 	*/
 	//------------------------------------------------------------
 
+	//----------electricity functions------------------
+	void aeroSurfaceElectrics();
+
 	//---------Overspeed to Damage-Modell---------------
 	double osGearDamage();
 	double osFlapDamage();
@@ -681,6 +684,9 @@ private:
 
 	double m_hydroSysOneVALUE = 0.0;
 	double m_hydroSysTwoVALUE = 0.0;
+
+	//----------electricity for Aero Surfaces-----------------------
+	bool m_flapsHaveElectricPower = false;
 
 
 
