@@ -62,7 +62,7 @@ device_timer_dt		= 0.025
 make_default_activity(update_time_step) 
 
 
-local offset = 622;
+local offset = 0;
 
 local air_elevation = 10
 local air_beam = 5
@@ -275,6 +275,9 @@ function post_initialize()
 	else
 		print_message_to_user("ImprovedRadar setup: failed")
 	end
+
+	--local err = avImprovedRadar.Hook();
+	--print_message_to_user("ImprovedRadar hook: " .. err)
 	
 end
 
@@ -508,8 +511,14 @@ end
 function update()
 
 	---- offset discovery
-	--local value = avImprovedRadar.GetFloat()	
-	--print_message_to_user("Offset: " .. offset .. "Value: " .. value)
+	--local uintValue = avImprovedRadar.GetUnsignedInt()	
+	--local floatValue = avImprovedRadar.GetFloat()	
+	--print_message_to_user("Offset: " .. offset .. " uint: " .. uintValue .. " float: " .. floatValue)
+
+	--local wsType = avImprovedRadar.get_last_type()
+	--local wsPosition = avImprovedRadar.get_last_position()
+	--local wsName = avImprovedRadar.get_last_name()
+	--print_message_to_user("Offset: " .. offset .. " name: " .. wsName .. " last type: " .. wsType .. " position: " .. wsPosition)
 	
 	local antenna_az = avImprovedRadar.get_antenna_azimuth()
 	local antenna_el = avImprovedRadar.get_antenna_elevation()	
