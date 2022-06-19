@@ -691,8 +691,24 @@ function update()
 						scaled_range = range * 2
 					end
 					blob_scale_handle:set(scaled_range / MAX_RANGE)
-					blob_range_handle:set(scaled_range)
+					
+					---- test code for texture scaling
+					--local nominal_size = scaled_range / MAX_RANGE
+					--local size = (math.floor(10 * nominal_size))+1
+					----if(nominal_size >= 0 and nominal_size < 0.25) then
+					----	size = 4
+					----elseif (nominal_size >= 0.25 and nominal_size < 0.5) then
+					----	size = 3
+					----elseif (nominal_size >= 0.5 and nominal_size < 0.75) then
+					----	size = 2
+					----else
+					----	size = 1
+					----end
+					--blob_scale_handle:set(size)
+					
 
+
+					blob_range_handle:set(scaled_range)
 					blob_azimuth_handle:set(azimuth)
 
 					if current_mode == 5 or current_mode == 6 then -- CM or TA
