@@ -103,6 +103,49 @@ function create_textured_box(UL_X,UL_Y,DR_X,DR_Y)
     return object
 end
 
+function create_textured_box_scale(UL_X,UL_Y,DR_X,DR_Y)
+    local size_per_pixel = 1
+    local texture_size_x = DR_X-UL_X
+    local texture_size_y = DR_Y-UL_Y
+    local W = DR_X - UL_X
+    local H = DR_Y - UL_Y
+
+    local half_x = 0.5 * W * size_per_pixel
+    local half_y = 0.5 * H * size_per_pixel
+    local ux 	 = UL_X / texture_size_x
+    local uy 	 = UL_Y / texture_size_y
+    local w  	 = W / texture_size_x
+    local h 	 = H / texture_size_y
+
+    local object = CreateElement "ceTexPoly"
+    object.vertices =  {{-half_x, half_y},
+    				    { half_x, half_y},
+    				    { half_x,-half_y},
+    				    { -half_x,-half_y}}
+    object.indices	  = {0,1,2,2,3,0}
+
+	tex_state = {}
+	local frame = 10
+	local current_scale = 1
+	local scale_step = 1
+	for i = 1,frame,1 do
+		tex_state[#tex_state+1] = {{(ux-w/2), (uy-h/2)}, {(ux+w/2), (uy-h/2)}, {(ux+w/2), (uy+h/2)}, {(ux-w/2), (uy+h/2)}}
+		current_scale = current_scale + scale_step
+	end
+	object.state_tex_coords = tex_state
+	--object.state_tex_coords = {
+	--		{{(ux-w/2)*1, (uy-h/2)*1}, {(ux+w/2)*1, (uy-h/2)*1}, {(ux+w/2)*1, (uy+h/2)*1}, {(ux-w/2)*1, (uy+h/2)*1}},
+	--		{{(ux-w/2)*2, (uy-h/2)*2}, {(ux+w/2)*2, (uy-h/2)*2}, {(ux+w/2)*2, (uy+h/2)*2}, {(ux-w/2)*2, (uy+h/2)*2}},
+	--		{{(ux-w/2)*3, (uy-h/2)*3}, {(ux+w/2)*2, (uy-h/2)*3}, {(ux+w/2)*3, (uy+h/2)*3}, {(ux-w/2)*3, (uy+h/2)*3}},
+	--		{{(ux-w/2)*4, (uy-h/2)*4}, {(ux+w/2)*3, (uy-h/2)*4}, {(ux+w/2)*4, (uy+h/2)*4}, {(ux-w/2)*4, (uy+h/2)*4}},
+	--}
+    --object.tex_coords = {{ux -w/2    ,uy-h/2},
+    --					 {ux + w/2 ,uy-h/2},
+    --					 {ux + w/2 ,uy + h/2},
+    --				     {ux-w/2 	 ,uy + h/2}}
+
+    return object
+end
 
 
 
@@ -112,7 +155,7 @@ end
 
 local x_size = 0.01 *3 --0.01 *2
 local y_size = 0.01 *3 --0.01 *2
-local blob_scale = 0.02 --0.02 * 3 
+local blob_scale = 0.02--0.02 * 3 
 local blob_scale_x = (blob_scale*4)/2
 local blob_scale_y = (blob_scale)/2
 
@@ -168,6 +211,7 @@ for s = 1,4 do
 													{"parameter_compare_with_number", 6, 1},
 													{"rotate_using_parameter", 10, -1.0},
 													{"move_up_down_using_parameter", 9, ud_scale},
+													--{"change_texture_state_using_parameter",8},
 													{"parameter_in_range", 8, (s-1)*0.25, s*0.25},
 													{"opacity_using_parameter",7},
 													} 
@@ -189,6 +233,71 @@ for s = 1,4 do
 
 	end
 end
+
+---- scaling test code
+--for ia = 1,BLOB_COUNT do
+--
+--	if ia  < 10 then
+--		i = "_0".. ia .."_"
+--	else
+--		i = "_".. ia .."_"
+--	end
+--
+--	local scale_factor = 1
+--		
+--	--local	radar_contact			   		= CreateElement "ceMeshPoly"
+--	local	radar_contact			   		= create_textured_box_scale(-blob_scale_x*scale_factor,-blob_scale_y*scale_factor,blob_scale_x*scale_factor,blob_scale_y*scale_factor)
+--	--local	radar_contact			   		= create_textured_box(-blob_scale_x*scale_factor,-blob_scale_y*scale_factor,blob_scale_x*scale_factor,blob_scale_y*scale_factor)
+--			radar_contact.material       	= BLOB_TEXTURE
+--			radar_contact.name		   		= "radar_contact" .. i .. "name"				
+--			radar_contact.init_pos	   		= {0, -1.80*RS, 0}				
+--			radar_contact.use_mipfilter     = true
+--			radar_contact.additive_alpha    = true
+--			radar_contact.isdraw			= true
+--			radar_contact.isvisible			= true
+--			radar_contact.h_clip_relation 	= h_clip_relations.COMPARE
+--			radar_contact.level 			= RADAR_DEFAULT_LEVEL
+--			radar_contact.collimated		= false
+--			radar_contact.controllers     	= {													
+--												--{"parameter_compare_with_number",8,s},
+--												--{"rotate_using_parameter"	,1, -1.0},
+--												--{"move_up_down_using_parameter"		,2,ud_scale},
+--
+--												--{"parameter_in_range",2,(s-1)*10000,s*10000},
+--												--{"parameter_in_range",3,life_time_low,life_time},
+--
+--												--{"change_color_when_parameter_equal_to_number", 4, 1, 1.0,1.0,0.0}, -- IFF
+--
+--												--{"change_color_when_parameter_equal_to_number", 5, 1, 0.0,0.0,1.0},	-- sea
+--												--{"change_color_when_parameter_equal_to_number", 5, 2, 0.0,1.0,0.0},	-- land
+--												--{"change_color_when_parameter_equal_to_number", 5, 3, 1.0,0.0,0.0},		-- artificial
+--													
+--												{"parameter_compare_with_number", 6, 1},
+--												{"rotate_using_parameter", 10, -1.0},
+--												{"move_up_down_using_parameter", 9, ud_scale},
+--												{"change_texture_state_using_parameter",8},
+--												--{"parameter_in_range", 8, (s-1)*0.25, s*0.25},
+--												{"opacity_using_parameter",7},
+--												} 
+--			radar_contact.element_params  	= {	
+--												"RADAR_CONTACT"..i.."ELEVATION", -- 0
+--												"RADAR_CONTACT"..i.."AZIMUTH",	 -- 1
+--												"RADAR_CONTACT"..i.."RANGE",	 -- 2
+--												"RADAR_CONTACT"..i.."TIME",		 -- 3
+--												"RADAR_CONTACT"..i.."FRIENDLY",	 -- 4
+--												"RADAR_CONTACT"..i.."RCS",		 -- 5
+--
+--												"BLOB"..i.."SHOW",		 -- 6
+--												"BLOB"..i.."OPACITY",	 -- 7
+--												"BLOB"..i.."SCALE",		 -- 8
+--												"BLOB"..i.."RANGE",		 -- 9
+--												"BLOB"..i.."AZIMUTH",	 -- 10
+--												}
+--		Add(radar_contact)
+--
+--end
+
+
 
 ----------------- NOISE START -------------
 
