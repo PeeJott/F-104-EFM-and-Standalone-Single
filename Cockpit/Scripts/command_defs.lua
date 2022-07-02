@@ -112,7 +112,9 @@ Keys =
 
 	RadarMemoryUp								= __custom_counter(),
 	RadarMemoryDown								= __custom_counter(),
-	
+
+	RadarIfGainUp								= __custom_counter(),
+	RadarIfGainDown								= __custom_counter(),		
 }
 
 start_command   = 3000

@@ -241,6 +241,17 @@ join(res.keyCommands,{
 {down = Keys.RadarMemoryUp,	        	name = _('Radar Memory Up'),	category = _('Improved Radar')},
 {down = Keys.RadarMemoryDown,		name = _('Radar Memory Down'),	category = _('Improved Radar')},
 
+{down = Keys.RadarIfGainUp,	    	name = _('Radar If Gain Up'),	category = _('Improved Radar')},
+{down = Keys.RadarIfGainDown,		name = _('Radar If Gain Down'),	category = _('Improved Radar')},
+
+-- iCommandPlaneRadarOnOff        86    -- power on/off
+-- iCommandPlane_LockOn_start     509   -- to ACQUISITION 
+-- iCommandPlane_LockOn_finish    510   -- to SCAN
+-- iCommandPlaneRadarUp           90    -- increase TDC 
+-- iCommandPlaneRadarDown         91    -- decrease TDC
+-- iCommandPlaneRadarLeft         88    -- slew TDC left
+-- iCommandPlaneRadarRight        89    -- slew TDC right
+
 {down = iCommandPlane_LockOn_start, name = 'Lock On Start', category = 'Improved Radar'},
 {down = iCommandPlane_LockOn_finish, name = 'Lock On Off', category = 'Improved Radar'},
 {pressed = iCommandPlaneRadarUp, up = iCommandPlaneRadarStop, name = _('Target Designator Up'), category = _('Improved Radar')},

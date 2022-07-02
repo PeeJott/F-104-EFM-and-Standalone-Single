@@ -39,8 +39,8 @@ perfomance =
 	ground_clutter =
 	{-- spot RCS = A + B * random + C * random 
 		sea		   	   = {0,0,0}, -- no return from sea
-		land 	   	   = {50,0,0},
-		artificial 	   = {100,0,0},
+		land 	   	   = {33,0,0},
+		artificial 	   = {66,0,0},
 		rays_density   = 0.25 * BLOB_FACTOR,		-- 0.25 all modes except spoiled
 		max_distance   = MAX_RANGE / 0.66 -- to compensate range reduction for ground spots
 	}
@@ -77,7 +77,7 @@ local ground_density = 0.25 * BLOB_FACTOR
 local spoiled_elevation = 55
 local spoiled_beam = 55
 local spoiled_speed = 90
-local spoiled_density = 0.05 * BLOB_FACTOR
+local spoiled_density = 0.75 * BLOB_FACTOR
 
 local current_mode = 0
 local modes = {}
@@ -99,6 +99,7 @@ ranges[2] = "40"
 
 local clearance_plane = 0
 local memory = 1.0
+local if_gain = 0.5
 local remove_ground_clutter = 0
 
 
@@ -151,6 +152,8 @@ Radar = 	{
 
 local radar_contact_time = {}
 local radar_contact_rcs = {}
+local radar_contact_noise = {}
+
 local radar_contact_range = {}
 local radar_contact_azimuth = {}
 local radar_contact_elevation = {}
@@ -170,11 +173,12 @@ for ia = 1,BLOB_COUNT do
 
 	radar_contact_time[i] = get_param_handle("RADAR_CONTACT"..i.."TIME")
 	radar_contact_time[i]:set(-1.0) -- mark invalid
+	radar_contact_rcs[i] = get_param_handle("RADAR_CONTACT"..i.."RCS")	
+	radar_contact_noise[i] = get_param_handle("RADAR_CONTACT"..i.."NOISE")
 
-	radar_contact_rcs[i] = get_param_handle("RADAR_CONTACT"..i.."RCS")
 	radar_contact_range[i] = get_param_handle("RADAR_CONTACT"..i.."RANGE")
 	radar_contact_azimuth[i] = get_param_handle("RADAR_CONTACT"..i.."AZIMUTH")
-	radar_contact_elevation[i] = get_param_handle("RADAR_CONTACT"..i.."ELEVATION")
+	radar_contact_elevation[i] = get_param_handle("RADAR_CONTACT"..i.."ELEVATION")	
 
 	blob_show[i] = get_param_handle("BLOB"..i.."SHOW")
 	blob_opacity[i] = get_param_handle("BLOB"..i.."OPACITY")
@@ -255,13 +259,14 @@ function post_initialize()
 	dev:listen_command(Keys.RadarMemoryUp)
 	dev:listen_command(Keys.RadarMemoryDown)
 
+	dev:listen_command(Keys.RadarIfGainUp)
+	dev:listen_command(Keys.RadarIfGainDown)
+
 	dev:listen_command(90) -- iCommandPlaneRadarUp     
 	dev:listen_command(91) -- iCommandPlaneRadarDown
 	dev:listen_command(509) -- iCommandPlane_LockOn_start
 	dev:listen_command(510) -- iCommandPlane_LockOn_stop
-	
-	
-		
+			
 	Radar.opt_pb_stab_h:set(1)
 	--Radar.opt_pitch_stab_h:set(1) -- doesn't work
 	--Radar.opt_bank_stab_h:set(1) -- doesn't work
@@ -277,7 +282,11 @@ function post_initialize()
 	end
 
 	--local err = avImprovedRadar.Hook();
-	--print_message_to_user("ImprovedRadar hook: " .. err)
+	--if err == 0 then
+	--	print_message_to_user("ImprovedRadar hook: succesful (" .. err .. ")")
+	--else
+	--	print_message_to_user("ImprovedRadar hook: failed (" .. err .. ")")
+	--end
 	
 end
 
@@ -391,6 +400,28 @@ function SetCommand(command,value)
 			end
 		end
 		print_message_to_user("Memory: " .. memory)
+	end
+
+	------------------------------------- IF GAIN -------------------------------	
+		
+	if command == Keys.RadarIfGainDown then		
+		if if_gain > 0.0 then
+			if_gain = if_gain - 0.1
+			if if_gain < 0.0 then
+				if_gain = 0.0
+			end
+		end
+		print_message_to_user("If Gain: " .. if_gain)
+	end
+
+	if command == Keys.RadarIfGainUp then		
+		if if_gain < 1.0 then
+			if_gain = if_gain + 0.1
+			if if_gain > 1.0 then
+				if_gain = 1.0
+			end
+		end
+		print_message_to_user("If Gain: " .. if_gain)
 	end
 
 	------------------------------------- RANGE GATE -------------------------------	
@@ -631,6 +662,8 @@ function update()
 
 		----------------- NOISE END -------------
 	
+		----------------- Horizon ---------------
+
 		Sensor_Data_Raw = get_base_data()
 		
 		Radar.tdc_ele_up_h:set(((Sensor_Data_Raw.getBarometricAltitude() + math.tan(Radar.sz_elevation_h:get() + (perfomance.scan_volume_elevation/2)  ) * Radar.tdc_range_h:get())))
@@ -641,12 +674,15 @@ function update()
 		--Radar.pitch:set(Sensor_Data_Raw.getPitch())
 
 
+		---------------- Contacts -------------------
+
 		local contact_count = 0
 		local skip_count = 0
 		local skipped_distances = ""
 
 		local aircraft_pitch = Sensor_Data_Raw.getPitch()
 		local clearance_plane_metric = (clearance_plane / 3.28084)
+		local rcs_thresold = (100 - (if_gain * 100))
 
 		for ia = 1,BLOB_COUNT do
 
@@ -658,6 +694,8 @@ function update()
 
 			local radar_contact_time_handle = radar_contact_time[i]
 			local radar_contact_rcs_handle = radar_contact_rcs[i]
+			local radar_contact_noise_handle = radar_contact_noise[i]
+
 			local radar_contact_range_handle = radar_contact_range[i]
 			local radar_contact_azimuth_handle = radar_contact_azimuth[i]
 			local radar_contact_elevation_handle = radar_contact_elevation[i]
@@ -670,13 +708,17 @@ function update()
 
 			local time = radar_contact_time_handle:get()		
 			local rcs = radar_contact_rcs_handle:get()
+			local noise = radar_contact_noise_handle:get()
+
 			local range = radar_contact_range_handle:get()
 			local azimuth = radar_contact_azimuth_handle:get()
 			local elevation = radar_contact_elevation_handle:get()
 
 			if time >= 0 and time <= memory then
-
-				if remove_ground_clutter == 1 and rcs > 49.0 then
+								
+				if remove_ground_clutter == 1 and noise == 1 then
+					blob_show_handle:set(0)
+				elseif rcs < rcs_thresold then
 					blob_show_handle:set(0)
 				else
 					--local base_opacity = rcs/3 -- means 0...1
@@ -743,6 +785,7 @@ function update()
 		end
 
 		--print_message_to_user("Below clearance: " .. skip_count .. ": " .. skipped_distances )
+		--print_message_to_user("RCS: " .. skipped_distances )
 	end
 end
 
