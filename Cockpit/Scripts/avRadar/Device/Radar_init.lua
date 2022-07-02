@@ -77,7 +77,7 @@ local ground_density = 0.25 * BLOB_FACTOR
 local spoiled_elevation = 55
 local spoiled_beam = 55
 local spoiled_speed = 90
-local spoiled_density = 0.75 * BLOB_FACTOR
+local spoiled_density = 0.075 * BLOB_FACTOR
 
 local current_mode = 0
 local modes = {}

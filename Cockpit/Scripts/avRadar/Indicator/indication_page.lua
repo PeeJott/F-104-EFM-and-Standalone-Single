@@ -9,7 +9,7 @@ local BLOB_FACTOR = 1
 local BLOB_COUNT = 2500 * BLOB_FACTOR
 local NOISE_COUNT = 200
 
-ud_scale 	= 0.00001 * 0.45	* RS	--0.00001
+ud_scale 	= 0.00001 * 0.25	* RS	--0.00001
 lr_scale 	= 0.095	  * 0.9	*2	* RS	--0.2		--0.085
 
 --ud_scale 	= 0.00001 * 0.45		* RS   *4 	 --0.00001
