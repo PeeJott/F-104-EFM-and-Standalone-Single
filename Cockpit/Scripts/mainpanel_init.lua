@@ -138,6 +138,17 @@ Pylon1SelectorAndLight7.input				= {0.0, 1.0}
 Pylon1SelectorAndLight7.output				= {0.0, 1.0}
 Pylon1SelectorAndLight7.parameter_name		= "PYLON_SEVEN_SELECTOR_LIGHT"
 
+---------------------------------------------------------------------------
+--------------------------Weapon Selector Switch---------------------------
+
+WeaponSelectorSwitch						= CreateGauge("parameter")
+WeaponSelectorSwitch.arg_number				= 627
+WeaponSelectorSwitch.input					= {0.0, 0.5, 1.0}
+WeaponSelectorSwitch.output					= {0.0, 0.5, 1.0}
+WeaponSelectorSwitch.parameter_name			= "ARMAMENT_SEL_TGL"
+
+---------------------------------------------------------------------------
+
 Canopy    							= CreateGauge()
 Canopy.arg_number 					= 181
 Canopy.input   						= {0,1}

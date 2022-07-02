@@ -1073,7 +1073,7 @@ void ed_fm_set_fc3_cockpit_draw_args_v2(float* data, size_t size)
 	//data[624] = s_airframe->getPylonIndLightG();
 	//data[625] = s_airframe->getPylonIndLightG();
 	//data[626] = s_airframe->getPylonIndLightA();
-	data[627] = s_airframe->gunIndSwitch();//gun-selector-switch 0.0; 1.0
+	//data[627] = s_airframe->gunIndSwitch();//gun-selector-switch 0.0; 1.0
 	data[628] = s_airframe->getGearLeverLamp();//Gear-Lever-Lamp an bei 0.0 > und < 1.0; bei 0.0 und 1.0 aus.
 	data[629] = s_airframe->getQNHinThousand();//QNH-Anzeige tausender Bereich
 	data[630] = s_airframe->getQNHinHundred();//QNH-Anzeige hunderter Bereich

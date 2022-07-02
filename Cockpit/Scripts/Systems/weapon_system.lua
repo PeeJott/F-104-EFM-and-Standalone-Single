@@ -16,7 +16,7 @@ dev:listen_command(Keys.pickle_on)
 dev:listen_command(Keys.pickle_off)
 dev:listen_command(Keys.trigger_on)
 dev:listen_command(Keys.trigger_off)
-
+dev:listen_command(Keys.change_station)
 dev:listen_command(Keys.station_one)
 dev:listen_command(Keys.station_two)
 dev:listen_command(Keys.station_three)
@@ -24,8 +24,29 @@ dev:listen_command(Keys.station_four)
 dev:listen_command(Keys.station_five)
 dev:listen_command(Keys.station_six)
 dev:listen_command(Keys.station_seven)
-
-dev:listen_command(Keys.change_station)
+-----------Armament Selector Switch---------
+dev:listen_command(Keys.armSelSwitch_toggle)
+dev:listen_command(Keys.armSelSwitch_GUN)
+dev:listen_command(Keys.armSelSwitch_ROCKET)
+dev:listen_command(Keys.armSelSwitch_MISSILE)
+--------------------------------------------
+----------MasterArm Switch------------------
+dev:listen_command(Keys.masterArmSwitch_toggle)
+dev:listen_command(Keys.masterArmSwitch_ARM)
+dev:listen_command(Keys.masterArmSwitch_CAM)
+dev:listen_command(Keys.masterArmSwitch_OFF)
+-------------------------------------------
+------------Bomb Release Switch------------
+dev:listen_command(Keys.bombReleaseSwitch_toggle)
+dev:listen_command(Keys.bombReleaseSwitch_AUTO)
+dev:listen_command(Keys.bombReleaseSwitch_MANUAL)
+-------------------------------------------
+------------Bomb Arming Switch-------------
+dev:listen_command(Keys.bombArmingSwitch_toggle)
+dev:listen_command(Keys.bombArmingSwitch_NOSETAIL)
+dev:listen_command(Keys.bombArmingSwitch_SAFE)
+dev:listen_command(Keys.bombArmingSwitch_TAIL)
+-------------------------------------------
 
 
 --WeaponSystem-Params
@@ -49,7 +70,22 @@ local station_4_selector = get_param_handle("PYLON_FOUR_SELECTOR_LIGHT")
 local station_5_selector = get_param_handle("PYLON_FIVE_SELECTOR_LIGHT")
 local station_6_selector = get_param_handle("PYLON_SIX_SELECTOR_LIGHT")
 local station_7_selector = get_param_handle("PYLON_SEVEN_SELECTOR_LIGHT")
-
+---------------------------
+local arm_Selector_tgl_param = get_param_handle("ARMAMENT_SEL_TGL")
+---------------------------
+local master_arm_tgl_param = get_param_handle("MASTER_ARM_TGL")
+local master_arm_arm_param = get_param_handle("MASTER_ARM_ARM")
+local master_arm_cam_param = get_param_handle("MASTER_ARM_CAM")
+local master_arm_off_param = get_param_handle("MASTER_ARM_OFF")
+--------------------------
+local bomb_release_tgl_param = get_param_handle("BOMB_REL_TGL")
+local bomb_release_auto_param = get_param_handle("BOMB_REL_AUTO")
+local bomb_release_man_param = get_param_handle("BOMB_REL_MANUAL")
+-------------------------
+local bomb_arming_tgl_param = get_param_handle("BOMB_ARMING_TGL")
+local bomb_arming_nosetail_param = get_param_handle("BOMB_ARMING_NOSETAIL")
+local bomb_arming_safe_param = get_param_handle("BOMB_ARMING_SAFE")
+local bomb_arming_tail_param = get_param_handle("BOMB_ARMING_TAIL")
 
 local current_station = 0
 
@@ -76,6 +112,11 @@ local station_FIVE		= 0
 local station_SIX 		= 0
 local station_SEVEN     = 0
 
+local arm_sel_position = 0
+local arm_sel_tgl = 0
+local GUN_selected = 0
+local MISSILE_selected = 0
+local ROCKET_selected = 0
 -------------Params-----------------
 local Station_One_Param			= get_param_handle("PYLON_ONE_SELECTOR_LIGHT")
 local Station_Two_Param			= get_param_handle("PYLON_TWO_SELECTOR_LIGHT")
@@ -234,7 +275,12 @@ command_table = {
 	[Keys.station_five]		= keys_station_five,
 	[Keys.station_six]		= keys_station_six,
 	[Keys.station_seven]		= keys_station_seven,
-	--[Keys.change_station]		= keys_change_station,  
+	--[Keys.change_station]		= keys_change_station,
+	--Armament Selector Switch
+	[Keys.armSelSwitch_toggle]	= keys_armSelSwitch_tgl,
+	[Keys.armSelSwitch_GUN]		= keys_armSelSwitch_gun,
+	[Keys.armSelSwitch_ROCKET]	= keys_armSelSwitch_rkt,
+	[Keys.armSelSwitch_MISSILE]	= keys_armSelSwitch_msl,
 }
 
 -- Use this function to disable the selector buttons after weapon release or jettison

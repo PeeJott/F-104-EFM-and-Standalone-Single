@@ -88,6 +88,38 @@ Keys =
 	station_six									= __custom_counter(),
 	station_seven								= __custom_counter(),
 	-----------------------------------------------------------------
+	--------------Armament Panel and Selectors-----------------------
+	armSelSwitch_toggle							= __custom_counter(),
+	armSelSwitch_GUN							= __custom_counter(),
+	armSelSwitch_MISSILE						= __custom_counter(),
+	armSelSwitch_ROCKET							= __custom_counter(),
+	
+	masterArmSwitch_toggle						= __custom_counter(),
+	masterArmSwitch_ARM							= __custom_counter(),
+	masterArmSwitch_CAM							= __custom_counter(),
+	masterArmSwitch_OFF							= __custom_counter(),
+	
+	bombReleaseSwitch_toggle					= __custom_counter(),
+	bombReleaseSwitch_AUTO						= __custom_counter(),
+	bombReleaseSwitch_MANUAL					= __custom_counter(),
+	
+	bombArmingSwitch_toggle						= __custom_counter(),
+	bombArmingSwitch_NOSETAIL					= __custom_counter(),
+	bombArmingSwitch_SAFE						= __custom_counter(),
+	bombArmingSwitch_TAIL						= __custom_counter(),
+	
+	specialStoresSelector_toggle				= __custom_counter(),
+	specialStoresSelector_SPLStores				= __custom_counter(),
+	specialStoresSelector_SAFE					= __custom_counter(),
+	specialStoresSelector_PylBombs				= __custom_counter(),
+	specialStoresSelector_PylTanks				= __custom_counter(),
+	specialStoresSelector_TipStores				= __custom_counter(),
+	specialStoresSelector_UAR					= __custom_counter(),
+	
+	dropLockSwitch_toggle						= __custom_counter(),
+	dropLockSwitch_SAFE							= __custom_counter(),
+	dropLockSwitch_READY						= __custom_counter(),
+	
 	-----------------------------HUD--------------------------------
 	GunPipper_Up								= __custom_counter(),
 	GunPipper_Down								= __custom_counter(),
