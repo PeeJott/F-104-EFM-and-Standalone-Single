@@ -39,8 +39,8 @@ perfomance =
 	ground_clutter =
 	{-- spot RCS = A + B * random + C * random 
 		sea		   	   = {0,0,0}, -- no return from sea
-		land 	   	   = {33,0,0},
-		artificial 	   = {66,0,0},
+		land 	   	   = {33,10,-10},
+		artificial 	   = {66,10,-10},
 		rays_density   = 0.25 * BLOB_FACTOR,		-- 0.25 all modes except spoiled
 		max_distance   = MAX_RANGE / 0.66 -- to compensate range reduction for ground spots
 	}
@@ -218,6 +218,8 @@ antenna_azimuth_h 		= get_param_handle("ANTENNA_AZIMUTH")
 
 function post_initialize()
 
+	--show_param_handles_list()
+
 	print_message_to_user("Radar - INIT")
 		
 --	-- most likely not used
@@ -252,15 +254,20 @@ function post_initialize()
 
 	dev:listen_command(Keys.RadarElevUp)
 	dev:listen_command(Keys.RadarElevDown)
+	dev:listen_command(Keys.RadarElev)
 
 	dev:listen_command(Keys.RadarClearanceUp)
 	dev:listen_command(Keys.RadarClearanceDown)
 		
 	dev:listen_command(Keys.RadarMemoryUp)
 	dev:listen_command(Keys.RadarMemoryDown)
+	dev:listen_command(Keys.RadarMemory)
 
 	dev:listen_command(Keys.RadarIfGainUp)
 	dev:listen_command(Keys.RadarIfGainDown)
+	dev:listen_command(Keys.RadarIfGain)
+
+	dev:listen_command(Keys.RadarRangeGate)
 
 	dev:listen_command(90) -- iCommandPlaneRadarUp     
 	dev:listen_command(91) -- iCommandPlaneRadarDown
@@ -294,6 +301,17 @@ function SetCommand(command,value)
 	
 
 	------------------------------------- ANTENNA ELEVATION -------------------------------	
+
+	if command == Keys.RadarElev then
+		local new_elevation = 0
+		if value <= 0.0 then
+			new_elevation = math.rad(value * 38)
+		else
+			new_elevation = math.rad(value * 20)
+		end
+		Radar.sz_elevation_h:set(new_elevation)
+		print_message_to_user("Antenna elevation: " .. math.deg(new_elevation))
+	end
 	
 	if command == Keys.RadarElevUp then
 		local new_elevation = Radar.sz_elevation_h:get() + math.rad(2)
@@ -382,11 +400,16 @@ function SetCommand(command,value)
 
 	------------------------------------- MEMORY -------------------------------	
 		
+	if command == Keys.RadarMemory then
+		memory = ((value + 1.0) * 5) + 0.01
+		print_message_to_user("Memory: " .. value)
+	end
+
 	if command == Keys.RadarMemoryDown then		
-		if memory > 0.1 then
+		if memory > 0.01 then
 			memory = memory - 0.1
-			if memory < 0.1 then
-				memory = 0.1
+			if memory < 0.01 then
+				memory = 0.01
 			end
 		end
 		print_message_to_user("Memory: " .. memory)
@@ -404,6 +427,11 @@ function SetCommand(command,value)
 
 	------------------------------------- IF GAIN -------------------------------	
 		
+	if command == Keys.RadarIfGain then
+		if_gain = (value + 1.0) * 0.5
+		print_message_to_user("If Gain: " .. if_gain)
+	end
+
 	if command == Keys.RadarIfGainDown then		
 		if if_gain > 0.0 then
 			if_gain = if_gain - 0.1
@@ -435,7 +463,12 @@ function SetCommand(command,value)
 	--	Radar.tdc_azi_h:set(Radar.tdc_azi_h:get()+ value*10)
 	--	--print_message_to_user("RadarRangeLeftRight")		
 	--end
-		
+
+	if command == Keys.RadarRangeGate then
+		local new_range_gate = ((value + 1.0) * 0.5) *  MAX_RANGE_GATE
+		Radar.tdc_range_h:set(new_range_gate)
+	end
+	
 	if command == 90 or command == 91 then
 	-- limit the range gate
 		if Radar.tdc_range_h:get() > MAX_RANGE_GATE then
@@ -722,7 +755,7 @@ function update()
 					blob_show_handle:set(0)
 				else
 					--local base_opacity = rcs/3 -- means 0...1
-					local base_opacity = 1.0
+					local base_opacity = rcs / 100
 					local opacity = base_opacity - (base_opacity * (time/memory))
 					blob_opacity_handle:set(opacity)
 			

@@ -263,10 +263,10 @@ join(res.keyCommands,{
 
 -- joystick axes
 join(res.axisCommands,{
-{action = iCommandPlaneSelecterHorizontalAbs, name = _('TDC Slew Horizontal')},
-{action = iCommandPlaneSelecterVerticalAbs	, name = _('TDC Slew Vertical')},
-{action = iCommandPlaneRadarHorizontalAbs	, name = _('Radar Horizontal')},
-{action = iCommandPlaneRadarVerticalAbs		, name = _('Radar Vertical')},
+--{action = iCommandPlaneSelecterHorizontalAbs, name = _('TDC Slew Horizontal')},
+--{action = iCommandPlaneSelecterVerticalAbs	, name = _('TDC Slew Vertical')},
+--{action = iCommandPlaneRadarHorizontalAbs	, name = _('Radar Horizontal')},
+--{action = iCommandPlaneRadarVerticalAbs		, name = _('Radar Vertical')},
 
 {action = iCommandPlaneMFDZoomAbs 			, name = _('MFD Range')},
 {action = iCommandPlaneBase_DistanceAbs 	, name = _('Base/Distance')},
@@ -283,8 +283,10 @@ join(res.axisCommands,{
 {combos = defaultDeviceAssignmentFor("rudder"),	action = iCommandPlaneRudder,		name = _('Rudder')},
 {combos = defaultDeviceAssignmentFor("thrust"),	action = iCommandPlaneThrustCommon, name = _('Thrust')},
 
-
-
+{action = Keys.RadarElev,             name = _('Radar Elev')},
+{action = Keys.RadarMemory,             name = _('Radar Memory')},
+{action = Keys.RadarIfGain,             name = _('Radar If Gain')},
+{action = Keys.RadarRangeGate,             name = _('Radar Range Gate')},
 
 })
 return res

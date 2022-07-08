@@ -135,18 +135,22 @@ Keys =
 
 --	RadarRangeGateUp							= __custom_counter(),
 --	RadarRangeGateDown							= __custom_counter(),
+	RadarRangeGate								= __custom_counter(),
 
 	RadarElevUp									= __custom_counter(),
 	RadarElevDown								= __custom_counter(),
+	RadarElev									= __custom_counter(),
 
 	RadarClearanceUp							= __custom_counter(),
 	RadarClearanceDown							= __custom_counter(),
 
 	RadarMemoryUp								= __custom_counter(),
 	RadarMemoryDown								= __custom_counter(),
+	RadarMemory									= __custom_counter(),
 
 	RadarIfGainUp								= __custom_counter(),
 	RadarIfGainDown								= __custom_counter(),		
+	RadarIfGain									= __custom_counter(),
 }
 
 start_command   = 3000
