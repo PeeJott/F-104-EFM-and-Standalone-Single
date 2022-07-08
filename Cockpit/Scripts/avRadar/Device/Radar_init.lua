@@ -101,6 +101,7 @@ local clearance_plane = 0
 local memory = 1.0
 local if_gain = 0.5
 local remove_ground_clutter = 0
+local visual_acquisition = false
 
 
 Radar = 	{
@@ -297,6 +298,19 @@ function post_initialize()
 	
 end
 
+function range_gate_changed(new_range_gate)
+	if new_range_gate < 0.05 * MAX_RANGE_GATE then
+		visual_acquisition = true
+		dispatch_action(nil, 509)
+
+		print_message_to_user("Visual acquisition: On")
+	elseif visual_acquisition == true then
+		visual_acquisition = false
+		dispatch_action(nil, 510)
+		print_message_to_user("Visual acquisition: Off")
+	end
+end
+
 function SetCommand(command,value)
 	
 
@@ -463,26 +477,41 @@ function SetCommand(command,value)
 	--	Radar.tdc_azi_h:set(Radar.tdc_azi_h:get()+ value*10)
 	--	--print_message_to_user("RadarRangeLeftRight")		
 	--end
-
+		
 	if command == Keys.RadarRangeGate then
 		local new_range_gate = ((value + 1.0) * 0.5) *  MAX_RANGE_GATE
-		Radar.tdc_range_h:set(new_range_gate)
+		Radar.tdc_range_h:set(new_range_gate)	
+		
+		range_gate_changed(new_range_gate)
 	end
 	
 	if command == 90 or command == 91 then
-	-- limit the range gate
-		if Radar.tdc_range_h:get() > MAX_RANGE_GATE then
-			Radar.tdc_range_h:set(MAX_RANGE_GATE)
-		elseif Radar.tdc_range_h:get() < 0 then
-			Radar.tdc_range_h:set(0)
+		local new_range_gate = Radar.tdc_range_h:get()
+		-- limit the range gate
+		if new_range_gate > MAX_RANGE_GATE then
+			new_range_gate = MAX_RANGE_GATE
+			Radar.tdc_range_h:set(new_range_gate)
+		elseif new_range_gate < 0 then
+			Radar.tdc_range_h:set(new_range_gate)
 		end
+
+		range_gate_changed(new_range_gate)
+	end
+
+	if command == Keys.RadarRangeGate or command == 90 or command == 91 then
+		
 	end
 
 	------------------------------------- SECTOR SCAN -------------------------------	
 
 	if command == 509 then
-		local antenna_az = avImprovedRadar.get_antenna_azimuth()
-		Radar.tdc_azi_h:set(-antenna_az)
+		if visual_acquisition == false then
+			local antenna_az = avImprovedRadar.get_antenna_azimuth()
+			Radar.tdc_azi_h:set(-antenna_az)
+		else
+			Radar.tdc_azi_h:set(0.0)
+			Radar.sz_elevation_h:set(0.0)
+		end
 	end
 
 	if command == 510 then
@@ -593,10 +622,20 @@ function update()
 	if current_mode == 2 then -- A/A		
 		if Radar.mode_h:get() == 2 then
 			-- scan speed is reduced during ACQUISITION
-			avImprovedRadar.set_scan_speed(math.rad(air_speed * 0.25))
+			avImprovedRadar.set_scan_speed(math.rad(air_speed * 0.25))			
 		else
 			avImprovedRadar.set_scan_speed(math.rad(air_speed))
 		end
+	end
+
+	if visual_acquisition == true then
+		-- adjust tdc range
+		local current_range_gate = Radar.tdc_range_h:get()
+		current_range_gate = current_range_gate + 200
+		if current_range_gate > MAX_RANGE_GATE then
+			current_range_gate = 0
+		end
+		Radar.tdc_range_h:set(current_range_gate)
 	end
 
 	if current_mode == 0 or current_mode == 1 or current_mode == 7 then
