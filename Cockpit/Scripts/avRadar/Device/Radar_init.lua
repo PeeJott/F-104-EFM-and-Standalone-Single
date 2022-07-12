@@ -100,6 +100,7 @@ ranges[2] = "40"
 local clearance_plane = 0
 local memory = 1.0
 local if_gain = 0.5
+local erase_intensity = 1.0
 local remove_ground_clutter = 0
 local visual_acquisition = false
 
@@ -267,6 +268,11 @@ function post_initialize()
 	dev:listen_command(Keys.RadarIfGainUp)
 	dev:listen_command(Keys.RadarIfGainDown)
 	dev:listen_command(Keys.RadarIfGain)
+
+	dev:listen_command(Keys.RadarEraseIntensityUp)
+	dev:listen_command(Keys.RadarEraseIntensityDown)
+	dev:listen_command(Keys.RadarEraseIntensity)
+
 
 	dev:listen_command(Keys.RadarRangeGate)
 
@@ -465,6 +471,35 @@ function SetCommand(command,value)
 		end
 		print_message_to_user("If Gain: " .. if_gain)
 	end
+
+
+		------------------------------------- ERASE INTENSITY -------------------------------	
+		
+	if command == Keys.RadarEraseIntensity then
+		erase_intensity = (value + 1.0) * 0.5
+		print_message_to_user("Erase Intensity: " .. erase_intensity)
+	end
+
+	if command == Keys.RadarEraseIntensityDown then		
+		if erase_intensity > 0.0 then
+			erase_intensity = erase_intensity - 0.1
+			if erase_intensity < 0.0 then
+				erase_intensity = 0.0
+			end
+		end
+		print_message_to_user("Erase Intensity: " .. erase_intensity)
+	end
+
+	if command == Keys.RadarEraseIntensityUp then		
+		if erase_intensity < 1.0 then
+			erase_intensity = erase_intensity + 0.1
+			if erase_intensity > 1.0 then
+				erase_intensity = 1.0
+			end
+		end
+		print_message_to_user("Erase Intensity: " .. erase_intensity)
+	end
+
 
 	------------------------------------- RANGE GATE -------------------------------	
 
@@ -754,7 +789,6 @@ function update()
 
 		local aircraft_pitch = Sensor_Data_Raw.getPitch()
 		local clearance_plane_metric = (clearance_plane / 3.28084)
-		local rcs_thresold = (100 - (if_gain * 100))
 
 		for ia = 1,BLOB_COUNT do
 
@@ -789,12 +823,15 @@ function update()
 			if time >= 0 and time <= memory then
 								
 				if remove_ground_clutter == 1 and noise == 1 then
-					blob_show_handle:set(0)
-				elseif rcs < rcs_thresold then
-					blob_show_handle:set(0)
+					blob_show_handle:set(0)				
 				else
-					--local base_opacity = rcs/3 -- means 0...1
-					local base_opacity = rcs / 100
+					-- rcs is 0 ... 100
+					-- add 0 ... 200 depending on if gain setting and substract 100
+					-- for rcs 0 this gives 100 at high if gain
+					-- for rcs 100 this gives 0 at low if gain
+					-- apply the erase intensity factor
+					local base_opacity = (math.min(rcs + (200 * if_gain) - 100, 100) / 100) * erase_intensity
+
 					local opacity = base_opacity - (base_opacity * (time/memory))
 					blob_opacity_handle:set(opacity)
 			

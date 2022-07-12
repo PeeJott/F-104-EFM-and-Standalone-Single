@@ -273,6 +273,9 @@ join(res.keyCommands,{
 {down = Keys.RadarIfGainUp,	    	name = _('Radar If Gain Up'),	category = _('Improved Radar')},
 {down = Keys.RadarIfGainDown,		name = _('Radar If Gain Down'),	category = _('Improved Radar')},
 
+{down = Keys.RadarEraseIntensityUp,	    	name = _('Radar Erase Intensity Up'),	category = _('Improved Radar')},
+{down = Keys.RadarEraseIntensityDown,		name = _('Radar Erase Intensity Down'),	category = _('Improved Radar')},
+
 -- iCommandPlaneRadarOnOff        86    -- power on/off
 -- iCommandPlane_LockOn_start     509   -- to ACQUISITION 
 -- iCommandPlane_LockOn_finish    510   -- to SCAN
