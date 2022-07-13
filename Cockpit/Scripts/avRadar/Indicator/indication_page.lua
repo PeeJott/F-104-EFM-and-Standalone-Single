@@ -171,6 +171,22 @@ BLOB_TEXTURE = MakeMaterial(LockOn_Options.script_path .. "Textures/radar_blob.d
 GATE_TEXTURE = MakeMaterial(LockOn_Options.script_path .. "Textures/radar_blob.dds", TEXT_ORANGE_COLOR)
 NOISE_TEXTURE = MakeMaterial(LockOn_Options.script_path .. "Textures/radar_noise.dds", TEXT_ORANGE_COLOR_LIGHT)
 
+
+local radar_ppi		= CreateElement "ceSimple"
+radar_ppi.name  					= "radar_ppi"
+radar_ppi.init_pos				= {0.0, 0.0, 0.0}
+radar_ppi.element_params 		= { "RADAR_MODE" }
+radar_ppi.controllers    		= {{"parameter_in_range",0,0.9,2.1}}
+radar_ppi.isdraw				= true
+radar_ppi.isvisible			= true
+radar_ppi.h_clip_relation 	= h_clip_relations.COMPARE
+radar_ppi.level 				= RADAR_DEFAULT_LEVEL 
+radar_ppi.collimated			= false
+Add(radar_ppi)
+
+
+
+
 for s = 1,4 do
 	for ia = 1,BLOB_COUNT do
 
@@ -194,6 +210,7 @@ for s = 1,4 do
 				radar_contact.h_clip_relation 	= h_clip_relations.COMPARE
 				radar_contact.level 			= RADAR_DEFAULT_LEVEL
 				radar_contact.collimated		= false
+				radar_contact.parent_element	= "radar_ppi"
 				radar_contact.controllers     	= {													
 													--{"parameter_compare_with_number",8,s},
 													--{"rotate_using_parameter"	,1, -1.0},
@@ -313,6 +330,7 @@ for n = 0,NOISE_COUNT do
 			radar_noise.h_clip_relation 	= h_clip_relations.COMPARE
 			radar_noise.level 			= RADAR_DEFAULT_LEVEL
 			radar_noise.collimated		= false
+			radar_noise.parent_element	= "radar_ppi"
 			radar_noise.controllers     	= {													
 												{"parameter_compare_with_number", 0, 1},
 												{"rotate_using_parameter", 2, -1.0},
@@ -358,7 +376,7 @@ local	radar_cursor			   		= CreateElement "ceMeshPoly"
 		radar_cursor.isvisible			= true
 		radar_cursor.h_clip_relation 	= h_clip_relations.COMPARE
 		radar_cursor.level 				= RADAR_DEFAULT_LEVEL 
-		radar_cursor.collimated			= true
+		radar_cursor.collimated			= false
 		radar_cursor.controllers     	= {
 											{"rotate_using_parameter"	,1, -1.0},
 											{"move_up_down_using_parameter"		,0,ud_scale},																						
@@ -383,6 +401,7 @@ for r=0,9 do
 	range_gate.h_clip_relation 	= h_clip_relations.COMPARE
 	range_gate.level 				= RADAR_DEFAULT_LEVEL 
 	range_gate.collimated			= false
+	range_gate.parent_element	= "radar_ppi"
 	range_gate.controllers     	= {
 											{"rotate_using_parameter"	,1,-1.0},
 											{"move_up_down_using_parameter"		,0,ud_scale},										
@@ -421,7 +440,7 @@ local	radar_STT			   		= CreateElement "ceMeshPoly"
 		radar_STT.isvisible			= true
 		radar_STT.h_clip_relation 	= h_clip_relations.COMPARE
 		radar_STT.level 			= RADAR_DEFAULT_LEVEL 
-		radar_STT.collimated		= true
+		radar_STT.collimated		= false
 		radar_STT.controllers     	= {
 										{"move_left_right_using_parameter"	,1,lr_scale},
 										{"move_up_down_using_parameter"		,0,ud_scale},										
@@ -460,7 +479,7 @@ local	radar_STT_backview			   		= CreateElement "ceMeshPoly"
 	
 		radar_STT_backview.h_clip_relation 	= h_clip_relations.COMPARE
 		radar_STT_backview.level 			= RADAR_DEFAULT_LEVEL 
-		radar_STT_backview.collimated		= true
+		radar_STT_backview.collimated		= false
 		radar_STT_backview.controllers     	= {
 												{"move_left_right_using_parameter"	,1,lr_scale},
 												{"move_up_down_using_parameter"		,2,lr_scale},
@@ -592,7 +611,7 @@ local	radar_SZ_AZIMUTH			   		= CreateElement "ceMeshPoly"
 		radar_SZ_AZIMUTH.isvisible			= true
 		radar_SZ_AZIMUTH.h_clip_relation 	= h_clip_relations.COMPARE
 		radar_SZ_AZIMUTH.level 				= RADAR_DEFAULT_LEVEL 
-		radar_SZ_AZIMUTH.collimated			= true
+		radar_SZ_AZIMUTH.collimated			= false
 		--radar_SZ_AZIMUTH.parent_element	= "radar_STT"
 		radar_SZ_AZIMUTH.controllers     	= {
 												{"rotate_using_parameter",0,1}
@@ -619,7 +638,7 @@ radar_horizon.isdraw				= true
 radar_horizon.isvisible			= true
 radar_horizon.h_clip_relation 	= h_clip_relations.COMPARE
 radar_horizon.level 				= RADAR_DEFAULT_LEVEL 
-radar_horizon.collimated			= true
+radar_horizon.collimated			= false
 Add(radar_horizon)
 
 x_size = 0.2
@@ -640,7 +659,7 @@ local	radar_roll_left			   		= CreateElement "ceMeshPoly"
 		radar_roll_left.isvisible			= true
 		radar_roll_left.h_clip_relation 	= h_clip_relations.COMPARE
 		radar_roll_left.level 				= RADAR_DEFAULT_LEVEL 
-		radar_roll_left.collimated			= true
+		radar_roll_left.collimated			= false
 		radar_roll_left.parent_element		= "radar_horizon"		
 Add(radar_roll_left)	
 	
@@ -660,6 +679,6 @@ local	radar_roll_right			   		= CreateElement "ceMeshPoly"
 		radar_roll_right.isvisible			= true
 		radar_roll_right.h_clip_relation 	= h_clip_relations.COMPARE
 		radar_roll_right.level 				= RADAR_DEFAULT_LEVEL 
-		radar_roll_right.collimated			= true
+		radar_roll_right.collimated			= false
 		radar_roll_right.parent_element	= "radar_horizon"		
 Add(radar_roll_right)	
