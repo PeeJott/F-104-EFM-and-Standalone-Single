@@ -184,9 +184,6 @@ radar_ppi.level 				= RADAR_DEFAULT_LEVEL
 radar_ppi.collimated			= false
 Add(radar_ppi)
 
-
-
-
 for s = 1,4 do
 	for ia = 1,BLOB_COUNT do
 
@@ -420,141 +417,106 @@ end
 ------------------------------------ LOCK MODE ------------------------------------------
 
 
- x_size = 0.03
- y_size = 0.03
+
+local radar_track		= CreateElement "ceSimple"
+radar_track.name  					= "radar_track"
+radar_track.init_pos				= {0.0, 0.0, 0.0}
+radar_track.element_params 		= { "RADAR_MODE" }
+radar_track.controllers    		= {{"parameter_in_range",0,2.9,3.1}}
+radar_track.isdraw				= true
+radar_track.isvisible			= true
+radar_track.h_clip_relation 	= h_clip_relations.COMPARE
+radar_track.level 				= RADAR_DEFAULT_LEVEL 
+radar_track.collimated			= false
+Add(radar_track)
 
 
-local	radar_STT			   		= CreateElement "ceMeshPoly"
-		radar_STT.name		   		= "radar_STT" 
-		radar_STT.primitivetype		= "triangles"	--"lines"--
-		radar_STT.vertices	   		= {	
-										{-x_size , -y_size},
-										{-x_size , y_size},
-										{ x_size , y_size},
-										{ x_size ,-y_size},	
-									  }
-		radar_STT.indices	   		= { 0,1,2,	0,2,3}--{0, 1, 2, 0, 2, 3} 
-		radar_STT.init_pos	   		= {0, -0.10*RS, 0} -- ALT {0, -0.90*RS, 0}
-		radar_STT.material    	 	= MFCD_ORANGE--MakeMaterial(nil,{10,10,255,150})
-		radar_STT.isdraw			= true
-		radar_STT.isvisible			= true
-		radar_STT.h_clip_relation 	= h_clip_relations.COMPARE
-		radar_STT.level 			= RADAR_DEFAULT_LEVEL 
-		radar_STT.collimated		= false
-		radar_STT.controllers     	= {
-										{"move_left_right_using_parameter"	,1,lr_scale},
-										{"move_up_down_using_parameter"		,0,ud_scale},										
-										{"parameter_in_range",3,2.9,3.1},	
-									  } 
-		radar_STT.element_params  	= {	
-										"RADAR_STT_RANGE",
-										"RADAR_STT_AZIMUTH",
-										"RADAR_STT_ELEVATION",
-										"RADAR_MODE",
-									  }
-	Add(radar_STT)
-	
- x_size = 0.004
- y_size = 0.09	
-local	radar_STT_backview			   		= CreateElement "ceMeshPoly"
-		radar_STT_backview.name		   		= "radar_STT_backview" 
-		radar_STT_backview.primitivetype	= "triangles"	--"lines"--
-		radar_STT_backview.vertices	   		= {	
-											{-x_size , -y_size},
-											{-x_size , y_size},
-											{ x_size , y_size},
-											{ x_size ,-y_size},	
-											
-											{-y_size , -x_size},
-											{-y_size , x_size},
-											{ y_size , x_size},
-											{ y_size ,-x_size},	
-											
-											}
-		radar_STT_backview.indices	   		= { 0,1,2,	0,2,3,4,5,6,4,6,7}--{0, 1, 2, 0, 2, 3} 
-		radar_STT_backview.init_pos	   		= {0, 0.0, 0}
-		radar_STT_backview.material    	 	= MFCD_ORANGE--MakeMaterial(nil,{10,10,255,150})
-		radar_STT_backview.isdraw			= true
-		radar_STT_backview.isvisible		= true
-	
-		radar_STT_backview.h_clip_relation 	= h_clip_relations.COMPARE
-		radar_STT_backview.level 			= RADAR_DEFAULT_LEVEL 
-		radar_STT_backview.collimated		= false
-		radar_STT_backview.controllers     	= {
+
+
+
+local range_rate_circle_size = 100
+for i=1,range_rate_circle_size do
+        local range_rate_circle			    = CreateElement "ceCircle"
+        range_rate_circle.name				= create_guid_string()
+        range_rate_circle.init_pos	        = {0.0, 0.0, 0.0}
+        range_rate_circle.parent_element	= "radar_track"
+        range_rate_circle.radius			= { (RS * 0.5) + (0.01 * i) * RS, (RS * 0.5) + (0.01 * i) * RS + 0.02 * RS }
+        range_rate_circle.arc				= {0.1 * math.pi, 1.9 * math.pi}
+        range_rate_circle.segment			= math.pi * 4 / 64
+        range_rate_circle.gap				= math.pi * 4 / 64
+        range_rate_circle.segment_detail	= 4
+        range_rate_circle.dashed		    = false
+        range_rate_circle.material          = MFCD_ORANGE
+        range_rate_circle.element_params    = { "RADAR_RANGE" }
+        range_rate_circle.controllers       = {{"parameter_in_range" ,0, i, (i+0.999999)} }
+		range_rate_circle.isdraw			= true
+		range_rate_circle.isvisible			= true
+		range_rate_circle.h_clip_relation 	= h_clip_relations.COMPARE
+		range_rate_circle.level 			= RADAR_DEFAULT_LEVEL 
+		range_rate_circle.collimated		= false
+        Add(range_rate_circle)
+end
+
+local	steering_circle			   			= CreateElement "ceCircle"
+		steering_circle.name		   		= "steering_circle" 
+		steering_circle.init_pos	        = {0.0, 0.0, 0.0}
+		steering_circle.init_pos	        = {0.0, 0.0, 0.0}
+        steering_circle.parent_element		= "radar_track"
+        steering_circle.radius				= { RS * 0.33, (RS * 0.33) + 0.02 * RS }
+        steering_circle.arc					= {0, 2 * math.pi}
+        steering_circle.segment				= math.pi * 4 / 64
+        steering_circle.gap					= math.pi * 4 / 64
+        steering_circle.segment_detail		= 4
+        steering_circle.dashed				= false
+        steering_circle.material			= MFCD_ORANGE
+		steering_circle.controllers     	= {
 												{"move_left_right_using_parameter"	,1,lr_scale},
 												{"move_up_down_using_parameter"		,2,lr_scale},
 												{"parameter_in_range",3,2.9,3.1},	
 											  } 
-		radar_STT_backview.element_params  	= {	
+		steering_circle.element_params  	= {	
 												"RADAR_STT_RANGE",
 												"RADAR_STT_AZIMUTH",
 												"RADAR_STT_ELEVATION",
 												"RADAR_MODE",
 											  }
-	Add(radar_STT_backview)
-	
-	x_size = 0.004
-	y_size = 0.08	
-local	radar_STT_iff			   		= CreateElement "ceMeshPoly"
-		radar_STT_iff.name		   		= "radar_STT_iff" 
-		radar_STT_iff.primitivetype		= "triangles"	--"lines"--
-		radar_STT_iff.vertices	   		= {	
-										{-x_size ,-y_size},
-										{-x_size , y_size},
-										{ x_size , y_size},
-										{ x_size ,-y_size},	
-									  }
-		radar_STT_iff.indices	   		= { 0,1,2,	0,2,3}--{0, 1, 2, 0, 2, 3} 
-		radar_STT_iff.init_pos	   		= {0, 0, 0}
-		radar_STT_iff.material    	 	= MFCD_ORANGE--MakeMaterial(nil,{10,10,255,150})
-		radar_STT_iff.isdraw			= true
-		radar_STT_iff.isvisible			= true
-		radar_STT_iff.h_clip_relation 	= h_clip_relations.COMPARE
-		radar_STT_iff.level 			= RADAR_DEFAULT_LEVEL 
-		radar_STT_iff.collimated		= true
-		radar_STT_iff.parent_element	= "radar_STT"
-		radar_STT_iff.controllers     	= {
-											{"parameter_in_range",0,0.9,1.1},
-											{"change_color_when_parameter_equal_to_number", 0, 1, 1.0,1.0,0.0},
-											} 
-		radar_STT_iff.element_params  	= {"RADAR_STT_FRIENDLY",}
-	Add(radar_STT_iff)	
+		steering_circle.isdraw				= true
+		steering_circle.isvisible			= true
+		steering_circle.h_clip_relation 	= h_clip_relations.COMPARE
+		steering_circle.level 				= RADAR_DEFAULT_LEVEL 
+		steering_circle.collimated			= false
+        Add(steering_circle)
 
-------------------------------------------- Cursor text ---------------------------------------------------------
-	
-	local 	radar_cursor_range	 				= CreateElement "ceStringPoly"
-			radar_cursor_range.name			  	= "radar_cursor_range"
-			radar_cursor_range.material        	= HUD_FONT
-			radar_cursor_range.init_pos		  	= {-0.1,0.0,0} 
-			radar_cursor_range.stringdefs      	= txt_m_stringdefs
-			radar_cursor_range.alignment       	= "RightCenter"--"LeftTop"
-			radar_cursor_range.value			= "test"
-			radar_cursor_range.formats		  	= {"%.0f"}
-			radar_cursor_range.UseBackground	= false
-			radar_cursor_range.element_params  	= {"RADAR_TDC_RANGE"}
-			radar_cursor_range.controllers     	= {{"text_using_parameter",0,0}}
-			radar_cursor_range.parent_element 	= "radar_cursor"
-			radar_cursor_range.use_mipfilter 	= true
-			radar_cursor_range.h_clip_relation 	= h_clip_relations.COMPARE
-			radar_cursor_range.level 			= RADAR_DEFAULT_LEVEL
-		--Add(radar_cursor_range)		
-	
-	
-	local 	radar_cursor_upper_alt 					= Copy(radar_cursor_range)
-			radar_cursor_upper_alt.name				= "radar_cursor_upper_alt"
-			radar_cursor_upper_alt.init_pos			= {0.3,0.15,0}--{0.25,0.05,0}--{0.15,0.05,0} 		
-			radar_cursor_upper_alt.alignment    	= "RightCenter"--"LeftTop"	
-			radar_cursor_upper_alt.element_params  	= {"RADAR_TDC_ELEVATION_AT_RANGE_UPPER"}
-			radar_cursor_upper_alt.controllers     	= {{"text_using_parameter",0,0}}	
-		--Add(radar_cursor_upper_alt)		
 
-	local 	radar_cursor_lower_alt 					= Copy(radar_cursor_range)
-			radar_cursor_lower_alt.name				= "radar_cursor_lower_alt"
-			radar_cursor_lower_alt.init_pos			= {0.3,-0.15,0} 		--{0.15,-0.05,0} 		
-			radar_cursor_lower_alt.element_params  	= {"RADAR_TDC_ELEVATION_AT_RANGE_LOWER"}
-			radar_cursor_lower_alt.controllers     	= {{"text_using_parameter",0,0}}	
-		--Add(radar_cursor_lower_alt)		
-	
+local	steering_dot			   			= CreateElement "ceCircle"
+		steering_dot.name		   			= "steering_dot" 
+		steering_dot.init_pos				= {0.0, 0.0, 0.0}
+		steering_dot.init_pos				= {0.0, 0.0, 0.0}
+        steering_dot.parent_element			= "radar_track"
+        steering_dot.radius					= { 0.00001, 0.05 * RS }
+        steering_dot.arc					= {0, 2 * math.pi}
+        steering_dot.segment				= math.pi * 4 / 64
+        steering_dot.gap					= math.pi * 4 / 64
+        steering_dot.segment_detail			= 4
+        steering_dot.dashed					= false
+        steering_dot.material				= MFCD_ORANGE
+		steering_dot.controllers     		= {
+												{"move_left_right_using_parameter"	,1,lr_scale*2},
+												{"move_up_down_using_parameter"		,2,lr_scale*2},
+												{"parameter_in_range",3,2.9,3.1},	
+											  } 
+		steering_dot.element_params  		= {	
+												"RADAR_STT_RANGE",
+												"RADAR_STT_AZIMUTH",
+												"RADAR_STT_ELEVATION",
+												"RADAR_MODE",
+											  }
+		steering_dot.isdraw					= true
+		steering_dot.isvisible				= true
+		steering_dot.h_clip_relation 		= h_clip_relations.COMPARE
+		steering_dot.level 					= RADAR_DEFAULT_LEVEL 
+		steering_dot.collimated				= false
+        Add(steering_dot)
 	
 ------------------------------------- MARKINGS -----------------------------------------------------------
 	

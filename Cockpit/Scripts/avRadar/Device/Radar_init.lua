@@ -56,8 +56,8 @@ DEBUG_ACTIVE 	= true
 
 --update_time_step 	= 0.05
 --device_timer_dt		= 0.05
-update_time_step 	= 0.025
-device_timer_dt		= 0.025
+update_time_step 	= 0.05
+device_timer_dt		= 0.05
 
 make_default_activity(update_time_step) 
 
@@ -150,6 +150,8 @@ Radar = 	{
 
 	roll = get_param_handle("RADAR_ROLL"),
 	pitch = get_param_handle("RADAR_PITCH"),
+
+	range = get_param_handle("RADAR_RANGE"),
 }
 
 local radar_contact_time = {}
@@ -308,14 +310,36 @@ function range_gate_changed(new_range_gate)
 	if new_range_gate < 0.05 * MAX_RANGE_GATE then
 		visual_acquisition = true
 		dispatch_action(nil, 509)
+		Radar.opt_pb_stab_h:set(0)
 
 		print_message_to_user("Visual acquisition: On")
 	elseif visual_acquisition == true then
 		visual_acquisition = false
 		dispatch_action(nil, 510)
+		Radar.opt_pb_stab_h:set(1)
+
 		print_message_to_user("Visual acquisition: Off")
 	end
 end
+
+function set_range(range)
+	local max_range = MAX_RANGE_GATE
+	local min_range = 300
+
+	if range >= max_range then
+		Radar.range:set(100.0)
+	elseif range <= min_range then
+		Radar.range:set(0.0)
+	else
+		local percent = (range/max_range) * 100
+		Radar.range:set(percent)
+
+		print_message_to_user("STT RANGE: " .. percent)
+	end
+
+	
+end
+
 
 function SetCommand(command,value)
 	
@@ -533,10 +557,6 @@ function SetCommand(command,value)
 		range_gate_changed(new_range_gate)
 	end
 
-	if command == Keys.RadarRangeGate or command == 90 or command == 91 then
-		
-	end
-
 	------------------------------------- SECTOR SCAN -------------------------------	
 
 	if command == 509 then
@@ -653,6 +673,9 @@ function update()
 
 	antenna_azimuth_h:set(-antenna_az)	
 	
+	if Radar.mode_h:get() == 3 then
+		set_range(Radar.stt_range_h:get())
+	end
 	
 	if current_mode == 2 then -- A/A		
 		if Radar.mode_h:get() == 2 then
