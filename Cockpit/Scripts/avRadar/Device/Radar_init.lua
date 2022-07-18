@@ -103,6 +103,8 @@ local if_gain = 0.5
 local erase_intensity = 1.0
 local remove_ground_clutter = 0
 local visual_acquisition = false
+local previous_stt_range = 0.0
+local stt_range_count = 0
 
 
 Radar = 	{
@@ -152,6 +154,7 @@ Radar = 	{
 	pitch = get_param_handle("RADAR_PITCH"),
 
 	range = get_param_handle("RADAR_RANGE"),
+	closure = get_param_handle("RADAR_CLOSURE"),
 }
 
 local radar_contact_time = {}
@@ -323,21 +326,57 @@ function range_gate_changed(new_range_gate)
 end
 
 function set_range(range)
-	local max_range = MAX_RANGE_GATE
-	local min_range = 300
+	-- range is updated only every 2nd step as it seems to be very "jumpy"
+	if stt_range_count == 1 then
+		stt_range_count = 0
 
-	if range >= max_range then
-		Radar.range:set(100.0)
-	elseif range <= min_range then
-		Radar.range:set(0.0)
-	else
-		local percent = (range/max_range) * 100
-		Radar.range:set(percent)
+		local max_range = MAX_RANGE_GATE
+		local min_range = 300
 
-		print_message_to_user("STT RANGE: " .. percent)
-	end
-
+		if range >= max_range then
+			Radar.range:set(100.0)
+		elseif range <= min_range then
+			Radar.range:set(0.0)
+		else
+			local range_percent = (range/max_range) * 100
+			Radar.range:set(range_percent)		
+		end
+			
+					
+		
+		local range_difference = previous_stt_range - range
+		local closure = (range_difference * (1 / (update_time_step*2))) * 1.944 -- m/s to knots
+		previous_stt_range = range
 	
+		-- -100 knots =	-30°
+		--    0 knots =	  0°
+		--  300 knots =	 90°
+		--  600 knots =	180°
+		-- 1500 knots =	270°
+
+		local RANGE_GAP_OFFSET = -90
+
+		local closure_percent = math.rad((closure / 1800 * 180) + RANGE_GAP_OFFSET)
+		Radar.closure:set(closure_percent)
+				
+		--if closure < -100 then
+		--	Radar.closure:set(math.rand(-30 + RANGE_GAP_OFFSET))
+		--elseif closure >= -100 and closure < 0 then
+		--	Radar.closure:set(math.rand(closure / 100 * 30 + RANGE_GAP_OFFSET))
+		--elseif closure >= 0 or closure < 600 then
+		--	local closure_percent = math.rad((closure / 600 * 180) + RANGE_GAP_OFFSET)
+		--	Radar.closure:set(closure_percent)
+		--elseif closure >= 600 or closure < 1500 then
+		--	local closure_percent = math.rad((closure / 900 * 90) + 180 + RANGE_GAP_OFFSET)
+		--	Radar.closure:set(closure_percent)
+		--elseif closure >= 1500 then
+		--	Radar.closure:set(math.rand(300 + RANGE_GAP_OFFSET))
+		--end
+
+		print_message_to_user("STT_RANGE: " .. range .. " (Diff): " .. range_difference .." STT CLOSURE: " .. closure .. " Rotate: " .. math.deg(Radar.closure:get()) )
+	else
+		stt_range_count = stt_range_count + 1
+	end
 end
 
 
