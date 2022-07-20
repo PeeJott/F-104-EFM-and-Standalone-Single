@@ -14,7 +14,7 @@ TDC_range_carret_size 	= 5000
 local BLOB_FACTOR = 1
 local BLOB_COUNT = 2500 * BLOB_FACTOR
 local MAX_RANGE = 40000.0 * 1.852  
-local MAX_RANGE_GATE = 20000.0 * 1.852
+local MAX_RANGE_GATE = MAX_RANGE --20000.0 * 1.852
 local NOISE_COUNT = 200
 local NOISE_STEPS = 25
 local NOISE_AMOUNT = NOISE_COUNT/NOISE_STEPS
@@ -309,22 +309,6 @@ function post_initialize()
 	
 end
 
-function range_gate_changed(new_range_gate)
-	if new_range_gate < 0.05 * MAX_RANGE_GATE then
-		visual_acquisition = true
-		dispatch_action(nil, 509)
-		Radar.opt_pb_stab_h:set(0)
-
-		print_message_to_user("Visual acquisition: On")
-	elseif visual_acquisition == true then
-		visual_acquisition = false
-		dispatch_action(nil, 510)
-		Radar.opt_pb_stab_h:set(1)
-
-		print_message_to_user("Visual acquisition: Off")
-	end
-end
-
 function set_range(range)
 	-- range is updated only every 2nd step as it seems to be very "jumpy"
 	if stt_range_count == 1 then
@@ -355,30 +339,24 @@ function set_range(range)
 		-- 1500 knots =	270°
 
 		local RANGE_GAP_OFFSET = -90
-
-		local closure_percent = math.rad((closure / 1800 * 180) + RANGE_GAP_OFFSET)
-		Radar.closure:set(closure_percent)
-				
-		--if closure < -100 then
-		--	Radar.closure:set(math.rand(-30 + RANGE_GAP_OFFSET))
-		--elseif closure >= -100 and closure < 0 then
-		--	Radar.closure:set(math.rand(closure / 100 * 30 + RANGE_GAP_OFFSET))
-		--elseif closure >= 0 or closure < 600 then
-		--	local closure_percent = math.rad((closure / 600 * 180) + RANGE_GAP_OFFSET)
-		--	Radar.closure:set(closure_percent)
-		--elseif closure >= 600 or closure < 1500 then
-		--	local closure_percent = math.rad((closure / 900 * 90) + 180 + RANGE_GAP_OFFSET)
-		--	Radar.closure:set(closure_percent)
-		--elseif closure >= 1500 then
-		--	Radar.closure:set(math.rand(300 + RANGE_GAP_OFFSET))
-		--end
+						
+		if closure <= -100 then
+			Radar.closure:set(math.rand(-30 + RANGE_GAP_OFFSET))
+		elseif closure > -100 and closure <= 0 then
+			Radar.closure:set(math.rand(closure / 100 * 30 + RANGE_GAP_OFFSET))
+		elseif closure > 0 or closure <= 600 then
+			Radar.closure:set(math.rad((closure / 600 * 180) + RANGE_GAP_OFFSET))
+		elseif closure > 600 or closure <= 1500 then
+			Radar.closure:set(math.rad((closure / 900 * 90) + 180 + RANGE_GAP_OFFSET))
+		elseif closure > 1500 then
+			Radar.closure:set(math.rand(270 + RANGE_GAP_OFFSET))
+		end
 
 		print_message_to_user("STT_RANGE: " .. range .. " (Diff): " .. range_difference .." STT CLOSURE: " .. closure .. " Rotate: " .. math.deg(Radar.closure:get()) )
 	else
 		stt_range_count = stt_range_count + 1
 	end
 end
-
 
 function SetCommand(command,value)
 	
@@ -578,9 +556,7 @@ function SetCommand(command,value)
 		
 	if command == Keys.RadarRangeGate then
 		local new_range_gate = ((value + 1.0) * 0.5) *  MAX_RANGE_GATE
-		Radar.tdc_range_h:set(new_range_gate)	
-		
-		range_gate_changed(new_range_gate)
+		Radar.tdc_range_h:set(new_range_gate)			
 	end
 	
 	if command == 90 or command == 91 then
@@ -592,25 +568,38 @@ function SetCommand(command,value)
 		elseif new_range_gate < 0 then
 			Radar.tdc_range_h:set(new_range_gate)
 		end
-
-		range_gate_changed(new_range_gate)
 	end
 
 	------------------------------------- SECTOR SCAN -------------------------------	
 
 	if command == 509 then
-		if visual_acquisition == false then
-			local antenna_az = avImprovedRadar.get_antenna_azimuth()
-			Radar.tdc_azi_h:set(-antenna_az)
-		else
+		-- do sector scan. check if range gate is at detend
+		local new_range_gate = Radar.tdc_range_h:get()
+		if new_range_gate < 0.01 * MAX_RANGE_GATE then
+			
+			Radar.opt_pb_stab_h:set(0)
 			Radar.tdc_azi_h:set(0.0)
 			Radar.sz_elevation_h:set(0.0)
-		end
+			
+			visual_acquisition = true
+			print_message_to_user("Visual acquisition: On")
+		else
+
+			Radar.opt_pb_stab_h:set(1)
+			local antenna_az = avImprovedRadar.get_antenna_azimuth()
+			Radar.tdc_azi_h:set(-antenna_az)
+			
+			visual_acquisition = false
+			print_message_to_user("Visual acquisition: Off")
+		end		
 	end
 
 	if command == 510 then
-		local antenna_az = avImprovedRadar.get_antenna_azimuth()
-		Radar.tdc_azi_h:set(-antenna_az)
+		visual_acquisition = false
+		Radar.opt_pb_stab_h:set(1)
+
+		--local antenna_az = avImprovedRadar.get_antenna_azimuth()
+		--Radar.tdc_azi_h:set(-antenna_az)
 	end
 
 	--------------------------------------- RADAR MODE --------------------------
@@ -727,12 +716,20 @@ function update()
 
 	if visual_acquisition == true then
 		-- adjust tdc range
+		-- 1500 feet to 12000 feet
 		local current_range_gate = Radar.tdc_range_h:get()
-		current_range_gate = current_range_gate + 200
-		if current_range_gate > MAX_RANGE_GATE then
-			current_range_gate = 0
+		current_range_gate = current_range_gate + 400
+		if current_range_gate > 3657.6 then
+			current_range_gate = 457.2
 		end
 		Radar.tdc_range_h:set(current_range_gate)
+
+		if current_mode ~= 2 then
+			-- radar is no longer in ACQUISITION but visual_acquisition is still enabled.
+			-- restore config for blind acquisition
+			visual_acquisition = false
+			Radar.opt_pb_stab_h:set(1)
+		end
 	end
 
 	if current_mode == 0 or current_mode == 1 or current_mode == 7 then
