@@ -262,6 +262,13 @@ join(res.keyCommands,{
 --{pressed = iCommandPlaneRadarLeft, up = iCommandPlaneRadarStop, name = _('Target Designator Left'), category = _('Improved Radar')},
 --{pressed = iCommandPlaneRadarRight, up = iCommandPlaneRadarStop, name = _('Target Designator Right'), category = _('Improved Radar')},
 
+-- PHI
+
+{down = Keys.PHI_ModeToggle,			name = _('PHI Mode Toggle'),			category = _('PHI')},
+
+{down = Keys.PHI_StationSelectorUp,				name = _('PHI Station Selector Dial Up'),				category = _('PHI')},
+{down = Keys.PHI_StationSelectorDown,			name = _('PHI Station Selector Dial Down'),			category = _('PHI')},
+
 })
 
 -- joystick axes

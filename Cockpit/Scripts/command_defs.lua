@@ -53,6 +53,13 @@ Keys =
 	iCommandAPUGeneratorPower	 = 1071,
 
 
+	--------------------- PHI NAVIGATOR ------------------------------
+
+	PHI_ModeToggle					= __custom_counter(),
+	PHI_StationSelectorUp		    = __custom_counter(),
+	PHI_StationSelectorDown			= __custom_counter(),
+	
+
 	-------------------AtoG-RADAR-COMMANDS----------------------------
     RadarModeOFF                    = __custom_counter(),
     RadarModeSTBY                   = __custom_counter(),
