@@ -142,12 +142,24 @@ Pylon1SelectorAndLight7.parameter_name		= "PYLON_SEVEN_SELECTOR_LIGHT"
 --------------------------Weapon Selector Switch---------------------------
 
 WeaponSelectorSwitch						= CreateGauge("parameter")
-WeaponSelectorSwitch.arg_number				= 627
+WeaponSelectorSwitch.arg_number				= 627--prüfen
 WeaponSelectorSwitch.input					= {0.0, 0.5, 1.0}
 WeaponSelectorSwitch.output					= {0.0, 0.5, 1.0}
-WeaponSelectorSwitch.parameter_name			= "ARMAMENT_SEL_TGL"
-
+WeaponSelectorSwitch.parameter_name			= "ARMAMENT_SEL_SWITCH"
 ---------------------------------------------------------------------------
+--------------------------Master Arm Switch--------------------------------
+MasterArmSwitch								= CreateGauge("parameter")
+MasterArmSwitch.arg_number					= 628--prüfen
+MasterArmSwitch.input						= {0.0, 0.5, 1.0}
+MasterArmSwitch.output						= {0.0, 0.5, 1.0}
+MasterArmSwitch.parameter_name				= "MASTER_ARM_SWITCH"
+---------------------------------------------------------------------------
+-------------------------Bomb Release Switch--------------------------------
+BombReleaseSwitch							= CreateGauge("parameter")
+BombReleaseSwitch.arg_number				= 629--prüfen bzw. animieren
+BombReleaseSwitch.input						= {0.0, 1.0}
+BombReleaseSwitch.output					= {0.0, 1.0}
+BombReleaseSwitch.parameter_name			= "BOMB_AM_REL_SWITCH"
 
 Canopy    							= CreateGauge()
 Canopy.arg_number 					= 181

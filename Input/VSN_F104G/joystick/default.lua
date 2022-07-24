@@ -7,37 +7,37 @@ local res = external_profile("Config/Input/Aircrafts/common_joystick_binding.lua
 join(res.keyCommands,{
 {down = iCommandPlaneAutopilot, name = _('Autopilot - Attitude Hold'), category = _('Autopilot')},
 {down = iCommandPlaneStabHbar, name = _('Autopilot - Altitude Hold'), category = _('Autopilot')},
-{down = iCommandPlaneStabCancel, name = _('Autopilot Disengage'), category = _('Autopilot')},
-{down = iCommandHelicopter_PPR_button_T_up, name = _('CAS Pitch'), category = _('Autopilot')},
-{down = iCommandHelicopter_PPR_button_K_up, name = _('CAS Roll'), category = _('Autopilot')},
-{down = iCommandHelicopter_PPR_button_H_up, name = _('CAS Yaw'), category = _('Autopilot')},
+--{down = iCommandPlaneStabCancel, name = _('Autopilot Disengage'), category = _('Autopilot')},
+--{down = iCommandHelicopter_PPR_button_T_up, name = _('CAS Pitch'), category = _('Autopilot')},
+--{down = iCommandHelicopter_PPR_button_K_up, name = _('CAS Roll'), category = _('Autopilot')},
+--{down = iCommandHelicopter_PPR_button_H_up, name = _('CAS Yaw'), category = _('Autopilot')},
 
 --Flight Control
 --{down = iCommandPlaneTrimOn, up = iCommandPlaneTrimOff, name = _('T/O Trim'), category = _('Flight Control')},
 
 -- Systems
 --{down = iCommandPlaneAirRefuel, name = _('Refueling Boom'), category = _('Systems')},
-{down = iCommandPlaneJettisonFuelTanks, name = _('Jettison Fuel Tanks'), category = _('Systems')},
+--{down = iCommandPlaneJettisonFuelTanks, name = _('Jettison Fuel Tanks'), category = _('Systems')},
 {down = iCommandPlane_HOTAS_NoseWheelSteeringButton, up = iCommandPlane_HOTAS_NoseWheelSteeringButton, name = _('Nose Gear Maneuvering Range'), category = _('Systems')},
 {down = iCommandPlane_HOTAS_NoseWheelSteeringButtonOff, up = iCommandPlane_HOTAS_NoseWheelSteeringButtonOff, name = _('Nose Wheel Steering'), category = _('Systems')},
 {down = iCommandPlaneWheelBrakeLeftOn, up = iCommandPlaneWheelBrakeLeftOff, name = _('Wheel Brake Left On/Off'), category = _('Systems')},
 {down = iCommandPlaneWheelBrakeRightOn, up = iCommandPlaneWheelBrakeRightOff, name = _('Wheel Brake Right On/Off'), category = _('Systems')},
-{down = iCommandPlaneFSQuantityIndicatorSelectorMAIN, name = _('Fuel Quantity Selector'), category = _('Systems')},
-{down = iCommandPlaneFSQuantityIndicatorTest, up = iCommandPlaneFSQuantityIndicatorTest, value_down = 1, value_up = 0, name = _('Fuel Quantity Test'), category = _('Systems')},
-{down = iCommandPlaneFSQuantityIndicatorSelectorINT,	up = iCommandPlaneFSQuantityIndicatorSelectorINT, value_down = 1,  value_up = 0, 	name = _('Bingo Fuel Index, CW'),  category = _('Systems')},
-{down = iCommandPlaneFSQuantityIndicatorSelectorINT,	up = iCommandPlaneFSQuantityIndicatorSelectorINT, value_down = -1, value_up = 0, 	name = _('Bingo Fuel Index, CCW'), category = _('Systems')},
+--{down = iCommandPlaneFSQuantityIndicatorSelectorMAIN, name = _('Fuel Quantity Selector'), category = _('Systems')},
+--{down = iCommandPlaneFSQuantityIndicatorTest, up = iCommandPlaneFSQuantityIndicatorTest, value_down = 1, value_up = 0, name = _('Fuel Quantity Test'), category = _('Systems')},
+--{down = iCommandPlaneFSQuantityIndicatorSelectorINT,	up = iCommandPlaneFSQuantityIndicatorSelectorINT, value_down = 1,  value_up = 0, 	name = _('Bingo Fuel Index, CW'),  category = _('Systems')},
+--{down = iCommandPlaneFSQuantityIndicatorSelectorINT,	up = iCommandPlaneFSQuantityIndicatorSelectorINT, value_down = -1, value_up = 0, 	name = _('Bingo Fuel Index, CCW'), category = _('Systems')},
 {down = iCommandPlaneAntiCollisionLights, name = _('Anti-collision lights'), category = _('Systems')},
 {down = iCommandPlaneHook, name = _('Tail Hook'), category = _('Systems')},
 
 -- Modes
-{down = iCommandPlaneModeBVR, 			name = _('(2) Beyond Visual Range Mode'), 						category = _('Modes')},
-{down = iCommandPlaneModeVS, 			name = _('(3) Close Air Combat Vertical Scan Mode'), 			category = _('Modes')},
-{down = iCommandPlaneModeBore, 			name = _('(4) Close Air Combat Bore Mode'), 					category = _('Modes')},
-{down = iCommandPlaneModeFI0, 			name = _('(6) Longitudinal Missile Aiming Mode/FLOOD mode'), 	category = _('Modes')},
-{down = iCommandPlaneModeGround, 		name = _('(7) Air-To-Ground Mode'), 							category = _('Modes')},
-{down = iCommandPlaneChangeTarget,		name = _('Next Waypoint, Airfield Or Target'),					category = _('Modes')},
-{down = iCommandPlaneUFC_STEER_DOWN,	name = _('Previous Waypoint, Airfield Or Target'),				category = _('Modes')},
-{down = iCommandPlaneModeNAV,			name = _('(1) Navigation Modes'),								category = _('Modes')},
+--{down = iCommandPlaneModeBVR, 			name = _('(2) Beyond Visual Range Mode'), 						category = _('Modes')},
+--{down = iCommandPlaneModeVS, 			name = _('(3) Close Air Combat Vertical Scan Mode'), 			category = _('Modes')},
+--{down = iCommandPlaneModeBore, 			name = _('(4) Close Air Combat Bore Mode'), 					category = _('Modes')},
+--{down = iCommandPlaneModeFI0, 			name = _('(6) Longitudinal Missile Aiming Mode/FLOOD mode'), 	category = _('Modes')},
+--{down = iCommandPlaneModeGround, 		name = _('(7) Air-To-Ground Mode'), 							category = _('Modes')},
+--{down = iCommandPlaneChangeTarget,		name = _('Next Waypoint, Airfield Or Target'),					category = _('Modes')},
+--{down = iCommandPlaneUFC_STEER_DOWN,	name = _('Previous Waypoint, Airfield Or Target'),				category = _('Modes')},
+--{down = iCommandPlaneModeNAV,			name = _('(1) Navigation Modes'),								category = _('Modes')},
 
 -- Sensors
 {down = iCommandSensorReset, 											name = _('Radar - Return To Search/NDTWS'), 	category = _('Sensors')},
@@ -58,9 +58,9 @@ join(res.keyCommands,{
 {down = iCommandPlaneZoomOut, 											name = _('Display Zoom Out'), 					category = _('Sensors')},
 {down = iCommandDecreaseRadarScanArea, 									name = _('Radar Scan Zone Decrease'), 			category = _('Sensors')},
 {down = iCommandIncreaseRadarScanArea, 									name = _('Radar Scan Zone Increase'), 			category = _('Sensors')},
-{down = iCommandChangeRWRMode, 											name = _('RWR/SPO Mode Select'), 				category = _('Sensors')},
-{down = iCommandPlaneThreatWarnSoundVolumeDown, 						name = _('RWR/SPO Sound Signals Volume Down'), 	category = _('Sensors')},
-{down = iCommandPlaneThreatWarnSoundVolumeUp, 							name = _('RWR/SPO Sound Signals Volume Up'), 	category = _('Sensors')},
+--{down = iCommandChangeRWRMode, 											name = _('RWR/SPO Mode Select'), 				category = _('Sensors')},
+--{down = iCommandPlaneThreatWarnSoundVolumeDown, 						name = _('RWR/SPO Sound Signals Volume Down'), 	category = _('Sensors')},
+--{down = iCommandPlaneThreatWarnSoundVolumeUp, 							name = _('RWR/SPO Sound Signals Volume Up'), 	category = _('Sensors')},
 --{down = iCommandPlane_LockOn_start, up = iCommandPlane_LockOn_finish, 	name = _('Target Lock'), 						category = _('Sensors')},
 
 -- Electric System
@@ -89,24 +89,14 @@ join(res.keyCommands,{
 
 
 -- Weapons
-{down = iCommandPlaneSalvoOnOff, name = _('Salvo Mode'), category = _('Weapons')},
+--{down = iCommandPlaneSalvoOnOff, name = _('Salvo Mode'), category = _('Weapons')},
 --{combos = {{key = 'JOY_BTN2'}}, down = iCommandPlanePickleOn,	up = iCommandPlanePickleOff, name = _('Weapon Release'), category = _('Weapons')},
 
---Custom Weapons Keys from CScripts :-)
-{combos = {{key = 'JOY_BTN2'}}, down = Keys.pickle_on,	up = Keys.pickle_off, 	name = _('Weapon Release'), category = _('Weapons')},
-{combos = {{key = 'JOY_BTN1'}}, down = Keys.trigger_on,	up = Keys.trigger_off, 	name = _('Gun Trigger'), category = _('Weapons')},
-{down = Keys.station_one,														name = _('Station Button One'), category = _('Weapons')},
-{down = Keys.station_two,														name = _('Station Button Two'), category = _('Weapons')},
-{down = Keys.station_three,														name = _('Station Button Three'), category = _('Weapons')},
-{down = Keys.station_four,														name = _('Station Button Four'), category = _('Weapons')},
-{down = Keys.station_five,														name = _('Station Button Five'), category = _('Weapons')},
-{down = Keys.station_six,														name = _('Station Button Six'), category = _('Weapons')},
-{down = Keys.station_seven,														name = _('Station Button Seven'), category = _('Weapons')},
 
 --Weapons normal
-{combos = {{key = 'JOY_BTN4'}},	down = iCommandPlaneChangeWeapon,		name = _('Weapon Change'),		category = _('Weapons')},
-{combos = {{key = 'JOY_BTN5'}},	down = iCommandPlaneModeCannon,			name = _('Cannon'),				category = _('Weapons')},
-{down = iCommandPlaneLaunchPermissionOverride,	name = _('Launch Permission Override'), category = _('Weapons') , features = {"LaunchPermissionOverride"}},
+--{combos = {{key = 'JOY_BTN4'}},	down = iCommandPlaneChangeWeapon,		name = _('Weapon Change'),		category = _('Weapons')},
+--{combos = {{key = 'JOY_BTN5'}},	down = iCommandPlaneModeCannon,			name = _('Cannon'),				category = _('Weapons')},
+--{down = iCommandPlaneLaunchPermissionOverride,	name = _('Launch Permission Override'), category = _('Weapons') , features = {"LaunchPermissionOverride"}},
 
 -- Gameplay
 {down = iCommandPlaneShipTakeOff,		name = _('Ship Take Off Position'), category = _('General') , features = {"shiptakeoff"}},
@@ -153,7 +143,7 @@ join(res.keyCommands,{
 {down = iCommandPlaneAirBrakeOn,			name = _('Airbrake On'),				category = _('Systems') , features = {"airbrake"}},
 {down = iCommandPlaneAirBrakeOff,			name = _('Airbrake Off'),				category = _('Systems') , features = {"airbrake"}},
 {down = iCommandPlaneWingtipSmokeOnOff,		name = _('Smoke'),						category = _('Systems')},
-{down = iCommandPlaneCockpitIllumination,	name = _('Illumination Cockpit'),		category = _('Systems')},
+--{down = iCommandPlaneCockpitIllumination,	name = _('Illumination Cockpit'),		category = _('Systems')},
 {down = iCommandPlaneLightsOnOff,			name = _('Navigation lights'),			category = _('Systems')},
 {down = iCommandPlaneHeadLightOnOff,		name = _('Gear Light Near/Far/Off'),	category = _('Systems')},
 {down = iCommandPlaneFlaps,					name = _('Flaps Up/Down'),				category = _('Systems')},
@@ -165,17 +155,17 @@ join(res.keyCommands,{
 {down = iCommandPlaneWheelBrakeOn, up = iCommandPlaneWheelBrakeOff,			name = _('Wheel Brake On'),		category = _('Systems')},
 {down = iCommandPlaneFonar,					name = _('Canopy Open/Close'),			category = _('Systems')},
 {down = iCommandPlaneParachute,				name = _('Dragging Chute'),				category = _('Systems'),	features = {"dragchute"}},
-{down = iCommandPlaneResetMasterWarning,	name = _('Audible Warning Reset'),		category = _('Systems')},
+--{down = iCommandPlaneResetMasterWarning,	name = _('Audible Warning Reset'),		category = _('Systems')},
 {down = iCommandPlaneJettisonWeapons,up = iCommandPlaneJettisonWeaponsUp,	name = _('Weapons Jettison'),	category = _('Systems')},
 {down = iCommandPlaneEject,					name = _('Eject (3 times)'),			category = _('Systems')},
 {down = iCommandFlightClockReset,			name = _('Flight Clock Start/Stop/Reset'),						category = _('Systems') , features = {"flightclock"}},
 {down = iCommandClockElapsedTimeReset,		name = _('Elapsed Time Clock Start/Stop/Reset'),				category = _('Systems') , features = {"flightclock"}},
 {down = iCommandEnginesStart,				name = _('Engines Start'),				category = _('Systems')},
 {down = iCommandEnginesStop,				name = _('Engines Stop'),				category = _('Systems')},
-{down = iCommandBrightnessILS,				name = _('HUD Color'),					category = _('Systems') , features = {"HUDcolor"}},
-{pressed = iCommandHUDBrightnessUp,			name = _('HUD Brightness up'),			category = _('Systems') , features = {"HUDbrightness"}},
-{pressed = iCommandHUDBrightnessDown,		name = _('HUD Brightness down'),		category = _('Systems') , features = {"HUDbrightness"}},
-{down = iCommandPlaneFuelOn,	up = iCommandPlaneFuelOff,					name = _('Fuel Dump'),			category = _('Systems') , features = {"fueldump"}},
+--{down = iCommandBrightnessILS,				name = _('HUD Color'),					category = _('Systems') , features = {"HUDcolor"}},
+--{pressed = iCommandHUDBrightnessUp,			name = _('HUD Brightness up'),			category = _('Systems') , features = {"HUDbrightness"}},
+--{pressed = iCommandHUDBrightnessDown,		name = _('HUD Brightness down'),		category = _('Systems') , features = {"HUDbrightness"}},
+--{down = iCommandPlaneFuelOn,	up = iCommandPlaneFuelOff,					name = _('Fuel Dump'),			category = _('Systems') , features = {"fueldump"}},
 
 
 
@@ -203,18 +193,18 @@ join(res.keyCommands,{
 {down = iCommandToggleMirrors,											name = _('Toggle Mirrors'),		category = _('View Cockpit') , features = {"Mirrors"}},
 
 -- Auto Lock On
-{down = iCommandAutoLockOnNearestAircraft,		name = _('Auto lock on nearest aircraft'),			category = _('Simplifications')},
-{down = iCommandAutoLockOnCenterAircraft,		name = _('Auto lock on center aircraft'),			category = _('Simplifications')},
-{down = iCommandAutoLockOnNextAircraft,			name = _('Auto lock on next aircraft'),				category = _('Simplifications')},
-{down = iCommandAutoLockOnPreviousAircraft,		name = _('Auto lock on previous aircraft'),			category = _('Simplifications')},
-{down = iCommandAutoLockOnNearestSurfaceTarget, name = _('Auto lock on nearest surface target'),	category = _('Simplifications')},
-{down = iCommandAutoLockOnCenterSurfaceTarget,	name = _('Auto lock on center surface target'),		category = _('Simplifications')},
-{down = iCommandAutoLockOnNextSurfaceTarget,	name = _('Auto lock on next surface target'),		category = _('Simplifications')},
-{down = iCommandAutoLockOnPreviousSurfaceTarget, name = _('Auto lock on previous surface target'),	category = _('Simplifications')},
+--{down = iCommandAutoLockOnNearestAircraft,		name = _('Auto lock on nearest aircraft'),			category = _('Simplifications')},
+--{down = iCommandAutoLockOnCenterAircraft,		name = _('Auto lock on center aircraft'),			category = _('Simplifications')},
+--{down = iCommandAutoLockOnNextAircraft,			name = _('Auto lock on next aircraft'),				category = _('Simplifications')},
+--{down = iCommandAutoLockOnPreviousAircraft,		name = _('Auto lock on previous aircraft'),			category = _('Simplifications')},
+--{down = iCommandAutoLockOnNearestSurfaceTarget, name = _('Auto lock on nearest surface target'),	category = _('Simplifications')},
+--{down = iCommandAutoLockOnCenterSurfaceTarget,	name = _('Auto lock on center surface target'),		category = _('Simplifications')},
+--{down = iCommandAutoLockOnNextSurfaceTarget,	name = _('Auto lock on next surface target'),		category = _('Simplifications')},
+--{down = iCommandAutoLockOnPreviousSurfaceTarget, name = _('Auto lock on previous surface target'),	category = _('Simplifications')},
 
 --Custom Category
 {down = iCommandPlaneRightMFD_OSB5_Off,			name = _('Flood/Instrument lights toggle'),		category =_('Systems')},--CommandNr. 1011
-{down = iCommandPlaneLeftMFD_DSP_Increase,		name = _('Rocket-Motor engage'),				category = _('Special')},--iCommandPlaneLeftMFD_DSP_Increase	664
+--{down = iCommandPlaneLeftMFD_DSP_Increase,		name = _('Rocket-Motor engage'),				category = _('Special')},--iCommandPlaneLeftMFD_DSP_Increase	664
 
 --Gunpipper Commands
 {down = Keys.GunPipper_Up,			name = _('Crosshairs-Up'),			category = _('Gunpipper')},
@@ -268,6 +258,40 @@ join(res.keyCommands,{
 
 {down = Keys.PHI_StationSelectorUp,				name = _('PHI Station Selector Dial Up'),				category = _('PHI')},
 {down = Keys.PHI_StationSelectorDown,			name = _('PHI Station Selector Dial Down'),			category = _('PHI')},
+
+
+--Weapon Panel
+{down = Keys.station_one,						name = _('Station Button One'), category = _('Weapon Panel')},
+{down = Keys.station_two,						name = _('Station Button Two'), category = _('Weapon Panel')},
+{down = Keys.station_three,						name = _('Station Button Three'), category = _('Weapon Panel')},
+{down = Keys.station_four,						name = _('Station Button Four'), category = _('Weapon Panel')},
+{down = Keys.station_five,						name = _('Station Button Five'), category = _('Weapon Panel')},
+{down = Keys.station_six,						name = _('Station Button Six'), category = _('Weapon Panel')},
+{down = Keys.station_seven,						name = _('Station Button Seven'), category = _('Weapon Panel')},
+
+{down = Keys.armSelSwitch_toggle,				name = _('Arm Selector Switch Toggle'), category = _('Weapon Panel')},
+{down = Keys.armSelSwitch_GUN,					name = _('Arm Selector Switch GUN'),	category = _('Weapon Panel')},
+{down = Keys.armSelSwitch_MISSILE,				name = _('Arm Selector Switch MISSILE'),category = _('Weapon Panel')},
+{down = Keys.armSelSwitch_ROCKET, 				name = _('Arm Selector Switch ROCKET'),	category = _('Weapon Panel')},
+
+{down = Keys.masterArmSwitch_toggle,			name = _('Master Arm Switch Toggle'),	category = _('Weapon Panel')},
+{down = Keys.masterArmSwitch_ARM, 				name = _('Master Arm Switch ARM'),		category = _('Weapon Panel')},
+{down = Keys.masterArmSwitch_CAM,				name = _('Master Arm Switch ARM'),		category = _('Weapon Panel')},
+{down = Keys.masterArmSwitch_OFF, 				name = _('Master Arm Switch OFF'),		category = _('Weapon Panel')},
+
+{down = Keys.bombReleaseSwitch_toggle,			name= _('Bomb Release Switch Toggle'),	category = _('Weapon Panel')},
+{down = Keys.bombReleaseSwitch_AUTO, 			name= _('Bomb Release Switch AUTO'),	category = _('Weapon Panel')},
+{down = Keys.bombReleaseSwitch_MANUAL,			name= _('Bomb Release Switch MANUAL'),	category = _('Weapon Panel')},
+
+{down = Keys.bombArmingSwitch_toggle,			name = _('Bomb Arming Switch Toggle'), category = _('Weapon Panel')},
+{down = Keys.bombArmingSwitch_NOSETAIL,			name = _('Bomb Arming Switch NOSE/TAIL'), category = _('Weapon Panel')},
+{down = Keys.bombArmingSwitch_SAFE,				name = _('Bomb Arming Switch SAFE'), category = _('Weapon Panel')},
+{down = Keys.bombArmingSwitch_TAIL,				name = _('Bomb Arming Switch TAIL'), category = _('Weapon Panel')},
+
+--Custom Weapons Keys from CScripts
+{combos = {{key = 'JOY_BTN2'}}, down = Keys.pickle_on,	up = Keys.pickle_off, 	name = _('Weapon Release'), category = _('Weapons')},
+{combos = {{key = 'JOY_BTN1'}}, down = Keys.trigger_on,	up = Keys.trigger_off, 	name = _('Gun Trigger'), category = _('Weapons')},
+
 
 })
 
