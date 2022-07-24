@@ -1,4 +1,4 @@
-dofile(LockOn_Options.script_path.."HUD/HUD_definitions.lua")
+dofile(LockOn_Options.script_path.."Optical_Sight/Indicator/definitions.lua")
 dofile(LockOn_Options.common_script_path.."devices_defs.lua")
 dofile(LockOn_Options.common_script_path .."elements_defs.lua")
 dofile(LockOn_Options.script_path.."definitions.lua")
@@ -60,7 +60,7 @@ Add(cockpit_base_clipping_mask)
 ----------------------------- Add the optical sight -----------------------------------
 
 --dofile(LockOn_Options.script_path.."HUD/HUD_indication_page.lua") -- the old texture based static gun pipper
-dofile(LockOn_Options.script_path.."HUD/optical_sight.lua")
+dofile(LockOn_Options.script_path.."Optical_Sight/Indicator/indication_page.lua")
 
 local otpical_sight_base		= CreateElement "ceSimple"
 otpical_sight_base.name  					= create_guid_string()

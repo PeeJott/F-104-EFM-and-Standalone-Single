@@ -86,16 +86,17 @@ function update()
 		if current_waypoint > 0 then
 			local waypoint = waypointData[current_waypoint]
 
-			local x, y ,z = sensor_data.getSelfCoordinates()
+			-- TODO: Use position provided by Air Data Computer instead
+			local x, alt, y = sensor_data.getSelfCoordinates()
 
-			local bearing = math.deg(math.atan2((waypoint.y-z),(waypoint.x-x))) -- for some reason z and y is mixed
+			local bearing = math.deg(math.atan2((waypoint.y-y),(waypoint.x-x))) -- for some reason z and y is mixed
 			if bearing > 360 then
 				bearing = bearing - 360
 			elseif bearing < 0 then
 				bearing = bearing + 360
 			end		
 
-			range = math.sqrt((waypoint.x - x)^2 + (waypoint.y - z)^2) / 1000  -- for some reason z and y is mixed
+			range = math.sqrt((waypoint.x - x)^2 + (waypoint.y - y)^2) / 1000  -- for some reason z and y is mixed
 			range = range * 0.53995726994149 -- km to Nm
 
 			--print_message_to_user("WPN" .. current_waypoint .. ": Bearing" .. string.format("%.2f",  bearing) .. " Range: " .. string.format("%.2f",  range))

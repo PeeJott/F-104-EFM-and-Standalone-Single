@@ -1,6 +1,40 @@
-dofile(LockOn_Options.script_path.."HUD/HUD_definitions.lua")
+dofile(LockOn_Options.script_path.."Optical_Sight/Indicator/definitions.lua")
 dofile(LockOn_Options.common_script_path .."elements_defs.lua")
 dofile(LockOn_Options.script_path.."definitions.lua")
+
+
+--[[
+-- alignment options:
+--"RightBottom"
+--"LeftTop"
+--"RightTop"
+--"LeftCenter"
+--"RightCenter"
+--"CenterBottom"
+--"CenterTop"
+--"CenterCenter"
+--"LeftBottom"
+
+========================================================================================================================================
+
+--GUN_PIPPER.element_params 	= {"param_nr0","param_nr1","param_nr2"}
+
+-- {"change_color_when_parameter_equal_to_number", param_nr, number, red, green, blue}
+-- {"text_using_parameter", param_nr, format_nr}
+-- {"move_left_right_using_parameter", param_nr, gain}
+-- {"move_up_down_using_parameter", param_nr, gain}
+-- {"opacity_using_parameter", param_nr}
+-- {"rotate_using_parameter", param_nr, gain}
+-- {"compare_parameters", param1_nr, param2_nr} -- if param1 == param2 then visible
+-- {"parameter_in_range", param_nr, greaterthanvalue, lessthanvalue} -- if greaterthanvalue < param < lessthanvalue then visible
+-- {"parameter_compare_with_number", param_nr, number} -- if param == number then visible
+-- {"draw_argument_in_range", arg_nr, greaterthanvalue, lessthanvalue} -- if greaterthanvalue < arg < lessthanvalue then visible
+-- {"line_object_set_point_using_parameters", point_nr, param_x, param_y, gain_x, gain_y} -- applies to ceSimpleLineObject at least
+
+
+--]]
+
+
 
 function AddOpticalSight(parent_base_name, parent_roll_name)
     local optical_sight_colour = {251.0, 114.0, 0.0, 200.0 } -- {255.0, 139.0, 50.0, 150.0}

@@ -9,15 +9,13 @@ BASE    			= 1
 --INDICATION 			= 2 --eingetragen, war vorher auskommentiert
 
 page_subsets  		= {
-[BASE]    			= LockOn_Options.script_path.."/HUD/base_page.lua",
---[INDICATION]    	= LockOn_Options.script_path.."HUD/HUD_indication_page.lua",--diese beiden hier eingefügt
+[BASE]    			= LockOn_Options.script_path.."/Optical_Sight/Indicator/base_page.lua",
 }
 
 pages = 
 {
 	{
 	 BASE,
-	 --INDICATION,--diese beiden hier eingefügt
 	 },
 }
 

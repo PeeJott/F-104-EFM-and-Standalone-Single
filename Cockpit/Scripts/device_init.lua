@@ -25,7 +25,7 @@ creators[devices.RADIO_ARC_522]     	= {"avUHF_ARC_164",LockOn_Options.script_pa
 creators[devices.RADIO_TR_3]       		= {"avUHF_ARC_164",LockOn_Options.script_path.."RadioSystems/uhf_radio.lua", {devices.ELECTRIC_SYSTEM_BATTERY_BUS}}
 creators[devices.INTERCOM_AIC_18]       = {"avIntercom",LockOn_Options.script_path.."RadioSystems/intercom.lua", {devices.VUHF1_RADIO, devices.ELECTRIC_SYSTEM_EMERGENCY_BUS}}
 
-creators[devices.HUD_SYSTEM] 			= {"avLuaDevice", LockOn_Options.script_path.."HUD/HUD_System.lua"}
+creators[devices.HUD_SYSTEM] 			= {"avLuaDevice", LockOn_Options.script_path.."Optical_Sight/Device/Optical_Sight.lua"}
 creators[devices.AVIONIC_SYSTEM]		= {"avLuaDevice", LockOn_Options.script_path.."Systems/Avionic_System.lua"}
 
 creators[devices.WEAPON_SYSTEM]         = {"avSimpleWeaponSystem",LockOn_Options.script_path.."Systems/weapon_system.lua"}
@@ -47,7 +47,7 @@ dofile(LockOn_Options.script_path.."avRWR/rwrexample_device_init.lua")
 -- remove this line to disable a2g radar
 --dofile(LockOn_Options.script_path.."avTerrain/terrainexample_device_init.lua")
 
-indicators[#indicators + 1] = {"ccIndicator", LockOn_Options.script_path.."HUD/init.lua",	--init script
+indicators[#indicators + 1] = {"ccIndicator", LockOn_Options.script_path.."Optical_Sight/Indicator/init.lua",	--init script
  nil, 
     {
 		{"ILS-PLASHKA-CENTER", "ILS-PLASHKA-DOWN", "ILS-PLASHKA-RIGHT"},	-- initial geometry anchor , triple of connector names. Mal zunächst nur 3 statt 4 ILS-PLASHKE-UP mal ausgelassen
