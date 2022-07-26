@@ -8,7 +8,7 @@ dofile(LockOn_Options.script_path.."definitions.lua")
 dofile(LockOn_Options.script_path.."ElectricSystems/electric_system_api.lua")
 
 dev = GetSelf()
-local update_time_step = 0.05
+local update_time_step = 0.02
 make_default_activity(update_time_step)
 local sensor_data = get_base_data()
 
@@ -26,6 +26,10 @@ local hud_roll = get_param_handle(HUD.ROLL)
 local hud_range = get_param_handle(HUD.RANGE)
 
 local target_range_param = get_param_handle("WS_TARGET_RANGE") -- from weaponSystem
+local dlz_min_param = get_param_handle("WS_DLZ_MIN") -- from weaponSystem
+local dlz_max_param = get_param_handle("WS_DLZ_MAX") -- from weaponSystem
+local dlz_max_param = get_param_handle("WS_DLZ_MAX") -- from weaponSystem
+local arm_Selector_switch_param = get_param_handle("ARMAMENT_SEL_SWITCH")
 
 local gunpipper_mode = 0
 local depression = 0.0
@@ -85,17 +89,36 @@ function keys_gunpipper_automatic(value)
 end
 
 function set_range(range)
-	local max_range = 1200
 
-	if range >= max_range then
+	local min_range = 300
+	local max_range = 1500
+
+	-- DLZ_max seems to be way to large. 
+
+	-- Range depends on mode:
+	--arm_select = arm_Selector_switch_param:get()
+	--if arm_select == 0 then
+	--	-- MISSILE: DLZ_min to DLZ_max
+	--	-- DLZ_min and DLZ_max is way to large.
+	--	min_range = dlz_min_param:get()
+	--	max_range = dlz_max_param:get()
+	--else
+	--	-- GUN: 0-1200
+	--	-- ROCKETS
+	--	min_range = 300
+	--	max_range = 1500
+	--end
+
+
+	if range >= (min_range + max_range) then
 		hud_range:set(180.1)
-	elseif range <= 0 then
+	elseif range <= min_range then
 		hud_range:set(0.0)
 	else
-		-- 0°	= 0m
-		-- 90°	= 600m
-		-- 180° = 1200m
-		local degree = (range/max_range) * 180
+		-- 0°	= 300m
+		-- 90°	= 900m
+		-- 180° = 1500m
+		local degree = ((range-min_range)/(max_range-min_range)) * 180
 		hud_range:set(degree)
 	end
 end
@@ -131,7 +154,7 @@ function update()
 	-- This is not ideal to support different gun pipper modes, but necessary to loose a frame.
 	-- Instead the different modes can be realized by having multiple gun pippers that are set invisible depending on the mode. 
 
-	if --[[electric_system_api.no_2_ac_bus:get() == 1.0 and --]] gunpipper_mode ~= 2 then
+	if electric_system_api.no_2_ac_bus:get() == 1.0 and gunpipper_mode ~= 2 then
 		-- what about the primary dc bus?
 
 		hud_power:set(1.0)
@@ -141,7 +164,7 @@ function update()
 
 		-- set range
 		local radar_mode = radar_api.mode_h:get()
-		if radar_mode == 3 and gunpipper_mode == 0 then -- TODO: verify that there is indeed no range bar in manual mode
+		if radar_mode == 3 --[[and gunpipper_mode == 0]] then -- TODO: verify if there is range bar in manual mode
 			local range = target_range_param:get()
 			set_range(range)
 		else
@@ -149,20 +172,23 @@ function update()
 		end
 
 		-- set elevation and azimuth
-		if gunpipper_mode == 0 and radar_mode == 3 and caged == false then -- normal mode, tracking and not caged
+		arm_select = arm_Selector_switch_param:get()
+		if arm_select == 0.5 and gunpipper_mode == 0 and radar_mode == 3 and caged == false then -- normal mode, tracking and not caged, gun mode
 			hud_auto:set(1.0)
 			hud_manual:set(0.0)
-		else -- manual or normal mode without lock
+		else -- manual or normal mode without lock or in missile or rocket mode
 			hud_auto:set(0.0)
 			hud_manual:set(1.0)
-
-			if gunpipper_mode == 0 or caged == true then -- in normal mode without lock or caged
+			
+			if arm_select == 0.0 then
+				-- In missle mode set depression to MRL (missle reference line) which is +17.45 milliradians (= 1° above ADL)
+				--hud_depression:set(17.45) -- this currently doesn't work as it is to high. instead set 0
+				hud_depression:set(0.0)
+			elseif gunpipper_mode == 0 or caged == true then -- in normal mode without lock or caged
 				hud_depression:set(0.0)
 			else -- otherwhise it's in manual mode the manually selected depression is set
 				hud_depression:set(depression / 1000)
 			end
-
-			-- TODO: In missle mode set depression to MRL (missle reference line) which is +17.45 milliradians (= 1° above ADL)
 
 		end
 	else

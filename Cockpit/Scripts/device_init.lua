@@ -62,6 +62,23 @@ indicators[#indicators + 1] = {"ccIndicator", LockOn_Options.script_path.."Optic
 	}	
 }
 
+--indicators[#indicators + 1] = 	{"ccIndicator", LockOn_Options.script_path.."PHI_Navigator/Indicator/init.lua",
+--	nil,	
+--	{	
+--		{"RADAR-PLASHKA-CENTER", "RADAR-PLASHKA-DOWN", "RADAR-PLASHKA-RIGHT"},   -- initial geometry anchor , triple of connector names. Mal zunächst nur 3 statt 4 ILS-PLASHKE-UP mal ausgelassen
+--		{
+--			sx_l =  0.015,  -- center position correction in meters (+forward , -backward)
+--			sy_l =  0.15,  -- center position correction in meters (+up , -down)
+--			sz_l =  0,  -- center position correction in meters (-left , +right)
+--			sh   =  0,  -- half height correction 
+--			sw   =  0,  -- half width correction 
+--			rz_l =  0,  -- rotation corrections
+--			rx_l =  0,
+--			ry_l =  0
+--		}
+--	}
+--}	
+
 
 ---------------------------------------------
 dofile(LockOn_Options.common_script_path.."KNEEBOARD/declare_kneeboard_device.lua")

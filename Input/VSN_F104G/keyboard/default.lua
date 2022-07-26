@@ -306,7 +306,7 @@ join(res.keyCommands,{
 
 {down = Keys.masterArmSwitch_toggle,			name = _('Master Arm Switch Toggle'),	category = _('Weapon Panel')},
 {down = Keys.masterArmSwitch_ARM, 				name = _('Master Arm Switch ARM'),		category = _('Weapon Panel')},
-{down = Keys.masterArmSwitch_CAM,				name = _('Master Arm Switch ARM'),		category = _('Weapon Panel')},
+{down = Keys.masterArmSwitch_CAM,				name = _('Master Arm Switch CAM'),		category = _('Weapon Panel')},
 {down = Keys.masterArmSwitch_OFF, 				name = _('Master Arm Switch OFF'),		category = _('Weapon Panel')},
 
 {down = Keys.bombReleaseSwitch_toggle,			name= _('Bomb Release Switch Toggle'),	category = _('Weapon Panel')},

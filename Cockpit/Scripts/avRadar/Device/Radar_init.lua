@@ -14,7 +14,8 @@ TDC_range_carret_size 	= 5000
 local BLOB_FACTOR = 1
 local BLOB_COUNT = 2500 * BLOB_FACTOR
 local MAX_RANGE = 40000.0 * 1.852  
-local MAX_RANGE_GATE = MAX_RANGE --20000.0 * 1.852
+local MAX_RANGE_GATE = 40000.0 * 1.852
+local MIN_RANGE_GATE = 300
 local NOISE_COUNT = 200
 local NOISE_STEPS = 25
 local NOISE_AMOUNT = NOISE_COUNT/NOISE_STEPS
@@ -315,7 +316,7 @@ function set_range(range)
 		stt_range_count = 0
 
 		local max_range = MAX_RANGE_GATE
-		local min_range = 300
+		local min_range = MIN_RANGE_GATE
 
 		if range >= max_range then
 			Radar.range:set(100.0)
@@ -555,7 +556,7 @@ function SetCommand(command,value)
 	--end
 		
 	if command == Keys.RadarRangeGate then
-		local new_range_gate = ((value + 1.0) * 0.5) *  MAX_RANGE_GATE
+		local new_range_gate = MIN_RANGE_GATE + (((value + 1.0) * 0.5) *  MAX_RANGE_GATE)
 		Radar.tdc_range_h:set(new_range_gate)			
 	end
 	
@@ -565,8 +566,8 @@ function SetCommand(command,value)
 		if new_range_gate > MAX_RANGE_GATE then
 			new_range_gate = MAX_RANGE_GATE
 			Radar.tdc_range_h:set(new_range_gate)
-		elseif new_range_gate < 0 then
-			Radar.tdc_range_h:set(new_range_gate)
+		elseif new_range_gate < MIN_RANGE_GATE then
+			Radar.tdc_range_h:set(MIN_RANGE_GATE)
 		end
 	end
 
@@ -575,7 +576,7 @@ function SetCommand(command,value)
 	if command == 509 then
 		-- do sector scan. check if range gate is at detend
 		local new_range_gate = Radar.tdc_range_h:get()
-		if new_range_gate < 0.01 * MAX_RANGE_GATE then
+		if new_range_gate < (MIN_RANGE_GATE + 0.01 * MAX_RANGE_GATE) then
 			
 			Radar.opt_pb_stab_h:set(0)
 			Radar.tdc_azi_h:set(0.0)
@@ -804,7 +805,7 @@ function update()
 				end
 			end
 		else
-			if math.deg(-antenna_az) < (math.deg(Radar.sz_azimuth_h:get())-40) or math.deg(-antenna_az) > (math.deg(Radar.sz_azimuth_h:get())+40) then
+			if math.deg(-antenna_az) < (math.deg(Radar.sz_azimuth_h:get())-30) or math.deg(-antenna_az) > (math.deg(Radar.sz_azimuth_h:get())+30) then
 				for n = 0,NOISE_AMOUNT do
 					local noise_show_handle = noise_show[n]
 					local noise_range_handle = noise_range[n]
