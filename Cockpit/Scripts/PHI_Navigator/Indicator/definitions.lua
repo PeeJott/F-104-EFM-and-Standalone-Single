@@ -4,7 +4,7 @@ SetScale(FOV)
 RADAR_DEFAULT_LEVEL = 4
 RADAR_DEFAULT_NOCLIP_LEVEL  = RADAR_DEFAULT_LEVEL - 1
 
-RADAR_SCALE = 1.1--1
+RADAR_SCALE = 0.5
 
 function AddElement(object)
     object.use_mipfilter    = true
@@ -14,35 +14,41 @@ function AddElement(object)
     Add(object)
 end
 
+SNOW = {255,250,250, 255}
+PHI_FONT = MakeFont({used_DXUnicodeFontData = "font_arial_17"},SNOW)
+PHI_WHITE = MakeMaterial(nil,SNOW)
+
+
 
 
 --{"change_color_when_parameter_equal_to_number", 1, 0.7, 0/255,128/255,0/255},
 --{"change_color_when_parameter_equal_to_number", 1, 0.7, 0/255,255/255,0/255},
 ----Colors--------------------------------
-	BG_BLACK_COLOR		= {30, 30, 30, 255}
-	TEXT_GREEN_COLOR 	= {0, 255, 50, 255}
-	TEXT_ORANGE_COLOR	= {255, 130, 5, 255}
-	TEXT_ORANGE_SOFT	= {255, 130, 5, 128}
-	TEXT_BLACK_COLOR 	= BG_BLACK_COLOR--{2, 2, 2, 255}
-------------------------------------------
+--	
+--
+--	BG_BLACK_COLOR		= {30, 30, 30, 255}
+--	TEXT_GREEN_COLOR 	= {0, 255, 50, 255}
+--	TEXT_ORANGE_COLOR	= {255, 130, 5, 255}
+--	TEXT_ORANGE_SOFT	= {255, 130, 5, 128}
+--	TEXT_BLACK_COLOR 	= BG_BLACK_COLOR--{2, 2, 2, 255}
+--------------------------------------------
+--
+--
+--MATERIAL_BLACK   	= MakeMaterial(nil,{25,25,25,255})
+--RADAR_BG_BLACK		= MakeMaterial(nil,BG_BLACK_COLOR)--{20,20,20,255})			
+--RADAR_SOLID_BLACK   = MakeMaterial(nil,{0,0,0,255,255})
+--
+--MFCD_GREEN			= MakeMaterial(nil,{0, 255, 5, 255})
+--MFCD_GREEN_SOFT		= MakeMaterial(nil,{25, 255, 25, 128})
+--MFCD_ORANGE			= MakeMaterial(nil, TEXT_ORANGE_COLOR)
+--MFCD_ORANGE_SOFT	= MakeMaterial(nil, TEXT_ORANGE_SOFT)
+--
+---------FONTS------------------------------------------------------------------------------
+--
+--HUD_FONT 	= MakeFont({used_DXUnicodeFontData = "font_arial_17"},TEXT_ORANGE_COLOR)		--5 "font_arial_17"  is good 
+--HUD_FONT_INV= MakeFont({used_DXUnicodeFontData = "font_arial_17"},TEXT_BLACK_COLOR)
 
-
-MATERIAL_BLACK   	= MakeMaterial(nil,{25,25,25,255})
-RADAR_BG_BLACK		= MakeMaterial(nil,BG_BLACK_COLOR)--{20,20,20,255})			
-RADAR_SOLID_BLACK   = MakeMaterial(nil,{0,0,0,255,255})
-
-MFCD_GREEN			= MakeMaterial(nil,{0, 255, 5, 255})
-MFCD_GREEN_SOFT		= MakeMaterial(nil,{25, 255, 25, 128})
-MFCD_ORANGE			= MakeMaterial(nil, TEXT_ORANGE_COLOR)
-MFCD_ORANGE_SOFT	= MakeMaterial(nil, TEXT_ORANGE_SOFT)
-
-
--------FONTS------------------------------------------------------------------------------
-
-HUD_FONT 	= MakeFont({used_DXUnicodeFontData = "font_arial_17"},TEXT_ORANGE_COLOR)		--5 "font_arial_17"  is good 
-HUD_FONT_INV= MakeFont({used_DXUnicodeFontData = "font_arial_17"},TEXT_BLACK_COLOR)
-
-FONT_SCALE = 0.9--0.7 --war 1.0
+FONT_SCALE = 1.125
 
 local font_size 					= 0.008						* FONT_SCALE
 local default_char_height  			= font_size or 0.004		* FONT_SCALE

@@ -3,7 +3,7 @@ dofile(LockOn_Options.script_path.."PHI_Navigator/Indicator/definitions.lua")
 --local TST  		 = MakeMaterial(nil,{80,17,7,200})
 local TST  		 = MakeMaterial(nil,{220,220,220,5})
 
-local SHOW_MASKS = true
+local SHOW_MASKS = false
 --[[
 total_field_of_view 				= CreateElement "ceMeshPoly"
 total_field_of_view.name 			= "total_field_of_view"
