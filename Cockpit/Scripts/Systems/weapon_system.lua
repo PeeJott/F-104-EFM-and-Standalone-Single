@@ -118,6 +118,9 @@ local drop_lock_switch_pos 		= 0
 local usable weapon = 0
 local usable pylon = 0
 local desired_weapon = 0
+local Aim9_fired = 0
+local Hydra_two_fired = 0
+local Hydra_six_fired = 0
 
 local weapontype_on_station_1_L2 	= 0
 local weapontype_on_station_1_L3 	= 0
@@ -198,9 +201,15 @@ function keys_station_one(value)
 		station_ONE = 0
 		Station_One_Param:set(0)
 	end
-		
-	current_station = GetNextStation()
-	dev:select_station(current_station)
+	
+	if(usable_weapon_station_1 == 0.0)  then
+		current_station = GetNextStation()
+		dev:select_station(current_station)
+	elseif((usable_weapon_station_1 == 1.0) or (usable_weapon_station_1 == 1.5))then
+		dev:select_station(PYLON.LH_TIP)
+		print_message_to_user("Station LH-TIP selected")
+	end
+	
 end
 
 function keys_station_two(value)
@@ -229,8 +238,15 @@ function keys_station_two(value)
 		Station_Two_Param:set(0)
 	end
 	
-	current_station = GetNextStation()
-	dev:select_station(current_station)
+	
+	
+	if(usable_weapon_station_2 == 0.0) then
+		current_station = GetNextStation()
+		dev:select_station(current_station)
+	elseif((usable_weapon_station_2 == 1.0) or (usable_weapon_station_2 == 1.5)) then
+		dev:select_station(PYLON.LH_PYLON)
+		print_message_to_user("Station LH-PYLON selected")
+	end
 end
 
 function keys_station_three(value)
@@ -259,8 +275,13 @@ function keys_station_three(value)
 		Station_Three_Param:set(0)
 	end
 	
-	current_station = GetNextStation()
-	dev:select_station(current_station)
+	if((usable_weapon_station_3 == 0.0) or (usable_weapon_station_3 == 1.5)) then
+		current_station = GetNextStation()
+		dev:select_station(current_station)
+	elseif(usable_weapon_station_3 == 1.0) then
+		dev:select_station(PYLON.LH_FUS)
+		print_message_to_user("Station LH-FUS selected")
+	end
 end
 
 function keys_station_four(value)
@@ -291,8 +312,13 @@ function keys_station_four(value)
 		Station_Five_Param:set(0)
 	end
 
-	current_station = GetNextStation()
-	dev:select_station(current_station)
+	if(usable_weapon_station_4 == 0.0)  then
+		current_station = GetNextStation()
+		dev:select_station(current_station)
+	elseif((usable_weapon_station_4 == 1.0) or (usable_weapon_station_4 == 1.5))then
+		dev:select_station(PYLON.CENTERLINE)
+		print_message_to_user("Station CENTERLINE selected")
+	end
 end
 
 function keys_station_five(value)
@@ -321,8 +347,13 @@ function keys_station_five(value)
 		Station_Five_Param:set(0)
 	end
 	
-	current_station = GetNextStation()
-	dev:select_station(current_station)
+	if(usable_weapon_station_5 == 0.0) then
+		current_station = GetNextStation()
+		dev:select_station(current_station)
+	elseif((usable_weapon_station_5 == 1.0)  or (usable_weapon_station_5 == 1.5))then
+		dev:select_station(PYLON.RH_FUS)
+		print_message_to_user("Station RH-FUS selected")
+	end
 end
 
 function keys_station_six(value)
@@ -351,8 +382,13 @@ function keys_station_six(value)
 		Station_Six_Param:set(0)
 	end
 	
-	current_station = GetNextStation()
-	dev:select_station(current_station)
+	if(usable_weapon_station_6 == 0.0)  then
+		current_station = GetNextStation()
+		dev:select_station(current_station)
+	elseif((usable_weapon_station_6 == 1.0) or (usable_weapon_station_6 == 1.5))then
+		dev:select_station(PYLON.RH_PYLON)
+		print_message_to_user("Station RH-PYLON selected")
+	end
 end
 
 function keys_station_seven(value)
@@ -377,8 +413,13 @@ function keys_station_seven(value)
 		Station_Seven_Param:set(0)
 	end
 	
-	current_station = GetNextStation()
-	dev:select_station(current_station)
+	if(usable_weapon_station_7 == 0.0)  then
+		current_station = GetNextStation()
+		dev:select_station(current_station)
+	elseif((usable_weapon_station_7 == 1.0) or (usable_weapon_station_7 == 1.5))then
+		dev:select_station(PYLON.RH_TIP)
+		print_message_to_user("Station RH-TIP selected")
+	end
 end
 
 function keys_change_station(value)
@@ -387,8 +428,8 @@ end
 
 function keys_pickle_on(value)
 	
-	if (electric_system_api.emergency_ac_bus:get() == 1.0 and
-		bomb_arm_switch_pos ~= 0.5)then
+	if ((electric_system_api.emergency_ac_bus:get() == 1.0) and
+		(bomb_arm_switch_pos ~= 0.5) and (master_arm_switch_pos == 1.0))then
         usable_weapon(1.5)
 	end
 	
@@ -417,8 +458,9 @@ end
 
 function keys_trigger_on(value)
 
-	if (electric_system_api.emergency_ac_bus:get() == 1.0 and
-		arm_sel_position == 0.5)then    -- -> Gun
+if(master_arm_switch_pos == 1.0) then
+	if ((electric_system_api.emergency_ac_bus:get() == 1.0) and
+		(arm_sel_position == 0.5))then    -- -> Gun
         dispatch_action(nil, Keys.iCommandPlaneFire)
 	end
 	
@@ -431,11 +473,15 @@ function keys_trigger_on(value)
 		arm_sel_position == 1.0)then -- -> Rockets
 		usable_weapon(1.0)
     end
+end
+
 	
 end
 
 function keys_trigger_off(value)
     dispatch_action(nil, Keys.iCommandPlaneFireOff)
+	
+	Aim9_fired = 0.0
 end
 
 function usable_weapon(wp)
@@ -445,38 +491,70 @@ function usable_weapon(wp)
 --Weapon-Types -> 0.0 = Misslies; 0.5 = GUN; 1.0 = Rocket; 1.5 = Bombs; 2.0 = Fueltank; 7.0 = NIX
 	
 	if((usable_weapon_station_1 == launched_weapon) and
-		(station_ONE == 1.0))then
-		release_weapon()	
+		(station_ONE == 1.0) and (launched_weapon == 0.0) and (Aim9_fired == 0.0))then
+		release_weapon()
+		Aim9_fired = 1.0
+		return
+	elseif((usable_weapon_station_1 == launched_weapon) and
+		(station_ONE == 1.0) and ((launched_weapon == 1.0) or (launched_weapon == 1.5)))then
+		release_double_station()
 	end
 	
 	if((usable_weapon_station_2 == launched_weapon) and
-		(station_TWO == 1.0))then
-		release_weapon()	
+		(station_TWO == 1.0) and (launched_weapon == 0.0) and (Aim9_fired == 0.0))then
+		release_weapon()
+		Aim9_fired = 1.0
+		return
+	elseif((usable_weapon_station_2 == launched_weapon) and
+		(station_TWO == 1.0) and ((launched_weapon == 1.0) or (launched_weapon == 1.5)))then
+		release_double_station()
 	end
 	
 	if((usable_weapon_station_3 == launched_weapon) and
-		(station_THREE == 1.0))then
-		release_weapon()	
+		(station_THREE == 1.0) and (launched_weapon == 0.0)and (Aim9_fired == 0.0))then
+		release_weapon()
+		Aim9_fired = 1.0
+		return
+	elseif((usable_weapon_station_3 == launched_weapon) and
+		(station_THREE == 1.0) and ((launched_weapon == 1.0) or (launched_weapon == 1.5)))then
+		release_double_station()
 	end
 	
 	if((usable_weapon_station_4 == launched_weapon) and
-		(station_FOUR == 1.0))then
-		release_weapon()	
+		(station_FOUR == 1.0) and (launched_weapon == 0.0)and (Aim9_fired == 0.0))then
+		release_weapon()
+		Aim9_fired = 1.0
+		return
+	elseif((usable_weapon_station_4 == launched_weapon) and
+		(station_FOUR == 1.0) and ((launched_weapon == 1.0) or (launched_weapon == 1.5)))then
+		release_double_station()
 	end
 	
 	if((usable_weapon_station_5 == launched_weapon) and
-		(station_FIVE == 1.0))then
-		release_weapon()	
+		(station_FIVE == 1.0) and (launched_weapon == 0.0) and (Aim9_fired == 0.0))then
+		release_weapon()
+		Aim9_fired = 1.0
+		return
+	elseif((usable_weapon_station_5 == launched_weapon) and
+		(station_FIVE == 1.0) and ((launched_weapon == 1.0) or (launched_weapon == 1.5)))then
+		release_double_station()
 	end
 	
 	if((usable_weapon_station_6 == launched_weapon) and
-		(station_SIX == 1.0))then
-		release_weapon()	
+		(station_SIX == 1.0) and (launched_weapon == 0.0)and (Aim9_fired == 0.0))then
+		release_weapon()
+		Aim9_fired = 1.0		
+		return
+	elseif((usable_weapon_station_6 == launched_weapon) and
+		(station_SIX == 1.0) and ((launched_weapon == 1.0) or (launched_weapon == 1.5)))then
+		release_double_station()
 	end
 	
 	if((usable_weapon_station_7 == launched_weapon) and
-		(station_SEVEN == 1.0))then
-		release_weapon()	
+		(station_SEVEN == 1.0) and (Aim9_fired == 0.0))then
+		release_weapon()
+		Aim9_fired = 1.0		
+		return
 	end
 end
 
@@ -490,6 +568,7 @@ function keys_armSelSwitch_tgl(value)
 		arm_sel_position = 0.5
 		arm_Selector_switch_param:set(arm_sel_position)
 		print_message_to_user("Arm-Sel is in position GUN.")
+		arm_Selector_switch_param:set(arm_sel_position)--workaround for drifting animation
 	elseif(arm_sel_position == 0.5) then
 		arm_sel_position = 1.0
 		arm_Selector_switch_param:set(arm_sel_position)
@@ -516,6 +595,7 @@ function keys_armSelSwitch_gun(value)
 	arm_sel_position = 0.5
 	arm_Selector_switch_param:set(arm_sel_position)
 	print_message_to_user("Arm-Sel is in position GUN.")
+	arm_Selector_switch_param:set(arm_sel_position) --workaround for drifting animation
 
 end
 
@@ -772,7 +852,7 @@ function GetNextStation()
 	if (station_ONE == 1) then
 		-- check if loaded
 		local info = dev:get_station_info(PYLON.LH_TIP)
-		if(info.count > 0) then
+		if((info.count > 0) and ((usable_weapon_station_1 == 0.0) or (usable_weapon_station_1 == 1.5))) then
 			print_message_to_user("Next station: PYLON.LH_TIP")
 			return PYLON.LH_TIP		
 		end
@@ -781,7 +861,7 @@ function GetNextStation()
 	if (station_SEVEN == 1) then
 		-- check if loaded
 		local info = dev:get_station_info(PYLON.RH_TIP)
-		if(info.count > 0) then
+		if((info.count > 0) and ((usable_weapon_station_7 == 0.0) or (usable_weapon_station_7 == 1.5))) then
 			print_message_to_user("Next station: PYLON.RH_TIP")
 			return PYLON.RH_TIP
 		end
@@ -789,7 +869,7 @@ function GetNextStation()
 	if (station_THREE == 1) then
 		-- check if loaded
 		local info = dev:get_station_info(PYLON.LH_FUS)
-		if(info.count > 0) then
+		if((info.count > 0) and ((usable_weapon_station_3 == 0.0) or (usable_weapon_station_3 == 1.5))) then
 			print_message_to_user("Next station: PYLON.LH_FUS")
 			return PYLON.LH_FUS
 		end
@@ -797,7 +877,7 @@ function GetNextStation()
 	if (station_FIVE == 1) then
 	-- check if loaded
 		local info = dev:get_station_info(PYLON.RH_FUS)
-		if(info.count > 0) then
+		if((info.count > 0) and ((usable_weapon_station_5 == 0.0) or (usable_weapon_station_5 == 1.5))) then
 		print_message_to_user("Next station: PYLON.RH_FUS")
 			return PYLON.RH_FUS
 		end
@@ -806,7 +886,7 @@ function GetNextStation()
 	if (station_TWO == 1) then
 	-- check if loaded
 		local info = dev:get_station_info(PYLON.LH_PYLON)
-		if(info.count > 0) then
+		if((info.count > 0) and ((usable_weapon_station_2 == 0.0) or (usable_weapon_station_2 == 1.5))) then
 			print_message_to_user("Next station: PYLON.LH_PYLON")
 			return PYLON.LH_PYLON
 		end
@@ -815,7 +895,7 @@ function GetNextStation()
 	if (station_SIX == 1) then
 		-- check if loaded
 		local info = dev:get_station_info(PYLON.RH_PYLON)
-		if(info.count > 0) then
+		if((info.count > 0) and ((usable_weapon_station_6 == 0.0) or (usable_weapon_station_6 == 1.5))) then
 			print_message_to_user("Next station: PYLON.RH_PYLON")
 			return PYLON.RH_PYLON
 		end
@@ -825,11 +905,70 @@ function GetNextStation()
 	return 0
 end
 ------------------------------------------------------------
+function release_double_station()
 
+	if(station_ONE == 1.0) then
+	dev:select_station(PYLON.LH_TIP)
+	dev:launch_station(PYLON.LH_TIP)
+	end
+	
+	if((station_TWO == 1.0) and (usable_weapon_station_2 == 1.0) and (Hydra_two_fired == 0.0)) then
+	dev:select_station(PYLON.LH_PYLON)
+	dev:launch_station(PYLON.LH_PYLON)
+	Hydra_two_fired = 1.0
+	elseif((station_TWO == 1.0) and (usable_weapon_station_2 ~= 1.0))then
+	dev:select_station(PYLON.LH_PYLON)
+	dev:launch_station(PYLON.LH_PYLON)
+	end
+	
+	if(station_THREE == 1.0) then
+	dev:select_station(PYLON.LH_FUS)
+	dev:launch_station(PYLON.LH_FUS)
+	end
+	
+	if(station_FOUR == 1.0) then
+	dev:select_station(PYLON.CENTERLINE)
+	dev:launch_station(PYLON.CENTERLINE)
+	end
+	
+	if(station_FIVE == 1.0) then
+	dev:select_station(PYLON.RH_FUS)
+	dev:launch_station(PYLON.RH_FUS)
+	end
+	
+	if((station_SIX == 1.0) and (usable_weapon_station_6 == 1.0) and (Hydra_six_fired == 0.0)) then
+	dev:select_station(PYLON.RH_PYLON)
+	dev:launch_station(PYLON.RH_PYLON)
+	Hydra_six_fired = 1.0
+	elseif((station_SIX == 1.0) and (usable_weapon_station_6 ~= 1.0)) then
+	dev:select_station(PYLON.RH_PYLON)
+	dev:launch_station(PYLON.RH_PYLON)
+	end
+	
+	if(station_SEVEN == 1.0) then
+	dev:select_station(PYLON.RH_TIP)
+	dev:launch_station(PYLON.RH_TIP)
+	end
+	
+	UpdateSelectorButtons()
+	Hydra_Trigger_Counter()
+	
+end
 
+function Hydra_Trigger_Counter()
 
-
-
+	if((Hydra_two_fired ~= 0.0) and (Hydra_two_fired < 15.0))then
+		Hydra_two_fired = Hydra_two_fired + 1.0
+	else
+		Hydra_two_fired = 0.0
+	end
+	
+	if((Hydra_six_fired ~= 0.0) and (Hydra_six_fired < 15.0))then
+		Hydra_six_fired = Hydra_six_fired + 1.0
+	else
+		Hydra_six_fired = 0.0
+	end
+end
 
 
 

@@ -289,7 +289,7 @@ join(res.keyCommands,{
 --Weapons
 --CUSTOM WEAPONs Keys :-)
 {combos = {{key = 'Space', reformers = {'RShift'}}}, 	down = Keys.pickle_on,	up = Keys.pickle_off, 	name = _('Weapon Release'), category = _('Weapons')},
-{combos = {{key = 'Space'}}, 							down = Keys.trigger_on,	up = Keys.trigger_off, 	name = _('Gun Trigger'), category = _('Weapons')},
+{combos = {{key = 'Space'}}, 							pressed = Keys.trigger_on,	up = Keys.trigger_off, 	name = _('Gun Trigger'), category = _('Weapons')},
 --Weapon Panel
 {down = Keys.station_one,						name = _('Station Button One'), category = _('Weapons')},
 {down = Keys.station_two,						name = _('Station Button Two'), category = _('Weapons')},

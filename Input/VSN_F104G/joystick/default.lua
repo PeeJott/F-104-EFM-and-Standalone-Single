@@ -290,7 +290,7 @@ join(res.keyCommands,{
 
 --Custom Weapons Keys from CScripts
 {combos = {{key = 'JOY_BTN2'}}, down = Keys.pickle_on,	up = Keys.pickle_off, 	name = _('Weapon Release'), category = _('Weapons')},
-{combos = {{key = 'JOY_BTN1'}}, down = Keys.trigger_on,	up = Keys.trigger_off, 	name = _('Gun Trigger'), category = _('Weapons')},
+{combos = {{key = 'JOY_BTN1'}}, pressed = Keys.trigger_on,	up = Keys.trigger_off, 	name = _('Gun Trigger'), category = _('Weapons')},
 
 
 })
