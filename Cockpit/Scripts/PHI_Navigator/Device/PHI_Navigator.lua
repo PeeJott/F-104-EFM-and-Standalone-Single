@@ -94,12 +94,15 @@ function update()
 				bearing = bearing - 360
 			elseif bearing < 0 then
 				bearing = bearing + 360
-			end		
+			end
+			local heading 	= sensor_data:getHeading()
+			phi_bearing:set(math.rad(bearing) - heading)
 
 			range = math.sqrt((waypoint.x - x)^2 + (waypoint.y - y)^2) / 1000  -- for some reason z and y is mixed
 			range = range * 0.53995726994149 -- km to Nm
 
-			--print_message_to_user("WPN" .. current_waypoint .. ": Bearing" .. string.format("%.2f",  bearing) .. " Range: " .. string.format("%.2f",  range))
+			phi_range:set(range)
+			print_message_to_user("WPN" .. current_waypoint .. ": Heading " .. math.deg(heading) .. "  Bearing " .. string.format("%.2f",  bearing) .. " Range: " .. string.format("%.2f",  range))
 		end
 	end
 end
