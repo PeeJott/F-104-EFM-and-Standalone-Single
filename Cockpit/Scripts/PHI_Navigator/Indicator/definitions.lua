@@ -14,9 +14,11 @@ function AddElement(object)
     Add(object)
 end
 
-SNOW = {255,250,250, 255}
+SNOW = {247, 249, 239, 255}
+GREY = {15, 15, 15, 255}
 PHI_FONT = MakeFont({used_DXUnicodeFontData = "font_arial_17"},SNOW)
 PHI_WHITE = MakeMaterial(nil,SNOW)
+PHI_BLACK = MakeMaterial(nil,GREY)
 
 
 

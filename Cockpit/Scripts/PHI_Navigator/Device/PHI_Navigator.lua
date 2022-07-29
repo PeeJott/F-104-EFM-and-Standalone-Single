@@ -71,8 +71,12 @@ function post_initialize()
 	print_message_to_user("PHI Navigator - INIT")
 
 	max_waypoints = math.min(table.getn(waypointData), 12)
-	if max_waypoints > 0 then
-		current_waypoint = 1
+	if max_waypoints > 1 then
+		if max_waypoints > 2 then
+			current_waypoint = 2
+		else
+			current_waypoint = 1
+		end
 		min_waypoints = 1
 	else 
 		current_waypoint = 0
@@ -88,21 +92,25 @@ function update()
 
 			-- TODO: Use position provided by Air Data Computer instead
 			local x, alt, y = sensor_data.getSelfCoordinates()
+			local heading 	= math.deg(sensor_data:getHeading())
 
 			local bearing = math.deg(math.atan2((waypoint.y-y),(waypoint.x-x))) -- for some reason z and y is mixed
+			local bearing_orig = bearing
+			bearing = bearing + heading
+
 			if bearing > 360 then
 				bearing = bearing - 360
 			elseif bearing < 0 then
 				bearing = bearing + 360
 			end
-			local heading 	= sensor_data:getHeading()
-			phi_bearing:set(math.rad(bearing) - heading)
+			phi_bearing:set(math.rad(bearing))
+			
 
 			range = math.sqrt((waypoint.x - x)^2 + (waypoint.y - y)^2) / 1000  -- for some reason z and y is mixed
 			range = range * 0.53995726994149 -- km to Nm
 
 			phi_range:set(range)
-			print_message_to_user("WPN" .. current_waypoint .. ": Heading " .. math.deg(heading) .. "  Bearing " .. string.format("%.2f",  bearing) .. " Range: " .. string.format("%.2f",  range))
+			--print_message_to_user("WPN" .. current_waypoint .. ": Heading " .. string.format("%.2f",  heading) .. "  Bearing orig" .. string.format("%.2f",  bearing_orig) .. " Bearing angle: " .. string.format("%.2f",  bearing))
 		end
 	end
 end

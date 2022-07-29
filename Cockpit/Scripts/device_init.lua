@@ -69,7 +69,7 @@ indicators[#indicators + 1] = 	{"ccIndicator", LockOn_Options.script_path.."PHI_
 		--{"RADAR-PLASHKA-CENTER", "RADAR-PLASHKA-DOWN", "RADAR-PLASHKA-RIGHT"},   -- initial geometry anchor , triple of connector names. Mal zunächst nur 3 statt 4 ILS-PLASHKE-UP mal ausgelassen
 		{
 			sx_l =  -0.379,  -- center position correction in meters (+forward , -backward)
-			sy_l =  -0.331,  -- center position correction in meters (+up , -down)
+			sy_l =  -0.32,  -- center position correction in meters (+up , -down)
 			sz_l =  0,  -- center position correction in meters (-left , +right)
 			sh   =  0,  -- half height correction 
 			sw   =  0,  -- half width correction 
