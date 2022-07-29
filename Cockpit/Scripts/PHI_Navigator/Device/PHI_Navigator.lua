@@ -4,7 +4,7 @@ dofile(LockOn_Options.script_path.."command_defs.lua")
 
 local dev = GetSelf()
 
-local update_time_step = 2.0
+local update_time_step = 0.1
 make_default_activity(update_time_step)
 
 
