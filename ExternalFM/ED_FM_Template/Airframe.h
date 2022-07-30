@@ -815,7 +815,11 @@ void Airframe::setMass(double mass)
 
 double Airframe::setNoseWheelAngle(double dt)
 {
-	double input = m_input.getYaw();
+	double input = 0.0;
+	if (m_nwsEngage == 1.0)
+	{
+		input = m_input.getYaw();
+	}
 	return m_actuatorNosewheel.inputUpdate(input, dt);
 }
 

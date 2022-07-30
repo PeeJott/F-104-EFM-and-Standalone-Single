@@ -454,6 +454,7 @@ void Airframe::airframeUpdate(double dt)
 
 	m_nozzlePosition = setNozzlePosition(dt);
 
+	NWSstate();
 	m_noseWheelAngle = setNoseWheelAngle(dt);
 
 	//Neuer Test, falls der KeyBind nur beim Drücke "1" ist
@@ -526,8 +527,7 @@ void Airframe::airframeUpdate(double dt)
 	hydroGaugeSysTWO();
 
 	updateAirBrake();
-	updateGear();
-	NWSstate();
+	updateGear();	
 	antiSkidSystem();
 	
 	//printf("Horizon_Pitch_Angle %f\n", m_horizonPitchAngle);
