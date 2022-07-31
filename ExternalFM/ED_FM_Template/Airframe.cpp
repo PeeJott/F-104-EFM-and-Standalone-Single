@@ -769,15 +769,30 @@ double Airframe::NWSstate()
 	if ((m_input.getNWS() == 1.0) && (m_hydroPumpTwo == 1.0) && (hasElectricPower == true))
 	{
 		m_nwsEngage = m_input.getNWS();
+
+		// if NWS is already connected it stays connected until button is release, so don't check the alignment of the wheel and the rudder.
+		if (m_nwsConnected == false)
+		{			
+			// NWS not yet connected, so check the alignment of the wheel and the rudder.
+			// give 2% tolerance
+			if (fabs(m_noseWheelAngle - m_input.getYaw() < 0.02))
+			{
+				m_nwsConnected = true;
+			}
+		}
 	}
 	else if ((m_input.getNWS() == 0.0) && (m_hydroPumpTwo == 1.0))
 	{
 		m_nwsEngage = m_input.getNWS();
+		// always disconnect NWS when NWS button is released
+		m_nwsConnected = false;
 	}
 	else
 	{
 		m_nwsEngage = 0.0;
+		m_nwsConnected = false;
 	}
+
 	return m_nwsEngage;
 }
 

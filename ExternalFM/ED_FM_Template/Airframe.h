@@ -548,6 +548,7 @@ private:
 	double m_brakeRight = 0.0;
 	double m_chuteState = 0.0;
 	double m_nwsEngage = 0.0;
+	bool m_nwsConnected = false;
 	double m_chuteSlewY = 0.0;
 	double m_chuteSlewZ = 0.0;
 	int m_timePassed = 0;
@@ -816,7 +817,7 @@ void Airframe::setMass(double mass)
 double Airframe::setNoseWheelAngle(double dt)
 {
 	double input = 0.0;
-	if (m_nwsEngage == 1.0)
+	if (m_nwsEngage == 1.0 && m_nwsConnected)
 	{
 		input = m_input.getYaw();
 	}

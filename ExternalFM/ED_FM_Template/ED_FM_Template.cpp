@@ -1130,14 +1130,7 @@ case ED_FM_ANTI_SKID_ENABLE:
 
 //NWS-Stuff
 case ED_FM_SUSPENSION_0_WHEEL_SELF_ATTITUDE:
-	if (s_airframe->getNoseWheelAngle() == 0.0)
-	{
-		return s_airframe->NWSstate() == 1.0 ? 0.0 : 1.0;//s_input->getNWS() == 1.0 ? 0.0 : 1.0; //was return s_airframe->NWSstate() == 1.0 ? 1.0 : 0.0;
-	}
-	else
-	{
-		return 0.0;
-	}
+	return 0.0; // nosewheel is locked in center unless NWS is engaged.
 case ED_FM_SUSPENSION_0_WHEEL_YAW:
 	return s_airframe->getNoseWheelAngle() * 0.65; //war 1.0 dan 0.75 //> 0.5 ? -s_input.m_yaw * 0.5 : 0.0; //rotation to 45 degrees, half 90 (range of the wheel)
 

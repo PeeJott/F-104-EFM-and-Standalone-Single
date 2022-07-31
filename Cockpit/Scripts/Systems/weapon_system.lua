@@ -991,6 +991,11 @@ function post_initialize()
 
 end
 
+function on_launch(var)
+	-- this is a callback function called after a weapon was launched. Might be useful in the future, e.g. to select the next station or reset the sidewinder flag.
+    print_message_to_user("on_launch: " .. tostring(var) ..".")
+end
+
 function update()
 		
  	local mode = radar_api.mode_h:get()	
