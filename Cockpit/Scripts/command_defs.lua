@@ -21,7 +21,8 @@ Keys =
 	--PlaneGearUp	               				= 430, 
 	--PlaneGearDown              				= 431,
 
-	iCommandPlaneFonar	= 71,
+	iCommandPlaneFonar							= 71,
+	iCommandSwitchMasterArm						= 283,
 	
 	-------------------AtoA-RADAR-COMMANDS----------------------------
 	iCommandPlaneChangeLock						= 100,

@@ -15,6 +15,9 @@
 #include "Airframe.h"
 #include "BaseComponent.h"
 #include "Maths.h"
+#include "PID.h"
+#include "AutoPilot.h"
+
 
 //Vec3	common_moment;
 //Vec3	common_force;
@@ -54,6 +57,8 @@ static ElectricSystem* s_electricSystem = NULL;
 static Fuelsystem* s_fuelsystem = NULL;
 static Airframe* s_airframe = NULL;
 static FlightModel* s_flightModel = NULL;
+static PID* s_PID = NULL;
+static AutoPilot* s_autoPilot = NULL;
 
 
 void init()
@@ -62,12 +67,14 @@ void init()
 
 	s_input = new Input;
 	s_state = new State;
+	s_PID = new PID;
 	s_ramAirTurbine = new RamAirTurbine(*s_state, *s_input);
 	s_engine = new Engine(*s_state, *s_input);	
 	s_fuelsystem = new Fuelsystem(*s_state, *s_input, *s_engine);
 	s_airframe = new Airframe(*s_state, *s_input, *s_engine, *s_electricSystemAPI, *s_ramAirTurbine);
 	s_electricSystem = new ElectricSystem(*s_electricSystemAPI, *s_state, *s_input, *s_engine, *s_airframe, *s_ramAirTurbine);
-	s_flightModel = new FlightModel(*s_state, *s_input, *s_engine, *s_airframe, *s_electricSystemAPI);
+	s_autoPilot = new AutoPilot(*s_state, *s_input, *s_PID, *s_airframe);
+	s_flightModel = new FlightModel(*s_state, *s_input, *s_engine, *s_airframe, *s_electricSystemAPI, *s_autoPilot);
 }
 
 void cleanup()
@@ -81,7 +88,8 @@ void cleanup()
 	delete s_fuelsystem;
 	delete s_airframe;
 	delete s_flightModel;
-	
+	delete s_PID;
+	delete s_autoPilot;
 
 	s_electricSystemAPI = NULL;
 	s_input = NULL;
@@ -92,7 +100,8 @@ void cleanup()
 	s_airframe = NULL;
 	s_electricSystem = NULL;
 	s_flightModel = NULL;
-	
+	s_PID = NULL;
+	s_autoPilot = NULL;
 
 }
 
@@ -134,6 +143,7 @@ void ed_fm_simulate(double dt)
 	s_electricSystem->update(dt);
 	s_airframe->airframeUpdate(dt);
 	s_fuelsystem->update(dt);
+	s_autoPilot->AutoPilotUpdate(dt);
 }
 
 void ed_fm_set_atmosphere(double h,//altitude above sea level
@@ -526,7 +536,7 @@ void ed_fm_set_command(int command,
 			s_input->m_engine_stop = 1.0;
 		}*/
 		break;
-	case COMMAND_AUTOPILOT_ENG:
+	case COMMAND_AUTOPILOT_ALT_HOLD:
 		s_input->autoPilotEng();
 		/*s_input->m_autoPilotEng;
 		if (s_input->m_autoPilotEng == 0.0)
@@ -833,6 +843,10 @@ void ed_fm_set_command(int command,
 
 	case COMMAND_INST_LIGHT_TGL:
 		s_input->instLightTgl();
+		break;
+
+	case COMMAND_AUTOPILOT_ATT_HOLD:
+		s_input->autoPilotAttHold();
 		break;
 
 	default:
@@ -1244,6 +1258,8 @@ void ed_fm_cold_start()
 	s_electricSystem->coldInit();
 	s_fuelsystem->coldInit();
 	s_flightModel->coldInit();
+	s_PID->coldInit();
+	s_autoPilot->coldInit();
 	
 }
 
@@ -1258,6 +1274,8 @@ void ed_fm_hot_start()
 	s_electricSystem->hotInit();
 	s_fuelsystem->hotInit();
 	s_flightModel->hotInit();
+	s_PID->hotInit();
+	s_autoPilot->hotInit();
 }
 
 void ed_fm_hot_start_in_air()
@@ -1270,6 +1288,8 @@ void ed_fm_hot_start_in_air()
 	s_engine->airborneInit();
 	s_electricSystem->airborneInit();
 	s_flightModel->airborneInit();
+	s_PID->airborneInit();
+	s_autoPilot->airborneInit();
 }
 
 //Neu eingefügt und in der ED_FM_Template.h ebenfalls

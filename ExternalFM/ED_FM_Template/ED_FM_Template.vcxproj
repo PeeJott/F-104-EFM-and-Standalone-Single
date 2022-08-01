@@ -85,6 +85,7 @@
     <ClInclude Include="Actuators.h" />
     <ClInclude Include="AeroData_1.h" />
     <ClInclude Include="Airframe.h" />
+    <ClInclude Include="AutoPilot.h" />
     <ClInclude Include="BaseComponent.h" />
     <ClInclude Include="ED_FM_Template.h" />
     <ClInclude Include="ED_FM_TemplateAPI.h" />
@@ -96,6 +97,7 @@
     <ClInclude Include="Fuel_System.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Maths.h" />
+    <ClInclude Include="PID.h" />
     <ClInclude Include="RamAirTurbine.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="stdafx.h" />
@@ -108,6 +110,7 @@
   <ItemGroup>
     <ClCompile Include="Actuators.cpp" />
     <ClCompile Include="Airframe.cpp" />
+    <ClCompile Include="AutoPilot.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -123,6 +126,7 @@
     <ClCompile Include="FlightModel.cpp" />
     <ClCompile Include="Fuel_System.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="PID.cpp" />
     <ClCompile Include="RamAirTurbine.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="stdafx.cpp">

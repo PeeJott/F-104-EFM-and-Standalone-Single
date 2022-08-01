@@ -20,7 +20,8 @@ FlightModel::FlightModel
 	Input& input,
 	Engine& engine, //NEU 21Feb21
 	Airframe& airframe,
-	ElectricSystemAPI& electricSystemAPI
+	ElectricSystemAPI& electricSystemAPI,
+	AutoPilot& autoPilot
 	//der letzte Eintrag hier darf kein Komma haben!
 ) :
 	m_state(state),
@@ -28,6 +29,7 @@ FlightModel::FlightModel
 	m_engine(engine), //NEU 21Feb21
 	m_airframe(airframe),
 	m_electricSystemAPI(electricSystemAPI),
+	m_autoPilot(autoPilot),
 
 	m_scalarVelocity(0.0),
 	m_scalarVelocitySquared(0.0),
@@ -406,7 +408,7 @@ void FlightModel::M_stab()
 	//------------CmFlaps eingefügt auf 0.75 und 0.75 zu 0.82 zu 0.95 als Multiplikator vor Cmde eingefügt
 	//----------- Multiplikator vor CmAlpha entfernt, da CmAlpha grds. ein negatives Pitchmoment gibt------------
 	//------------------------Neue Formel über corrAoA an m_state.m_aoa angebunden und m_corrBeta statt m_state.m_beta-----------------------------------------------------------
-	m_moment.z += m_k * CON_mac * ((CmalphaNEW(m_state.m_mach) * m_corrAoA) + (((0.95 * -CmdeNEW(m_state.m_mach) * m_pitchHydroForce)) * (((m_input.getPitch() * m_elevDeflection) + m_input.getTrimmUp() - m_input.getTrimmDown() + m_airframe.getAutoPilotAltH()) * m_hStabDamage)) + m_pitchup + (0.95 * CmFlap(m_state.m_mach) * m_airframe.getFlapsPosition()))
+	m_moment.z += m_k * CON_mac * ((CmalphaNEW(m_state.m_mach) * m_corrAoA) + ((0.95 * -CmdeNEW(m_state.m_mach) * m_pitchHydroForce) * (((m_input.getPitch() * m_elevDeflection) + m_input.getTrimmUp() - m_input.getTrimmDown() + m_airframe.getAutoPilotAltH() + m_autoPilot.getAutoPitch()) * m_hStabDamage)) + m_pitchup + (1.35 * CmFlap(m_state.m_mach) * m_airframe.getFlapsPosition()))
 		+ 0.25 * m_state.m_airDensity * m_scalarVelocity * CON_A * CON_mac * CON_mac * ((((1.75 - m_stallMult) * Cmq(m_state.m_mach) + m_CmqStAg) * m_state.m_omega.z) + (((1.95 - m_stallMult) * CmadotNEW(m_state.m_mach)) + m_CmaDOTStAg) * m_aoaDot);
 
 }
@@ -1145,7 +1147,7 @@ void FlightModel::calculateShake(double& dt)
 
 	if (m_engine.updateBurner() >= 0.85)
 	{
-		ReHeatContinousShake = m_engine.getRPMNorm() * 0.10;
+		ReHeatContinousShake = m_engine.getRPMNorm() * 0.08;
 	}
 	else
 	{

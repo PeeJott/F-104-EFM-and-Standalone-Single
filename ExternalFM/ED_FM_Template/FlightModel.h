@@ -8,6 +8,7 @@
 #include "Engine.h"
 #include "Airframe.h"
 #include "Fuel_System.h"
+#include "AutoPilot.h"
 #include "BaseComponent.h"
 #include "Timer.h"
 #include "ElectricSystemAPI.h"
@@ -28,7 +29,7 @@
 class FlightModel
 {
 public:
-	FlightModel(State& state, Input& input, Engine& engine, Airframe& airframe, ElectricSystemAPI& electricSystemAPI); //Engine& engine NEU 21FEb21
+	FlightModel(State& state, Input& input, Engine& engine, Airframe& airframe, ElectricSystemAPI& electricSystemAPI, AutoPilot& autoPilot); //Engine& engine NEU 21FEb21
 
 	virtual void zeroInit();
 	virtual void coldInit();
@@ -89,6 +90,7 @@ private:
 	Engine& m_engine; //neu 21Feb21 // wieder rausgenommen
 	Airframe& m_airframe;
 	ElectricSystemAPI& m_electricSystemAPI;
+	AutoPilot& m_autoPilot;
 	
 
 	//--------------Aerodynamic Values--------------------------------

@@ -49,7 +49,7 @@ enum Command
 	COMMAND_BRAKE_CHUTE = 76, //aus der Konsole abgelesen
 	COMMAND_ENGINE_START = 309,
 	COMMAND_ENGINE_STOP = 310,
-	COMMAND_AUTOPILOT_ENG = 389,
+	//COMMAND_AUTOPILOT_ENG = 389,
 	COMMAND_LIGHT_TOGGLE = 328,
 	COMMAND_ELECTRIC_SYSTEM = 315,
 
@@ -105,6 +105,9 @@ enum Command
 	COMMAND_NO_1_GENERATOR_OFF = 711,		// iCommandPowerGeneratorLeft 711
 	COMMAND_NO_2_GENERATOR_OFF = 712,		// iCommandPowerGeneratorRight 712
 	COMMAND_RAT_EXTEND = 713,				// iCommandElectricalPowerInverter 713
+	
+	COMMAND_AUTOPILOT_ATT_HOLD = 62,
+	COMMAND_AUTOPILOT_ALT_HOLD = 389,
 
 	//--------------------------------------
 
@@ -147,6 +150,8 @@ class Input
 			m_hooktgl = 0.0;
 			m_nwsteering = 0.0;
 			m_autoPilotEng = 0.0;
+			m_attAutoPilotEng = 0.0;
+
 			m_light_toggle = 0.0;
 
 			m_ramAirTurbineExtensionHandle = 0.0;
@@ -674,6 +679,23 @@ class Input
 		inline const double getAutoPEng()
 		{
 			return m_autoPilotEng;
+		}
+
+		inline const void autoPilotAttHold()
+		{
+			if (m_attAutoPilotEng == 0.0)
+			{
+				m_attAutoPilotEng = 1.0;
+			}
+			else
+			{
+				m_attAutoPilotEng = 0.0;
+			}
+		}
+
+		inline const double getAttAutoPilot()
+		{
+			return m_attAutoPilotEng;
 		}
 
 		inline const void lightToggle()
@@ -1324,6 +1346,7 @@ class Input
 	double m_nwsteering = 0.0;
 
 	double m_autoPilotEng = 0.0;
+	double m_attAutoPilotEng = 0.0;
 
 	double m_light_toggle = 0.0;
 

@@ -1319,7 +1319,8 @@ double Airframe::getHorizonRoll()
 //------------AutoPilot-Stuff-----------------------------
 double Airframe::getAutoPilotAltH()
 {
-	return m_pitchAPadj;
+	//return m_pitchAPadj;
+	return 0.0;
 }
 
 double Airframe::getAutoPilotInd()
