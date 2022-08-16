@@ -272,8 +272,8 @@ join(res.keyCommands,{
 -- iCommandPlaneRadarLeft         88    -- slew TDC left
 -- iCommandPlaneRadarRight        89    -- slew TDC right
 
-{down = iCommandPlane_LockOn_start, 							name = 'Lock On Start', 			category = 'Improved Radar'},
-{down = iCommandPlane_LockOn_finish, 							name = 'Lock On Off', 				category = 'Improved Radar'},
+{down = iCommandPlane_LockOn_start, 							name = _('Lock On Start'), 			category = _('Improved Radar')},
+{down = iCommandPlane_LockOn_finish, 							name = _('Lock On Off'), 				category = _('Improved Radar')},
 {pressed = iCommandPlaneRadarUp, up = iCommandPlaneRadarStop, 	name = _('Target Designator Up'), 	category = _('Improved Radar')},
 {pressed = iCommandPlaneRadarDown, up = iCommandPlaneRadarStop, name = _('Target Designator Down'), category = _('Improved Radar')},
 --{pressed = iCommandPlaneRadarLeft, up = iCommandPlaneRadarStop, name = _('Target Designator Left'), category = _('Improved Radar')},
@@ -317,5 +317,19 @@ join(res.keyCommands,{
 {down = Keys.bombArmingSwitch_NOSETAIL,			name = _('Bomb Arming Switch NOSE/TAIL'), category = _('Weapon Panel')},
 {down = Keys.bombArmingSwitch_SAFE,				name = _('Bomb Arming Switch SAFE'), category = _('Weapon Panel')},
 {down = Keys.bombArmingSwitch_TAIL,				name = _('Bomb Arming Switch TAIL'), category = _('Weapon Panel')},
+
+--Special Weapons Panel
+{down = Keys.specialStoresSelector_toggle,		name = _('Special Weapon Rotary Toggle'), category = _('Special Weapons Panel')},
+{down = Keys.specialStoresSelector_SPLStores,	name = _('Special Weapon Rotary Special'), category = _('Special Weapons Panel')},
+{down = Keys.specialStoresSelector_SAFE,		name = _('Special Weapon Rotary SAFE'), category = _('Special Weapons Panel')},
+{down = Keys.specialStoresSelector_PylBombs,	name = _('Special Weapon Rotary Pyl. Bombs'), category = _('Special Weapons Panel')},
+{down = Keys.specialStoresSelector_PylTanks,	name = _('Special Weapon Rotary Pyl. Tanks'), category = _('Special Weapons Panel')},
+{down = Keys.specialStoresSelector_TipStores,	name = _('Special Weapon Rotary Tip Stores'), category = _('Special Weapons Panel')},
+{down = Keys.specialStoresSelector_UAR,			name = _('Special Weapon Rotary UAR'), category = _('Special Weapons Panel')},
+
+{down = Keys.dropLockSwitch_toggle,				name = _('Special Weapon Drop-Lock Toggle'), category = _('Special Weapons Panel')},
+{down = Keys.dropLockSwitch_CLOSED,				name = _('Special Weapon Drop-Lock Cosed'), category = _('Special Weapons Panel')},
+{down = Keys.dropLockSwitch_SAFE,				name = _('Special Weapon Drop-Lock SAFE'), category = _('Special Weapons Panel')},
+{down = Keys.dropLockSwitch_READY,				name = _('Special Weapon Drop-Lock READY'), category = _('Special Weapons Panel')},
 })
 return res

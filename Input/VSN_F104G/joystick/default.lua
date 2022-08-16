@@ -288,6 +288,20 @@ join(res.keyCommands,{
 {down = Keys.bombArmingSwitch_SAFE,				name = _('Bomb Arming Switch SAFE'), category = _('Weapon Panel')},
 {down = Keys.bombArmingSwitch_TAIL,				name = _('Bomb Arming Switch TAIL'), category = _('Weapon Panel')},
 
+--Special Weapons Panel
+{down = Keys.specialStoresSelector_toggle,		name = _('Special Weapon Rotary Toggle'), category = _('Special Weapons Panel')},
+{down = Keys.specialStoresSelector_SPLStores,	name = _('Special Weapon Rotary Special'), category = _('Special Weapons Panel')},
+{down = Keys.specialStoresSelector_SAFE,		name = _('Special Weapon Rotary SAFE'), category = _('Special Weapons Panel')},
+{down = Keys.specialStoresSelector_PylBombs,	name = _('Special Weapon Rotary Pyl. Bombs'), category = _('Special Weapons Panel')},
+{down = Keys.specialStoresSelector_PylTanks,	name = _('Special Weapon Rotary Pyl. Tanks'), category = _('Special Weapons Panel')},
+{down = Keys.specialStoresSelector_TipStores,	name = _('Special Weapon Rotary Tip Stores'), category = _('Special Weapons Panel')},
+{down = Keys.specialStoresSelector_UAR,			name = _('Special Weapon Rotary UAR'), category = _('Special Weapons Panel')},
+
+{down = Keys.dropLockSwitch_toggle,				name = _('Special Weapon Drop-Lock Toggle'), category = _('Special Weapons Panel')},
+{down = Keys.dropLockSwitch_CLOSED,				name = _('Special Weapon Drop-Lock Cosed'), category = _('Special Weapons Panel')},
+{down = Keys.dropLockSwitch_SAFE,				name = _('Special Weapon Drop-Lock SAFE'), category = _('Special Weapons Panel')},
+{down = Keys.dropLockSwitch_READY,				name = _('Special Weapon Drop-Lock READY'), category = _('Special Weapons Panel')},
+
 --Custom Weapons Keys from CScripts
 {combos = {{key = 'JOY_BTN2'}}, down = Keys.pickle_on,	up = Keys.pickle_off, 	name = _('Weapon Release'), category = _('Weapons')},
 {combos = {{key = 'JOY_BTN1'}}, pressed = Keys.trigger_on,	up = Keys.trigger_off, 	name = _('Gun Trigger'), category = _('Weapons')},

@@ -125,8 +125,11 @@ Keys =
 	specialStoresSelector_UAR					= __custom_counter(),
 	
 	dropLockSwitch_toggle						= __custom_counter(),
+	dropLockSwitch_CLOSED						= __custom_counter(),
 	dropLockSwitch_SAFE							= __custom_counter(),
 	dropLockSwitch_READY						= __custom_counter(),
+	
+	splWepEmergJettison							= __custom_counter(),
 	
 	-----------------------------HUD--------------------------------
 	GunPipper_Up								= __custom_counter(),

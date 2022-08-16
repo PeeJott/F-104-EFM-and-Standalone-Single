@@ -58,8 +58,12 @@ dev:listen_command(Keys.specialStoresSelector_UAR)
 ---------------------------------------------------
 -----------Drop-Lock Switch------------------------
 dev:listen_command(Keys.dropLockSwitch_toggle)
+dev:listen_command(Keys.dropLockSwitch_CLOSED)
 dev:listen_command(Keys.dropLockSwitch_SAFE)
 dev:listen_command(Keys.dropLockSwitch_READY)
+---------------------------------------------------
+----------Special Emergency Jettison Button--------
+dev:listen_command(Keys.splWepEmergJettison)
 
 
 
@@ -111,8 +115,10 @@ local arm_sel_position 			= 0
 local master_arm_switch_pos 	= 0
 local bomb_rel_switch_pos 		= 0
 local bomb_arm_switch_pos 		= 0
-local special_store_switch_pos 	= 0
-local drop_lock_switch_pos 		= 0
+-------Special Wep Panel-----------
+local special_store_rot_pos 	= 0
+local spl_drop_lock_switch_pos 	= 0
+local spl_emerg_jett_pos		= 0
 -----------------------------------
 -------Check Weapon on Rack--------
 local usable weapon = 0
@@ -174,6 +180,11 @@ local master_arm_switch_param = get_param_handle("MASTER_ARM_SWITCH")
 local bomb_am_release_switch_param = get_param_handle("BOMB_AM_REL_SWITCH")
 -------------------------
 local bomb_arming_switch_param	= get_param_handle("BOMB_ARM_SWITCH")
+--Special Weapons Panel
+-----------------------
+local sp_wep_emerg_jett_param	= get_param_handle("SPECIAL_EMERGENCY_JETTISON")
+local sp_wep_drop_lock_param	= get_param_handle("DROP_LOCK_SWITCH")
+local sp_wep_rotary_param		= get_param_handle("SPECIAL_WEP_ROTARY")
 
 
 function keys_station_one(value)
@@ -496,7 +507,7 @@ function usable_weapon(wp)
 		Aim9_fired = 1.0
 		return
 	elseif((usable_weapon_station_1 == launched_weapon) and
-		(station_ONE == 1.0) and ((launched_weapon == 1.0) or (launched_weapon == 1.5)))then
+		(station_ONE == 1.0) and ((launched_weapon == 1.0) or ((launched_weapon == 1.5) and (special_store_rot_pos == 2))))then
 		release_double_station()
 	end
 	
@@ -506,7 +517,7 @@ function usable_weapon(wp)
 		Aim9_fired = 1.0
 		return
 	elseif((usable_weapon_station_2 == launched_weapon) and
-		(station_TWO == 1.0) and ((launched_weapon == 1.0) or (launched_weapon == 1.5)))then
+		(station_TWO == 1.0) and ((launched_weapon == 1.0) or ((launched_weapon == 1.5) and (special_store_rot_pos == 2))))then
 		release_double_station()
 	end
 	
@@ -526,7 +537,7 @@ function usable_weapon(wp)
 		Aim9_fired = 1.0
 		return
 	elseif((usable_weapon_station_4 == launched_weapon) and
-		(station_FOUR == 1.0) and ((launched_weapon == 1.0) or (launched_weapon == 1.5)))then
+		(station_FOUR == 1.0) and ((launched_weapon == 1.0) or ((launched_weapon == 1.5) and (special_store_rot_pos == 0) and (spl_drop_lock_switch_pos == 2))))then
 		release_double_station()
 	end
 	
@@ -546,7 +557,7 @@ function usable_weapon(wp)
 		Aim9_fired = 1.0		
 		return
 	elseif((usable_weapon_station_6 == launched_weapon) and
-		(station_SIX == 1.0) and ((launched_weapon == 1.0) or (launched_weapon == 1.5)))then
+		(station_SIX == 1.0) and ((launched_weapon == 1.0) or ((launched_weapon == 1.5)and (special_store_rot_pos == 2))))then
 		release_double_station()
 	end
 	
@@ -726,7 +737,138 @@ function keys_bombArmingSwitch_NOSETAIL(value)
 
 end
 
+--------------------------------------------------------------
+-------------------Special Weapons Panel----------------------
 
+function keys_specialStoresSelector_toggle(value)
+
+	--0->spl store; 1->SAFE; 2->BOMBS; 3->Tanks; 4->TIP-Stores; 5->AGM12B; 6->UAR
+	
+	if(special_store_rot_pos <= 4)then
+		special_store_rot_pos = special_store_rot_pos +1
+		
+	elseif(special_store_rot_pos == 5) then
+		special_store_rot_pos = 0
+	end
+	
+	if(special_store_rot_pos == 0)then
+		print_message_to_user("Special-Stores Rotary at Position SpecialWeapon.")
+	elseif(special_store_rot_pos == 1) then
+		print_message_to_user("Special-Stores Rotary at Position SAFE.")
+	elseif(special_store_rot_pos == 2) then
+		print_message_to_user("Special-Stores Rotary at Position BOMBS.")
+	elseif(special_store_rot_pos == 3) then
+		print_message_to_user("Special-Stores Rotary at Position TANKS.")
+	elseif(special_store_rot_pos == 4) then
+		print_message_to_user("Special-Stores Rotary at Position TIP-Stores.")
+	elseif(special_store_rot_pos == 5) then
+		print_message_to_user("Special-Stores Rotary at Position UAR.")
+	end
+	
+	sp_wep_rotary_param:set(special_store_rot_pos)
+		
+end
+
+function keys_specialStoresSelector_SPLStores(value)
+
+	special_store_rot_pos = 0
+	print_message_to_user("Special-Stores Rotary at Position SpecialWeapon.")
+	sp_wep_rotary_param:set(special_store_rot_pos)
+	
+end
+
+function keys_specialStoresSelector_SAFE(value)
+
+	special_store_rot_pos = 1
+	print_message_to_user("Special-Stores Rotary at Position SAFE.")
+	sp_wep_rotary_param:set(special_store_rot_pos)
+	
+end
+
+function keys_specialStoresSelector_PylBombs(value)
+
+	special_store_rot_pos = 2
+	print_message_to_user("Special-Stores Rotary at Position BOMBS.")
+	sp_wep_rotary_param:set(special_store_rot_pos)
+	
+end
+
+function keys_specialStoresSelector_PylTanks(value)
+
+	special_store_rot_pos = 3
+	print_message_to_user("Special-Stores Rotary at Position TANKS.")
+	sp_wep_rotary_param:set(special_store_rot_pos)
+	
+end
+
+function keys_specialStoresSelector_TipStores(value)
+
+	special_store_rot_pos = 4
+	print_message_to_user("Special-Stores Rotary at Position TIP-Stores.")
+	sp_wep_rotary_param:set(special_store_rot_pos)
+	
+end
+
+
+function keys_specialStoresSelector_UAR(value)
+
+	special_store_rot_pos = 5
+	print_message_to_user("Special-Stores Rotary at Position UAR.")
+	sp_wep_rotary_param:set(special_store_rot_pos)
+	
+end
+
+function keys_dropLockSwitch_toggle(value)
+
+	if(spl_drop_lock_switch_pos <= 1) then
+		spl_drop_lock_switch_pos = spl_drop_lock_switch_pos +1
+	elseif(spl_drop_lock_switch_pos == 2) then
+		spl_drop_lock_switch_pos = 0
+	end
+	
+	if(spl_drop_lock_switch_pos == 0)then
+		print_message_to_user("Drop-Lock-Switch at position closed+SAFE")
+	elseif(spl_drop_lock_switch_pos == 1) then
+		print_message_to_user("Drop-Lock-Switch at position open + SAFE")
+	elseif(spl_drop_lock_switch_pos == 2) then
+		print_message_to_user("Drop-Lock-Switch at position open + READY")
+	end
+
+	sp_wep_drop_lock_param:set(spl_drop_lock_switch_pos)
+	
+end
+
+function keys_dropLockSwitch_closed(value)
+
+	spl_drop_lock_switch_pos = 0
+	print_message_to_user("Drop-Lock-Switch at position closed+SAFE")
+	sp_wep_drop_lock_param:set(spl_drop_lock_switch_pos)
+	
+end
+
+function keys_dropLockSwitch_SAFE(value)
+
+	spl_drop_lock_switch_pos = 1
+	print_message_to_user("Drop-Lock-Switch at position open + SAFE")
+	sp_wep_drop_lock_param:set(spl_drop_lock_switch_pos)
+	
+end
+
+function keys_dropLockSwitch_READY(value)
+
+	spl_drop_lock_switch_pos = 2
+	print_message_to_user("Drop-Lock-Switch at position open + READY")
+	sp_wep_drop_lock_param:set(spl_drop_lock_switch_pos)
+	
+end
+
+function keys_splWepEmergJett(value)
+
+	spl_emerg_jett_pos = 1
+	print_message_to_user("Jettisoning special/centerline stores!!!")
+	sp_wep_emerg_jett_param:set(spl_emerg_jett_pos)
+
+end
 
 
 
@@ -772,11 +914,15 @@ command_table = {
 	[Keys.specialStoresSelector_PylBombs]	= keys_specialStoresSelector_PylBombs,
 	[Keys.specialStoresSelector_PylTanks]	= keys_specialStoresSelector_PylTanks,
 	[Keys.specialStoresSelector_TipStores]	= keys_specialStoresSelector_TipStores,
+	--[Keys.specialStoresSelector_AGM12B]		= keys_specialStoresSelector_AGM12B,
 	[Keys.specialStoresSelector_UAR]		= keys_specialStoresSelector_UAR,
 	--DropLock-Switch
 	[Keys.dropLockSwitch_toggle]			= keys_dropLockSwitch_toggle,
+	[Keys.dropLockSwitch_CLOSED]			= keys_dropLockSwitch_closed,
 	[Keys.dropLockSwitch_SAFE]				= keys_dropLockSwitch_SAFE,
 	[Keys.dropLockSwitch_READY]				= keys_dropLockSwitch_READY,
+	
+	[Keys.splWepEmergJettison]				= keys_splWepEmergJett,
 	
 }
 
