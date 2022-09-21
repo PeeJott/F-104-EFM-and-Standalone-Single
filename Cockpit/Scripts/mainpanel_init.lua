@@ -160,6 +160,22 @@ BombReleaseSwitch.arg_number				= 629--prüfen bzw. animieren
 BombReleaseSwitch.input						= {0.0, 1.0}
 BombReleaseSwitch.output					= {0.0, 1.0}
 BombReleaseSwitch.parameter_name			= "BOMB_AM_REL_SWITCH"
+---------------------------------------------------------------------------
+-------------------------Landing Light Switch----------------------------
+LandingLightSwitch							= CreateGauge("parameter")
+LandingLightSwitch.arg_number				= 603
+LandingLightSwitch.input						= {0.0, 2.0}
+LandingLightSwitch.output					= {0.0, 1.0}
+LandingLightSwitch.parameter_name			= "LANDING_LIGHT_SWITCH"
+---------------------------------------------------------------------------
+-------------------------Interior Light----------------------------
+InteriorLight						= CreateGauge("parameter")
+InteriorLight.arg_number			= 640
+InteriorLight.input				= {0.0, 1.0}
+InteriorLight.output				= {0.0, 1.0}
+InteriorLight.parameter_name		= "INTERIOR_LIGHT"
+---------------------------------------------------------------------------
+
 
 Canopy    							= CreateGauge()
 Canopy.arg_number 					= 181

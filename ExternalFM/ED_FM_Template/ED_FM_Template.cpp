@@ -1095,7 +1095,7 @@ void ed_fm_set_fc3_cockpit_draw_args_v2(float* data, size_t size)
 	data[632] = s_airframe->getQNHinOne();//QNH-Anzeige einer Bereich
 	data[633] = s_fuelsystem->getAdjFuelQtyInternal();//neue interne Fuel Anzeige.
 	data[634] = s_airframe->getNozzlePosition();//für die Nozzle-Pos-Anzeige die Werte der externen Nozzle-Position, 0.4, 0.2, 0.8
-	data[640] = s_airframe->getInstLight();//Instrument Light toggle 1.0 = on 0.0 = off
+	//data[640] = s_airframe->getInstLight();//Instrument Light toggle 1.0 = on 0.0 = off
 	
 
 }

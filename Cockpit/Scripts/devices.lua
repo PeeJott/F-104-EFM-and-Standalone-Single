@@ -29,4 +29,6 @@ devices["AIR_DATA_COMPUTER"]	= counter()
 devices["C_2G_COMPASS"]			= counter()
 devices["INERTIAL_NAVIGATOR"]	= counter()
 
+devices["LIGHTING"]	= counter()
+
 

@@ -960,6 +960,7 @@ Guns = {gun_mount("M_61", { count = 725 },{muzzle_pos = {7.95000, -0.2530000, -0
 						{typename = "argumentlight",argument = 191}, -- Right Position(green)
 						{typename = "argumentlight",argument = 192}, -- Position (white)
 						{typename = "argumentlight",argument = 193}, -- Tail links rechts (white)
+						{typename = "argumentlight",argument = 194}, -- Tail links rechts (yellow)
 					},
 			},
 			-- FORMATION

@@ -39,6 +39,8 @@ creators[devices.AIR_DATA_COMPUTER]					= {"avLuaDevice", LockOn_Options.script_
 creators[devices.C_2G_COMPASS]					= {"avLuaDevice", LockOn_Options.script_path.."C-2G_Compass/Device/C-2G_Compass.lua"}
 creators[devices.INERTIAL_NAVIGATOR]					= {"avLuaDevice", LockOn_Options.script_path.."Inertial_Navigator/Device/Inertial_Navigator.lua"}
 
+creators[devices.LIGHTING]					= {"avLuaDevice", LockOn_Options.script_path.."Lighting/Device/Lighting.lua"}
+
 indicators = {} --DAS HIER MUSS SEIN SONST CRASHT ES DCS
 
 dofile(LockOn_Options.script_path.."avRadar/radarexample_device_init.lua")

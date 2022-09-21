@@ -21,6 +21,10 @@ Keys =
 	--PlaneGearUp	               				= 430, 
 	--PlaneGearDown              				= 431,
 
+	iCommandPlaneLightsOnOff					= 175,
+	iCommandPlaneHeadLightOnOff					= 328,
+	iCommandPlaneCockpitIllumination			= 300,
+
 	iCommandPlaneFonar							= 71,
 	iCommandSwitchMasterArm						= 283,
 	
