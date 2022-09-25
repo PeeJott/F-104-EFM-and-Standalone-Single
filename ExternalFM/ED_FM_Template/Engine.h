@@ -6,6 +6,7 @@
 #include "Input.h"
 #include "AeroData_1.h"
 #include "BaseComponent.h"
+#include "ElectricSystemAPI.h"
 
 //=========================================================================//
 //
@@ -25,7 +26,7 @@
 class Engine
 {
 public:
-	Engine(State& state, Input& input);
+	Engine(State& state, Input& input, ElectricSystemAPI& electricSystemAPI);
 
 	//Initialization
 	virtual void zeroInit();
@@ -80,6 +81,7 @@ private:
 	Vec3 m_force;
 	State& m_state;
 	Input& m_input;
+	ElectricSystemAPI& m_electricSystemAPI;
 	
 
 	//--------------Aerodynamic Values--------------------------------

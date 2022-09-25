@@ -10,12 +10,13 @@
 #include "BaseComponent.h"
 #include "Airframe.h"
 #include "Units.h"
+#include "ElectricSystemAPI.h"
 
 class AutoPilot
 {
 public:
 
-	AutoPilot(State& state, Input& input, PID& pid, Airframe& airframe);
+	AutoPilot(State& state, Input& input, PID& pid, Airframe& airframe, ElectricSystemAPI& electricSystemAPI);
 
 	//~AutoPilot();
 
@@ -37,6 +38,12 @@ public:
 	//-----Return functions----------
 	inline double getAutoPitch();
 	inline double getAutoRoll();
+
+	//------for Indicators----------
+	inline double getATT_AP_eng();
+	inline double gettALT_AP_eng();
+	inline double getAP_ind_light();
+	void AP_indicator();
 			
 private:
 
@@ -44,6 +51,7 @@ private:
 	Input& m_input;
 	PID& m_pid;
 	Airframe& m_airframe;
+	ElectricSystemAPI& m_electricSystemAPI;
 
 	double m_desiredAngle = 0.0;
 	double m_desiredAlt = 0.0;
@@ -62,7 +70,9 @@ private:
 
 	double m_verticalControlEngaged = 0.0;
 
-
+	double m_attAP_working = 0.0;
+	double m_altAP_working = 0.0;
+	double m_apIsWorkingCorrectly = 0.0;
 
 };
 
@@ -74,4 +84,20 @@ double AutoPilot::getAutoPitch()
 double AutoPilot::getAutoRoll()
 {
 
+}
+
+double AutoPilot::getATT_AP_eng()
+{
+	return m_attAP_working;
+}
+
+double AutoPilot::gettALT_AP_eng()
+{
+	return m_altAP_working;
+}
+
+//----bis die Lampe 2 Stufen hat, benutzen wir einfach diese funktion für entweder oder
+double AutoPilot::getAP_ind_light()
+{
+	return m_apIsWorkingCorrectly;
 }

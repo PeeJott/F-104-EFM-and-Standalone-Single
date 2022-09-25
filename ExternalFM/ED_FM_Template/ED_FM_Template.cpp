@@ -69,11 +69,11 @@ void init()
 	s_state = new State;
 	s_PID = new PID;
 	s_ramAirTurbine = new RamAirTurbine(*s_state, *s_input);
-	s_engine = new Engine(*s_state, *s_input);	
+	s_engine = new Engine(*s_state, *s_input, *s_electricSystemAPI);
 	s_fuelsystem = new Fuelsystem(*s_state, *s_input, *s_engine);
 	s_airframe = new Airframe(*s_state, *s_input, *s_engine, *s_electricSystemAPI, *s_ramAirTurbine);
 	s_electricSystem = new ElectricSystem(*s_electricSystemAPI, *s_state, *s_input, *s_engine, *s_airframe, *s_ramAirTurbine);
-	s_autoPilot = new AutoPilot(*s_state, *s_input, *s_PID, *s_airframe);
+	s_autoPilot = new AutoPilot(*s_state, *s_input, *s_PID, *s_airframe, *s_electricSystemAPI);
 	s_flightModel = new FlightModel(*s_state, *s_input, *s_engine, *s_airframe, *s_electricSystemAPI, *s_autoPilot);
 }
 
@@ -1059,7 +1059,7 @@ void ed_fm_set_fc3_cockpit_draw_args_v2(float* data, size_t size)
 
 	data[602] = s_engine->overHeatInd();//OverHeat-Warning-Light 0.0/0.5/0.75 == off/yellow/red
 	data[601] = s_engine->overSpeedInd();//OverSpeed Warning indicator
-	data[606] = s_airframe->getAutoPilotInd();// 0=aus 1.0 = grün-an
+	data[606] = s_autoPilot->getAP_ind_light();// 0=aus 1.0 = grün-an -> ändern in 0 -> aus; 0.5 -> gelb; 1.0 -> grün
 	data[603] = s_input->getLightToggle();//0=aus 0.5 = gelb 1.0=grün
 	data[604] = s_fuelsystem->lowFuelWarning();//LowFuelIndicator
 	//data[607] = s_fuelsystem->getFuelQtyTotal();//Fuel-Indicator for total Fuel

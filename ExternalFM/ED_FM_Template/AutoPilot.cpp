@@ -5,12 +5,14 @@ AutoPilot::AutoPilot
 	State& state, 
 	Input& input, 
 	PID& pid,
-	Airframe& airframe
+	Airframe& airframe,
+	ElectricSystemAPI& electricSystemAPI
 ) :
 	m_state(state),
 	m_input(input),
 	m_pid(pid),
-	m_airframe(airframe)
+	m_airframe(airframe),
+	m_electricSystemAPI(electricSystemAPI)
 
 {
 	// shalalalaaaaa
@@ -34,6 +36,11 @@ void AutoPilot::zeroInit()
 	m_autoPilotAngle = 0.0;
 
 	m_verticalControlEngaged = 0.0;
+
+	m_attAP_working = 0.0;
+	m_altAP_working = 0.0;
+
+	m_apIsWorkingCorrectly = 0.0;
 
 }
 
@@ -67,12 +74,28 @@ void AutoPilot::AutoPilotUpdate(double dt)
 	VerticalAngleControl(dt);
 	AltitudeControl(dt);
 	RollControl();
+	AP_indicator();
 
 }
 
 void AutoPilot::VerticalAngleControl(double dt)
 {
 	
+	//----Check if electrical energy is sufficent
+	bool hasElectricEnergy = false;
+
+	if((m_electricSystemAPI.GetSecondaryFixesFrequencyAcBus() == 1.0) || (m_electricSystemAPI.GetPrimaryDcBus() == 1.0))
+	{
+		hasElectricEnergy = true;
+	}
+	else
+	{
+		hasElectricEnergy = false;
+	}
+
+
+
+	//---------Start of AP-PID Function-----
 	double ActualAngle = 0.0;
 	//double desiredMaxPositiveAngle = 0.0;
 	//double desiredMaxNegativeAngle = 0.0;
@@ -93,7 +116,7 @@ void AutoPilot::VerticalAngleControl(double dt)
 
 
 	//to store actual-angle in desired angle as long as ATT-Hold AP is engaged
-	if ((m_input.getElectricSystem() == 1.0) && ((m_input.getAttAutoPilot() == 1.0) || (m_input.getAutoPEng() == 1.0)) && (m_attAPengaged == false))
+	if ((hasElectricEnergy == true) && ((m_input.getAttAutoPilot() == 1.0) || (m_input.getAutoPEng() == 1.0)) && (m_attAPengaged == false))
 	{
 		m_desiredAngle = ActualAngle;
 		m_attAPengaged = true;
@@ -103,7 +126,7 @@ void AutoPilot::VerticalAngleControl(double dt)
 			m_desiredAngle = m_autoPilotAngle;
 		}
 	}
-	else if ((m_input.getElectricSystem() == 1.0) && ((m_input.getAttAutoPilot() == 1.0) || (m_input.getAutoPEng() == 1.0)) && ((m_attAPengaged == true) || (m_verticalControlEngaged == 1.0)))
+	else if ((hasElectricEnergy == true) && ((m_input.getAttAutoPilot() == 1.0) || (m_input.getAutoPEng() == 1.0)) && ((m_attAPengaged == true) || (m_verticalControlEngaged == 1.0)))
 	{
 		//just don't touch those two variable and chill
 		//m_desiredAngle = 0.0;
@@ -126,7 +149,7 @@ void AutoPilot::VerticalAngleControl(double dt)
 		m_autoPilotPitch = m_pid.attitudePIDControl(m_desiredAngle, ActualAngle);
 
 	}
-	else if ((m_input.getElectricSystem() == 1.0) && ((m_input.getAttAutoPilot() == 0.0) || (m_input.getAutoPEng() == 0.0)) && ((m_attAPengaged == true) || (m_verticalControlEngaged == 1.0)))
+	else if ((hasElectricEnergy == true) && ((m_input.getAttAutoPilot() == 0.0) || (m_input.getAutoPEng() == 0.0)) && ((m_attAPengaged == true) || (m_verticalControlEngaged == 1.0)))
 	{
 		m_desiredAngle = 0.0;
 		m_attAPengaged = false;
@@ -152,6 +175,22 @@ void AutoPilot::VerticalAngleControl(double dt)
 
 void AutoPilot::AltitudeControl(double dt)
 {
+	//----Check if electrical energy is sufficent
+	bool hasElectricEnergy = false;
+
+	if ((m_electricSystemAPI.GetSecondaryFixesFrequencyAcBus() == 1.0) || (m_electricSystemAPI.GetPrimaryDcBus() == 1.0))
+	{
+		hasElectricEnergy = true;
+	}
+	else
+	{
+		hasElectricEnergy = false;
+	}
+
+
+
+	//---------Start of AP-PID Function-----
+	
 	double ActualAngle = 0.0;
 	double ActualAltitude = 0.0;
 	double desiredMaxPositiveAngle = 0.0;
@@ -174,13 +213,13 @@ void AutoPilot::AltitudeControl(double dt)
 
 
 	//to store actual-alt in desired angle as long as ALT-Hold AP is engaged
-	if ((m_input.getElectricSystem() == 1.0) && (m_input.getAutoPEng() == 1.0) && (m_input.getAttAutoPilot() == 0.0) && (m_altAPengaged == false))
+	if ((hasElectricEnergy == true) && (m_input.getAutoPEng() == 1.0) && (m_input.getAttAutoPilot() == 0.0) && (m_altAPengaged == false))
 	{
 		m_desiredAlt = ActualAltitude;
 		m_altAPengaged = true;
 
 	}
-	else if ((m_input.getElectricSystem() == 1.0) && (m_input.getAutoPEng() == 1.0) && (m_input.getAttAutoPilot() == 0.0) && (m_altAPengaged == true))
+	else if ((hasElectricEnergy == true) && (m_input.getAutoPEng() == 1.0) && (m_input.getAttAutoPilot() == 0.0) && (m_altAPengaged == true))
 	{
 		//just don't touch those two variables and chill
 		//----------------------
@@ -198,7 +237,7 @@ void AutoPilot::AltitudeControl(double dt)
 		m_autoPilotAngle = m_pid.altitudePIDControl(m_desiredAlt, ActualAltitude); 
 
 	}
-	else if ((m_input.getElectricSystem() == 1.0) && (m_input.getAutoPEng() == 0.0) && (m_input.getAttAutoPilot() == 0.0) && (m_altAPengaged == true))
+	else if ((hasElectricEnergy == true) && (m_input.getAutoPEng() == 0.0) && (m_input.getAttAutoPilot() == 0.0) && (m_altAPengaged == true))
 	{
 		m_desiredAlt = 0.0;
 		m_altAPengaged = false;
@@ -241,5 +280,50 @@ void AutoPilot::AltitudeControl(double dt)
 
 void AutoPilot::RollControl()
 {
+
+}
+
+void AutoPilot::AP_indicator()
+{
+	
+	bool hasElectricEnergy = false;
+
+	if ((m_electricSystemAPI.GetSecondaryFixesFrequencyAcBus() == 1.0) || (m_electricSystemAPI.GetPrimaryDcBus() == 1.0))
+	{
+		hasElectricEnergy = true;
+	}
+	else
+	{
+		hasElectricEnergy = false;
+	}
+
+	if ((hasElectricEnergy == true) && ((m_input.getAttAutoPilot() == 1.0) || (m_input.getAutoPEng() == 1.0)))
+	{
+		//Attittude AP Engaged and working
+		m_attAP_working = 1.0;
+		//m_altAP_working = 0.0;
+	}
+	else
+	{
+		m_attAP_working = 0.0;
+	}
+	
+	if ((hasElectricEnergy == true) && ((m_input.getAutoPEng() == 1.0) && (m_input.getAttAutoPilot() == 0.0)))
+	{
+		m_altAP_working = 1.0;
+	}
+	else
+	{
+		m_altAP_working = 0.0;
+	}
+
+	if ((m_altAP_working == 1.0) || (m_attAP_working == 1.0))
+	{
+		m_apIsWorkingCorrectly = 1.0;
+	}
+	else
+	{
+		m_apIsWorkingCorrectly = 0.0;
+	}
 
 }

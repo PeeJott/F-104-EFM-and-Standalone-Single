@@ -16,11 +16,13 @@
 Engine::Engine
 (
 	State& state,
-	Input& input
+	Input& input,
+	ElectricSystemAPI& electricSystemAPI
 
 ) :
 	m_state(state),
 	m_input(input),
+	m_electricSystemAPI(electricSystemAPI),
 	//---------------Thrust------------------------------------
 	PMax(DAT_PMax, CON_PMaxmin, CON_PMaxmax),
 	PFor(DAT_PFor, CON_PFormin, CON_PFormax),
@@ -134,13 +136,27 @@ void Engine::airborneInit()
 
 void Engine::update(double dt)
 {
+	//--------Check if there is enough electric energy
+	bool hasElectricPower = false;
+	
+	if ((m_electricSystemAPI.GetNo2EmergencyDcBus() == 1.0) || (m_electricSystemAPI.GetNo1BatteryBus() == 1.0) || (m_electricSystemAPI.GetNo2BatteryBus() == 1.0))
+	{
+		hasElectricPower = true;
+	}
+	else
+	{
+		hasElectricPower = false;
+	}
+	//------------------------------
+	//------------Start of update function-----------
+
 	double corrThrottle = 0.0;
 	
-	if ((m_input.getEngineStart() == 1.0) && (m_needRepair == false) && (m_heatFailure == false) && (m_needRestart == false))
+	if ((m_input.getEngineStart() == 1.0) && (m_needRepair == false) && (m_heatFailure == false) && (m_needRestart == false) && (hasElectricPower == true))
 	{
 		m_ignitors = true;
 	}
-	if ((m_input.getEngineStop() == 1.0) || (m_input.getEngineStart() == 0.0) || (m_needRepair == true) || (m_heatFailure == true) || (m_needRestart == true))
+	if ((m_input.getEngineStop() == 1.0) || (m_input.getEngineStart() == 0.0) || (m_needRepair == true) || (m_heatFailure == true) || (m_needRestart == true) || (hasElectricPower = false))
 	{
 		m_ignitors = false;
 		//m_input.m_engine_start = 0.0;
