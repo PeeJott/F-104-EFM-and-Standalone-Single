@@ -1,4 +1,6 @@
 #pragma once
+
+#define NOMINMAX
 #include "../../include/Cockpit/ccParametersAPI.h"
 #include "BaseComponent.h"
 
